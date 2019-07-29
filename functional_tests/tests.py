@@ -1,4 +1,5 @@
-from django.test import LiveServerTestCase
+# from django.test import LiveServerTestCase
+import unittest
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
@@ -8,7 +9,7 @@ MAX_WAIT = 5
 
 
 # Use case 1
-class NewCETest(LiveServerTestCase):
+class NewCETest(unittest.TestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(2)
@@ -18,16 +19,19 @@ class NewCETest(LiveServerTestCase):
 
 
     def test_can_create_new_CE(self):
-    # Steve navigates to the CE url and is greeted by a login screen
+    # Steve navigates to the homepage
         self.browser.get('http://localhost:8000')
-        self.assertIn('Login', self.browser.title, 'Login screen not shown')
+        self.assertIn('Home', self.browser.title, 'Home screen not shown')
 
         self.fail('finish the test!')
 
-# Steve logs in with his credentials and is taken to the home screen
 
 # Steve has just come back from a CE about cutting down a tree and wants to document it.
 # He clicks to create a new CE
+
+# The program asks for his login, we don't want just anyone editing things!
+# Steve logs in with his credentials and is permitted to go to the edit CE view
+
 
 # The edit CE view is shown and he starts to input data. He fills out most fields and
 # attaches audio and pictures.

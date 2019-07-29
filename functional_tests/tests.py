@@ -1,6 +1,28 @@
-# Use case 1
+from django.test import LiveServerTestCase
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.keys import Keys
+import time
 
-# Steve navigates to the CE url and is greeted by a login screen
+MAX_WAIT = 5
+
+
+# Use case 1
+class NewCETest(LiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Firefox()
+        self.browser.implicitly_wait(2)
+
+    def tearDown(self):
+        self.browser.quit()
+
+
+    def test_can_create_new_CE(self):
+    # Steve navigates to the CE url and is greeted by a login screen
+        self.browser.get('http://localhost:8000')
+        self.assertIn('Login', self.browser.title, 'Login screen not shown')
+
+        self.fail('finish the test!')
 
 # Steve logs in with his credentials and is taken to the home screen
 

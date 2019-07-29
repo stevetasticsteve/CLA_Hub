@@ -1,9 +1,9 @@
-#CLA Hub#
+# CLA Hub
 
 A Django project to give bush teams a way to collaboratively create and maintain a culture file for learning tribal language and culture.
 The software is intended to be run on a Raspberry pi 3 on an internal team network and accessed through a desktop web browser.
 
-##Core features##
+## Core features
 - Create web pages to document culture events (CEs)
     - Allow cross linking to other CEs
     - Provides a template for documenting CEs
@@ -42,7 +42,7 @@ The software is intended to be run on a Raspberry pi 3 on an internal team netwo
     - Team members leaving for home assignment need to be able to take a copy home for study
 
 
-##Possible add-on tools##
+## Possible add-on tools
 - Phonetic to orthographic text auto convert
 - Listening collection
 - Support for mobile devices
@@ -50,3 +50,4 @@ The software is intended to be run on a Raspberry pi 3 on an internal team netwo
 - Lexicon
 - List of language activities for each CE (TPR, photobook etc.)
 - Auto create anki decks.
+- Deployment tools to help non techie missionaries set up Raspi web server

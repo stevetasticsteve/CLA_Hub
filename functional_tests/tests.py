@@ -5,8 +5,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 import time
 
-MAX_WAIT = 5
-
+base_url = 'http://localhost:8000'
 
 # Use case 1
 class NewCETest(unittest.TestCase):
@@ -19,15 +18,20 @@ class NewCETest(unittest.TestCase):
 
 
     def test_can_create_new_CE(self):
-    # Steve navigates to the homepage
-        self.browser.get('http://localhost:8000/CE')
+        # Steve navigates to the homepage
+        self.browser.get(base_url + '/CE')
         self.assertIn('Home', self.browser.title, 'Home screen not shown')
 
+        # Steve has just come back from a CE about cutting down a tree and wants to document it.
+        # He clicks to create a new CE
+        self.browser.find_element_by_id('create_CE').click()
+        time.sleep(1)
+        self.assertEqual(base_url + '/CE/edit',
+                         self.browser.current_url, 'Create CE button didn\'t navigate to CE/edit')
+        self.assertIn('Edit CE', self.browser.title, 'Title on edit page not correct')
+
+
         self.fail('finish the test!')
-
-
-# Steve has just come back from a CE about cutting down a tree and wants to document it.
-# He clicks to create a new CE
 
 # The program asks for his login, we don't want just anyone editing things!
 # Steve logs in with his credentials and is permitted to go to the edit CE view

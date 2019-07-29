@@ -8,3 +8,6 @@ class HomePageTest(TestCase):
         self.assertIn('CE Home', html, 'CE home page not loaded')
 
         self.assertTemplateUsed('CE/home.html')
+
+    def test_create_CE_btn_navigates_to_correct_url(self):
+        pass

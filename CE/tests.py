@@ -1,8 +1,4 @@
 from django.test import TestCase
-from django.urls import resolve
-from django.http import HttpRequest
-from . import views
-
 
 class HomePageTest(TestCase):
 

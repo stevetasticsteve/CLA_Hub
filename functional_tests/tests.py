@@ -20,7 +20,7 @@ class NewCETest(unittest.TestCase):
 
     def test_can_create_new_CE(self):
     # Steve navigates to the homepage
-        self.browser.get('http://localhost:8000')
+        self.browser.get('http://localhost:8000/CE')
         self.assertIn('Home', self.browser.title, 'Home screen not shown')
 
         self.fail('finish the test!')

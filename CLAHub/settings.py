@@ -55,7 +55,7 @@ ROOT_URLCONF = 'CLAHub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['CLAHub/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

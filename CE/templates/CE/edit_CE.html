@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+
+<h1>Edit {{ CE.title }} </h1>
+<p> {{ CE.pk}} </p>
+
+<form action="{{ CE.pk }}" method="post">
+    {% csrf_token %}
+
+    <div class="form-group">{{ Form.title }}</div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+
+{% endblock %}

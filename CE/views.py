@@ -13,10 +13,8 @@ def edit_CE_page(request, pk):
     if request.method == 'POST':
         form = CE_EditForm(request.POST)
         if form.is_valid():
-            ce_data = CultureEvent(
-                title = form.cleaned_data['title']
-            )
-            ce_data.save()
+            ce.title = form.cleaned_data['title']
+            ce.save()
 
     # GET request
     texts = Texts.objects.filter(culture_event=ce)

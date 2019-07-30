@@ -1,15 +1,17 @@
 from django import forms
-from CE.models import CultureEvent
+from CE.models import CultureEvent, Texts
 
 
 class CE_EditForm(forms.ModelForm):
     class Meta:
         model = CultureEvent
         fields = '__all__'
-    # title = forms.CharField(
-    #     queryset=CultureEvent.objects.filter(pk=1) ,
-    #     max_length=60,
-    #     widget=forms.TextInput(attrs={
-    #         'class' : 'form-control',
-    #         'placeholder' : 'CE title'}),
-    #     label='CE title')
+
+
+class Text_EditForm(forms.ModelForm):
+    class Meta:
+        model = Texts
+        fields = '__all__'
+        exclude = ('primary',)
+
+        #todo work out how to include n number of Text_EditForms along with the CE_EditForm to the edit_CE template

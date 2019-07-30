@@ -1,0 +1,2 @@
+
+culture_events_shown_on_home_page = 10

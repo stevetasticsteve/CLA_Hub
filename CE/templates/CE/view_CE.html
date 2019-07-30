@@ -3,6 +3,7 @@
 {% block page_content %}
 
 <h1>{{ CE.title }}</h1>
+<a href="{% url 'CE:edit_CE' CE.pk %}">Click here to edit</a>
 <p> {{ CE.participation }}</p>
 <p> {{ CE.description }}</p>
 <p> {{ CE.differences }}</p>

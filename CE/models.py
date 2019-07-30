@@ -8,8 +8,11 @@ class CultureEvent(models.Model):
     description = models.TextField(default='no data yet')
     differences = models.TextField(default='no data yet')
 
+    def __str__(self):
+        return str(self.title)
+
 class Texts(models.Model):
-    culture_event = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
+    ce_id = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
     audio = models.FileField(upload_to='uploads/') #todo add the CE id to this
     phonetic_text = models.TextField(default='no data yet')
     orthographic_text = models.TextField(default='no data yet')

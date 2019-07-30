@@ -8,4 +8,15 @@
 <p> {{ CE.differences }}</p>
 
 
+<h2>Texts</h2>
+{% if Texts %}
+    {% for text in Texts %}
+    <p> {{ text.phonetic_text }}</p>
+    <p> {{ text.orthographic_text }}</p>
+    {% endfor %}
+{% else %}
+<p>No texts added yet</p>
+{% endif %}
+
+
 {% endblock %}

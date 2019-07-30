@@ -3,14 +3,14 @@
 {% block page_content %}
 
 <h1>Edit {{ CE.title }} </h1>
-<p> {{ CE.pk}} </p>
 
-<form action="{{ CE.pk }}" method="post">
+<form action="" method="post">
     {% csrf_token %}
+    <table>
+        {{ Form.as_table }}
+    </table>
 
-    <div class="form-group">{{ Form.title }}</div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="input" class="btn btn-primary">Submit</button>
 
 </form>
 

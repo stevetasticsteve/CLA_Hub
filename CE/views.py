@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from CE.models import CultureEvent, Texts
 from CE.forms import CE_EditForm
 
@@ -6,7 +6,7 @@ def home_page(request):
     return render(request, 'CE/home_page.html')
 
 def edit_CE_page(request, pk):
-    ce = CultureEvent.objects.get(pk=pk)
+    ce = get_object_or_404(CultureEvent, pk=pk)
     form = CE_EditForm()
 
     # This section creates a new CE instead of updating an old one
@@ -28,7 +28,7 @@ def edit_CE_page(request, pk):
     return render(request, 'CE/edit_CE.html', context)
 
 def view_CE_page(request, pk):
-    ce = CultureEvent.objects.get(pk=pk)
+    ce = get_object_or_404(CultureEvent, pk=pk)
     context = {
         'CE' : ce
     }

@@ -8,14 +8,14 @@
 <div>
 <h1>CE Home</h1>
     <div>
-        <a href="{% url 'CE:new_CE' %}" class="btn btn-primary btn-lg active" role="button" id="create_CE"
+        <a href="{% url 'CE:new' %}" class="btn btn-primary btn-lg active" role="button" id="create_CE"
            aria-pressed="true">Create CE</a>
     </div>
 </div>
 <h2>Most recently edited Culture events:</h2>
 {% for ce in CEs %}
 <ul>
-<a href="{% url 'CE:view_CE' ce.pk %}"> {{ ce.title }} </a>
+<a href="{% url 'CE:view' ce.pk %}"> {{ ce.title }} </a>
     <p>Edited {{ce.last_modified}}</p>
 </ul>
 {% endfor %}

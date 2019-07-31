@@ -21,3 +21,5 @@ class Texts(models.Model):
 class Pictures(models.Model):
     culture_event = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     picture = models.FileField(upload_to='uploads/') #todo add the CE id here
+
+#todo timezone, string representations of models

@@ -1,10 +1,10 @@
 from django.urls import path
-from . import views
+from CE import views
 
 app_name = 'CE'
 urlpatterns = [
-    path('', views.home_page, name='CE_Home'),
-    path('<int:pk>/edit', views.edit_CE_page, name='edit_CE'),
-    path('new', views.new_CE_page, name='new_CE'),
-    path('<int:pk>', views.view_CE_page, name='view_CE')
+    path('', views.home_page, name='home_page'),
+    path('<int:pk>/edit', views.edit, name='edit'),
+    path('new', views.new, name='new'),
+    path('<int:pk>', views.view, name='view')
 ]

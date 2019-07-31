@@ -11,7 +11,7 @@ def home_page(request):
     }
     return render(request, 'CE/home_page.html', context)
 
-def edit_CE_page(request, pk):
+def edit(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     form = CE_EditForm(initial= {
         'title' : ce.title,
@@ -45,7 +45,7 @@ def edit_CE_page(request, pk):
 
     return render(request, 'CE/edit_CE.html', context)
 
-def view_CE_page(request, pk):
+def view(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     texts = Texts.objects.filter(ce_id=pk)
     context = {
@@ -54,7 +54,7 @@ def view_CE_page(request, pk):
     }
     return render(request, 'CE/view_CE.html', context)
 
-def new_CE_page(request):
+def new(request):
     pass
 #todo use a modelForm to create a new CE page
 #     form = CE_EditForm()

@@ -21,8 +21,10 @@ def edit(request, pk):
     })
 
     if request.method == 'POST':
+        print('POST request recieved')
         form = CE_EditForm(request.POST)
         if form.is_valid():
+            print('valid form')
             ce.title = form.cleaned_data['title']
             ce.participation = form.cleaned_data['participation']
             ce.description = form.cleaned_data['description']

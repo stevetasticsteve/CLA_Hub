@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.db.utils import IntegrityError
 from CE import models, settings, forms
 
 # A separate test class for each model or view
@@ -97,15 +98,16 @@ class CEModelTest(TestCase):
         print('CE =' + str(ce))
         #todo test doesn't fail
 
+
     def test_repeated_title_not_allowed(self):
         ce = models.CultureEvent(title='Example CE1',
                                  description='A first CE')
         ce.save()
         ce = models.CultureEvent(title='Example CE1',
                                  description='A second CE')
-        ce.save()
-        # todo fit an assert raises here
 
+        with self.assertRaises(IntegrityError):
+            ce.save()
 
 
 class TextsModelTest(TestCase):

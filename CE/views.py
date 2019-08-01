@@ -22,23 +22,23 @@ def view(request, pk):
 
 def edit(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
-    form = CE_EditForm(initial= {
-        'title' : ce.title,
-        'participation' : ce.participation,
-        'description' : ce.description,
-        'differences' : ce.differences
-    })
+    if request.method == 'GET':
+        form = CE_EditForm(initial= {
+            'title' : ce.title,
+            'participation' : ce.participation,
+            'description' : ce.description,
+            'differences' : ce.differences
+        })
 
     if request.method == 'POST':
-        form = CE_EditForm(request.POST)
+        form = CE_EditForm(request.POST, instance=ce)
         if form.is_valid():
             ce.title = form.cleaned_data['title']
             ce.participation = form.cleaned_data['participation']
             ce.description = form.cleaned_data['description']
             ce.pk = pk
             ce.save()
-
-            return redirect('CE:view', pk=pk)
+            return redirect('CE:view', pk=ce.pk)
 
     # GET request
     texts = Texts.objects.filter(ce_id=pk)
@@ -52,7 +52,6 @@ def edit(request, pk):
         'Form' : form,
         # 'TextForms' : text_forms
     }
-
     return render(request, 'CE/edit_CE.html', context)
 
 

@@ -29,7 +29,7 @@ class CEHomeViewTest(TestCase):
                          html, 'Too many CEs loaded')
 
 
-class CEViewEditTest(TestCase):
+class TestViewPage(TestCase):
     def setUp(self):
         ce = models.CultureEvent(title='Example CE1',
                                  description='A culture event happened',
@@ -53,7 +53,20 @@ class CEViewEditTest(TestCase):
         response = self.client.get(reverse('CE:view', args='2'))
         self.assertEqual(response.status_code, 404)
 
-    def test_edit_page(self):
+class TestEditPage(TestCase):
+    def setUp(self):
+        ce = models.CultureEvent(title='Example CE1',
+                                 description='A culture event happened',
+                                 participation='Rhett did it',
+                                 differences='Last time it was different')
+        ce.save()
+        text = models.Texts(ce_id=models.CultureEvent.objects.get(pk=1),
+                            audio='musicFile.ogg',
+                            phonetic_text='foᵘnɛtɪks',
+                            orthographic_text='orthographic')
+        text.save()
+
+    def test_edit_page_GET_response(self):
         response = self.client.get(reverse('CE:edit', args='1'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('CE/edit_CE.html')
@@ -62,13 +75,35 @@ class CEViewEditTest(TestCase):
         # check form contents
         self.assertIn('value="Example CE1"', html, 'CE title info not included in form')
         self.assertIn('Rhett did it', html, 'CE participation info not included in form')
-        # test POST response
-        # response = self.client.post(reverse('CE:edit', args='1'), {'title' : 'BAM',
-        #                                                            'participation' : 'minimal',
-        #                                                            'description' : 'pretty easy'})
-        # # todo test not going through because form isn't valid
-        # print('CE title = ' + models.CultureEvent.objects.get(pk=1).title)
-        # self.assertEqual(response.status_code, 200)
+
+    def test_valid_edit_page_POST_response_change_everything(self):
+        response = self.client.post(reverse('CE:edit', args='1'), {'title' : 'BAM',
+                                                                   'participation' : 'minimal',
+                                                                   'description' : 'pretty easy'},
+                                    follow=True)
+        self.assertTemplateUsed('CE/edit_CE.html')
+        self.assertEqual(response.redirect_chain[0][1], 302, 'No redirect following POST')
+        ce = models.CultureEvent.objects.get(pk=1)
+        self.assertEqual(ce.title, 'BAM', 'edit not saved to db')
+        self.assertFalse(ce.title == 'Example CE1', 'edit not saved to db')
+        self.assertEqual(response.status_code, 200, 'New page not shown')
+        html = response.content.decode('utf8')
+        self.assertIn('BAM', html, 'new page not rendered')
+
+    def test_valid_edit_page_POST_response_change_description(self):
+        # to catch the error of 'title alread exists'
+        response = self.client.post(reverse('CE:edit', args='1'), {'title' : 'Example CE1',
+                                                                   'participation': 'minimal',
+                                                                   'description': 'pretty easy'},
+                                    follow=True)
+        self.assertTemplateUsed('CE/edit_CE.html')
+        self.assertEqual(response.redirect_chain[0][1], 302, 'No redirect following POST')
+        ce = models.CultureEvent.objects.get(pk=1)
+        self.assertEqual(ce.title, 'Example CE1', 'edit not saved to db')
+        self.assertEqual(ce.description, 'pretty easy', 'edit not saved to db')
+        self.assertEqual(response.status_code, 200, 'New page not shown')
+        html = response.content.decode('utf8')
+        self.assertIn('Example CE1', html, 'new page not rendered')
 
 
 class NewCEPageTest(TestCase):
@@ -109,6 +144,7 @@ class NewCEPageTest(TestCase):
             'title': 'Example CE1',
             'description': 'I\'m testing this CE'
         }, follow=True)
+        self.assertTemplateUsed('CE/new_CE.html')
         html = response.content.decode('utf8')
         self.assertIn('Culture event with this Title already exists', html, 'No title exists error message')
         with self.assertRaises(models.CultureEvent.DoesNotExist):
@@ -118,17 +154,13 @@ class NewCEPageTest(TestCase):
         response = self.client.post(reverse('CE:new'), {
             'description': 'I\'m testing this CE'
         }, follow=True)
+        self.assertTemplateUsed('CE/new_CE.html')
         html = response.content.decode('utf8')
         self.assertIn('This field is required', html, 'No field required error message')
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 
-
-
-
 # Form tests
-
-
 class CE_EditFormTests(TestCase):
     def test_valid_data(self):
         form_data = {'title' : 'An example CE',

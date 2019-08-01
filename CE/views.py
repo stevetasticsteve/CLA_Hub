@@ -37,6 +37,7 @@ def edit(request, pk):
             ce.participation = form.cleaned_data['participation']
             ce.description = form.cleaned_data['description']
             ce.pk = pk
+            ce.last_modified_by = str(request.user)
             ce.save()
             return redirect('CE:view', pk=ce.pk)
 
@@ -67,6 +68,7 @@ def new(request):
             ce.title = form.cleaned_data['title']
             ce.participation = form.cleaned_data['participation']
             ce.description = form.cleaned_data['description']
+            ce.last_modified_by = str(request.user)
             ce.save()
             return redirect('CE:view', pk=ce.pk)
 

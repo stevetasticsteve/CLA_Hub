@@ -6,6 +6,7 @@ class CE_EditForm(forms.ModelForm):
     class Meta:
         model = CultureEvent
         fields = '__all__'
+        exclude = ('last_modified_by',)
 
 
 class Text_EditForm(forms.ModelForm):

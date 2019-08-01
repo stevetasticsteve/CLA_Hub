@@ -92,6 +92,7 @@ class TestEditPage(TestCase):
         ce = models.CultureEvent.objects.get(pk=1)
         self.assertEqual(ce.title, 'BAM', 'edit not saved to db')
         self.assertFalse(ce.title == 'Example CE1', 'edit not saved to db')
+        self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
         self.assertEqual(response.status_code, 200, 'New page not shown')
         html = response.content.decode('utf8')
         self.assertIn('BAM', html, 'new page not rendered')
@@ -110,6 +111,7 @@ class TestEditPage(TestCase):
         self.assertEqual(response.status_code, 200, 'New page not shown')
         html = response.content.decode('utf8')
         self.assertIn('Example CE1', html, 'new page not rendered')
+        self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
 
     def test_no_changes(self):
         # no changes should go through, but .db unchanged
@@ -176,6 +178,7 @@ class NewCEPageTest(TestCase):
         self.assertEqual(response.status_code, 200, 'New page not shown')
         html = response.content.decode('utf8')
         self.assertIn('A test CE', html, 'new page not rendered')
+        self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
 
     def test_invalid_POST_repeated_title_response(self):
         # Form should be show again with error message

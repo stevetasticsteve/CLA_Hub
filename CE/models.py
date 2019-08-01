@@ -4,10 +4,10 @@ class CultureEvent(models.Model):
     title = models.CharField(max_length=60, blank=False, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
+    last_modified_by = models.CharField(max_length=20)
     participation = models.TextField(blank=True)
     description = models.TextField(blank=True)
     differences = models.TextField(blank=True)
-    #todo figure out a last modified by field
 
     def __str__(self):
         return str(self.title)

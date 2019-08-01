@@ -16,7 +16,7 @@
 {% for ce in CEs %}
 <ul>
 <a href="{% url 'CE:view' ce.pk %}"> {{ ce.title }} </a>
-    <p>Edited {{ce.last_modified}}</p>
+    <p>Edited {{ce.last_modified}} by {{ce.last_modified_by}}</p>
 </ul>
 {% endfor %}
 

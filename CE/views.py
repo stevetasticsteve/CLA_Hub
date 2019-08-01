@@ -11,6 +11,15 @@ def home_page(request):
     }
     return render(request, 'CE/home_page.html', context)
 
+def view(request, pk):
+    ce = get_object_or_404(CultureEvent, pk=pk)
+    texts = Texts.objects.filter(ce_id=pk)
+    context = {
+        'CE' : ce,
+        'Texts' : texts
+    }
+    return render(request, 'CE/view_CE.html', context)
+
 def edit(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     form = CE_EditForm(initial= {
@@ -26,6 +35,7 @@ def edit(request, pk):
             ce.title = form.cleaned_data['title']
             ce.participation = form.cleaned_data['participation']
             ce.description = form.cleaned_data['description']
+            ce.pk = pk
             ce.save()
 
             return redirect('CE:view', pk=pk)
@@ -45,20 +55,12 @@ def edit(request, pk):
 
     return render(request, 'CE/edit_CE.html', context)
 
-def view(request, pk):
-    ce = get_object_or_404(CultureEvent, pk=pk)
-    texts = Texts.objects.filter(ce_id=pk)
-    context = {
-        'CE' : ce,
-        'Texts' : texts
-    }
-    return render(request, 'CE/view_CE.html', context)
+
 
 def new(request):
-    form = CE_EditForm()
-    context = {
-        'Form' : form
-    }
+    if request.method == 'GET':
+        form = CE_EditForm()
+
     if request.method == 'POST':
         form = CE_EditForm(request.POST)
         if form.is_valid():
@@ -69,4 +71,7 @@ def new(request):
             ce.save()
             return redirect('CE:view', pk=ce.pk)
 
+    context = {
+        'Form': form
+    }
     return render(request, 'CE/new_CE.html', context)

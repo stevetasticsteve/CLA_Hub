@@ -7,6 +7,7 @@ class CultureEvent(models.Model):
     participation = models.TextField(blank=True)
     description = models.TextField(blank=True)
     differences = models.TextField(blank=True)
+    #todo figure out a last modified by field
 
     def __str__(self):
         return str(self.title)

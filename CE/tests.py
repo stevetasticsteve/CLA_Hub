@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.db.utils import IntegrityError
-from django.contrib.auth.models import User
 from CE import models, settings, forms
 
 # A separate test class for each model or view
@@ -59,15 +58,7 @@ class TestViewPage(TestCase):
         self.assertEqual(response.status_code, 404)
 
 class TestEditPage(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        credentials = User(username='Tester')
-        credentials.set_password('secure_password')
-        credentials.save()
-
     def setUp(self):
-        self.client.login(username='Tester', password='secure_password')
         ce = models.CultureEvent(title='Example CE1',
                                  description='A culture event happened',
                                  participation='Rhett did it',
@@ -120,7 +111,7 @@ class TestEditPage(TestCase):
         html = response.content.decode('utf8')
         self.assertIn('Example CE1', html, 'new page not rendered')
 
-    def test_edit_page_no_changes(self):
+    def test_no_changes(self):
         # no changes should go through, but .db unchanged
         ce = models.CultureEvent.objects.get(pk=1)
         response = self.client.post(reverse('CE:edit', args='1'), {'title': 'Example CE1',
@@ -133,7 +124,7 @@ class TestEditPage(TestCase):
         self.assertEqual(ce, new_ce)
         self.assertEqual(ce.title, new_ce.title)
 
-    def test_edit_page_changing_to_existing_CE_title(self):
+    def test_changing_to_existing_CE_title(self):
         # should reject changing to an existing title
         ce = models.CultureEvent(title='Example CE2',
                                  description='A culture event happened',
@@ -152,15 +143,7 @@ class TestEditPage(TestCase):
 
 
 class NewCEPageTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        credentials = User(username='Tester')
-        credentials.set_password('secure_password')
-        credentials.save()
-
     def setUp(self):
-        self.client.login(username='Tester', password='secure_password')
         # have one model previously in .db
         ce = models.CultureEvent(title='Example CE1',
                                  description='A culture event happened',
@@ -178,7 +161,7 @@ class NewCEPageTest(TestCase):
         self.assertIn('<form', html, 'form not rendered')
         self.assertIn('<label for="id_title">Title:</label>', html, 'form not rendered correctly')
 
-    def test_new_CE_Page_valid_POST_response(self):
+    def test_valid_POST_response(self):
         # new CE should be created
         response = self.client.post(reverse('CE:new'), {
             'title' : 'A test CE',
@@ -194,7 +177,7 @@ class NewCEPageTest(TestCase):
         html = response.content.decode('utf8')
         self.assertIn('A test CE', html, 'new page not rendered')
 
-    def test_new_CE_page_invalid_POST_repeated_title_response(self):
+    def test_invalid_POST_repeated_title_response(self):
         # Form should be show again with error message
         response = self.client.post(reverse('CE:new'), {
             'title': 'Example CE1',
@@ -206,7 +189,7 @@ class NewCEPageTest(TestCase):
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 
-    def test_new_CE_page_invalid_POST_no_title_response(self):
+    def test_invalid_POST_no_title_response(self):
         # Form should be shown again with error message
         response = self.client.post(reverse('CE:new'), {
             'description': 'I\'m testing this CE'
@@ -219,7 +202,6 @@ class NewCEPageTest(TestCase):
 
 # Form tests
 class CE_EditFormTests(TestCase):
-
     def test_valid_data(self):
         # form should be valid
         form_data = {'title' : 'An example CE',

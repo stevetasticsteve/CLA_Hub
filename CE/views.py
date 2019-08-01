@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from CE.models import CultureEvent, Texts
 from CE.forms import CE_EditForm, Text_EditForm
 from CE.settings import culture_events_shown_on_home_page
@@ -21,7 +20,6 @@ def view(request, pk):
     }
     return render(request, 'CE/view_CE.html', context)
 
-@login_required
 def edit(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     if request.method == 'GET':
@@ -57,7 +55,7 @@ def edit(request, pk):
     return render(request, 'CE/edit_CE.html', context)
 
 
-@ login_required
+
 def new(request):
     if request.method == 'GET':
         form = CE_EditForm()

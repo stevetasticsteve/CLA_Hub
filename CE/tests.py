@@ -9,10 +9,12 @@ from CE import models, settings, forms
 
 # view tests
 class CEHomeViewTest(TestCase):
+
     def setUp(self):
         self.total_CEs = settings.culture_events_shown_on_home_page + 1
         for i in range(self.total_CEs):
-            Ces = models.CultureEvent(title=('Example culture event ' + str(i)))
+            Ces = models.CultureEvent(title=('Example culture event ' + str(i)),
+                                      last_modified_by='Tester')
             Ces.save()
 
     def test_home_page_returns_correct_html(self):
@@ -28,6 +30,7 @@ class CEHomeViewTest(TestCase):
         # test not more loaded than settings allow
         self.assertNotIn('Example culture event ' + str(self.total_CEs),
                          html, 'Too many CEs loaded')
+        self.assertIn('by Tester', html, 'Last modified by not showing on home page')
 
 
 class TestViewPage(TestCase):

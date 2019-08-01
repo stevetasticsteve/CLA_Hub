@@ -77,7 +77,7 @@ class CE_EditFormTests(TestCase):
         form = forms.CE_EditForm(data=form_data)
         self.assertTrue(form.is_valid())
 
-    def test_invalid_data(self):
+    def test_title_missing_data(self):
         form_data = {'participation' : 'Steve was there',
                      'description' : 'We did culture',
                      'differences' : 'It went better than last time'}
@@ -91,12 +91,6 @@ class CEModelTest(TestCase):
     def test_string_method(self):
         ce = models.CultureEvent(title='Example CE1')
         self.assertEqual(str(ce), 'Example CE1')
-
-    def test_empty_title_not_allowed(self):
-        ce = models.CultureEvent(description='A CE with no title')
-        ce.save()
-        print('CE =' + str(ce))
-        #todo test doesn't fail
 
 
     def test_repeated_title_not_allowed(self):

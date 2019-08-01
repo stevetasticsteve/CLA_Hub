@@ -21,16 +21,14 @@ def edit(request, pk):
     })
 
     if request.method == 'POST':
-        print('POST request recieved')
         form = CE_EditForm(request.POST)
         if form.is_valid():
-            print('valid form')
             ce.title = form.cleaned_data['title']
             ce.participation = form.cleaned_data['participation']
             ce.description = form.cleaned_data['description']
             ce.save()
 
-            return redirect('view_CE', pk=pk)
+            return redirect('CE:view', pk=pk)
 
     # GET request
     texts = Texts.objects.filter(ce_id=pk)
@@ -57,11 +55,18 @@ def view(request, pk):
     return render(request, 'CE/view_CE.html', context)
 
 def new(request):
-    pass
-#todo use a modelForm to create a new CE page
-#     form = CE_EditForm()
-#     context = {
-#         'Form' : form
-#     }
-#
-#     return render(request, 'CE/edit_CE.html', context)
+    form = CE_EditForm()
+    context = {
+        'Form' : form
+    }
+    if request.method == 'POST':
+        form = CE_EditForm(request.POST)
+        if form.is_valid():
+            ce = CultureEvent()
+            ce.title = form.cleaned_data['title']
+            ce.participation = form.cleaned_data['participation']
+            ce.description = form.cleaned_data['description']
+            ce.save()
+            return redirect('CE:view', pk=ce.pk)
+
+    return render(request, 'CE/new_CE.html', context)

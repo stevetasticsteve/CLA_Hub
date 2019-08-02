@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from CE.models import CultureEvent, Texts
-from CE.forms import CE_EditForm, Text_EditForm
+from django.contrib.auth.decorators import login_required
+from CE.models import CultureEvent, Texts, PictureModel
+from CE.forms import CE_EditForm, Text_EditForm, PictureUploadForm
 from CE.settings import culture_events_shown_on_home_page
 
 def home_page(request):
@@ -21,6 +22,7 @@ def view(request, pk):
     }
     return render(request, 'CE/view_CE.html', context)
 
+@login_required
 def edit(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     if request.method == 'GET':
@@ -77,7 +79,7 @@ def edit(request, pk):
     return render(request, 'CE/edit_CE.html', context)
 
 
-
+@ login_required
 def new(request):
     # todo add pictures and texts to new Ces
     if request.method == 'GET':

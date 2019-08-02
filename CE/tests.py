@@ -40,7 +40,7 @@ class TestViewPage(TestCase):
                                  participation='Rhett did it',
                                  differences='Last time it was different')
         ce.save()
-        text = models.Texts(ce_id=models.CultureEvent.objects.get(pk=1),
+        text = models.Texts(ce=models.CultureEvent.objects.get(pk=1),
                             audio='musicFile.ogg',
                             phonetic_text='foᵘnɛtɪks',
                             orthographic_text='orthographic')
@@ -67,7 +67,8 @@ class TestEditPage(TestCase):
                                  participation='Rhett did it',
                                  differences='Last time it was different')
         ce.save()
-        text = models.Texts(ce_id=models.CultureEvent.objects.get(pk=1),
+        # todo text model not used in tests
+        text = models.Texts(ce=models.CultureEvent.objects.get(pk=1),
                             audio='musicFile.ogg',
                             phonetic_text='foᵘnɛtɪks',
                             orthographic_text='orthographic')
@@ -266,6 +267,7 @@ class CEModelTest(TestCase):
 class TextsModelTest(TestCase):
     def test_string_method(self):
         ce = models.CultureEvent(title='Example CE1')
-        text = models.Texts(ce_id=ce, phonetic_text='djaŋɡo')
+        text = models.Texts(ce=ce, phonetic_text='djaŋɡo')
         self.assertEqual(str(text), 'Text for Example CE1')
 
+# todo pictures model test

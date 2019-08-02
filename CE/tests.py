@@ -21,16 +21,14 @@ class CEHomeViewTest(TestCase):
         # home page should show recently modified CEs
         response = self.client.get(reverse('CE:home_page'))
         self.assertEqual(response.status_code, 200)
-        html = response.content.decode('utf8')
-        self.assertTrue(html.startswith('<!doctype html>')) # checks base template used
-        self.assertIn('CE Home', html, 'CE home page not loaded')
+        self.assertContains(response, '<!doctype html>') # checks base template used
+        self.assertContains(response, 'CE Home')
         self.assertTemplateUsed('CE/home.html')
         # test CE's loaded
-        self.assertIn('Example culture event 2', html, 'Recent culture events not loaded')
+        self.assertContains(response, 'Example culture event 2')
         # test not more loaded than settings allow
-        self.assertNotIn('Example culture event ' + str(self.total_CEs),
-                         html, 'Too many CEs loaded')
-        self.assertIn('by Tester', html, 'Last modified by not showing on home page')
+        self.assertNotContains(response, 'Example culture event ' + str(self.total_CEs))
+        self.assertContains(response, 'by Tester')
 
 
 class TestViewPage(TestCase):
@@ -51,9 +49,8 @@ class TestViewPage(TestCase):
         response = self.client.get(reverse('CE:view', args='1'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('CE/view_CE.html')
-        html = response.content.decode('utf8')
-        self.assertIn('Example CE1', html, 'Culture event not shown')
-        self.assertIn('foᵘnɛtɪks', html, 'Phonetic text not')
+        self.assertContains(response, 'Example CE1')
+        self.assertContains(response, 'foᵘnɛtɪks')
 
     def test_404(self):
         # test an out of range index
@@ -80,10 +77,10 @@ class TestEditPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('CE/edit_CE.html')
         html = response.content.decode('utf8')
-        self.assertIn('<form', html, 'Form not rendered')
+        self.assertContains(response, '<form')
         # check form contents
-        self.assertIn('value="Example CE1"', html, 'CE title info not included in form')
-        self.assertIn('Rhett did it', html, 'CE participation info not included in form')
+        self.assertContains(response, 'value="Example CE1"')
+        self.assertContains(response, 'Rhett did it')
 
     def test_valid_edit_page_POST_response_change_everything(self):
         # CE model should be updated, a new one shouldn't be created
@@ -98,8 +95,7 @@ class TestEditPage(TestCase):
         self.assertFalse(ce.title == 'Example CE1', 'edit not saved to db')
         self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
         self.assertEqual(response.status_code, 200, 'New page not shown')
-        html = response.content.decode('utf8')
-        self.assertIn('BAM', html, 'new page not rendered')
+        self.assertContains(response, 'BAM')
 
     def test_valid_edit_page_POST_response_change_description_not_title(self):
         # CE model should be updated, a new one shouldn't be created
@@ -113,8 +109,7 @@ class TestEditPage(TestCase):
         self.assertEqual(ce.title, 'Example CE1', 'edit not saved to db')
         self.assertEqual(ce.description, 'pretty easy', 'edit not saved to db')
         self.assertEqual(response.status_code, 200, 'New page not shown')
-        html = response.content.decode('utf8')
-        self.assertIn('Example CE1', html, 'new page not rendered')
+        self.assertContains(response, 'Example CE1')
         self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
 
     def test_no_changes(self):
@@ -142,8 +137,7 @@ class TestEditPage(TestCase):
                                                                    'description': 'A culture event happened',
                                                                    'differences': 'Last time it was different'},
                                     follow=True)
-        html = response.content.decode('utf8')
-        self.assertIn('Culture event with this Title already exists', html, 'No title exists error message')
+        self.assertContains(response, 'Culture event with this Title already exists')
         self.assertEqual(models.CultureEvent.objects.get(pk=2).title, 'Example CE2')
         self.assertEqual(models.CultureEvent.objects.get(pk=1).title, 'Example CE1')
 
@@ -162,10 +156,9 @@ class NewCEPageTest(TestCase):
         response = self.client.get(reverse('CE:new'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('CE/new_CE.html')
-        html = response.content.decode('utf8')
-        self.assertIn('Create a new CE', html, 'page not rendered')
-        self.assertIn('<form', html, 'form not rendered')
-        self.assertIn('<label for="id_title">Title:</label>', html, 'form not rendered correctly')
+        self.assertContains(response, 'Create a new CE')
+        self.assertContains(response, '<form')
+        self.assertContains(response, '<label for="id_title">Title:</label>')
 
     def test_valid_POST_response(self):
         # new CE should be created
@@ -180,8 +173,7 @@ class NewCEPageTest(TestCase):
         self.assertEqual(ce.description, 'I\'m testing this CE', 'new CE description not correct')
         self.assertEqual('A test CE', ce.title, 'New CE not in database')
         self.assertEqual(response.status_code, 200, 'New page not shown')
-        html = response.content.decode('utf8')
-        self.assertIn('A test CE', html, 'new page not rendered')
+        self.assertContains(response, 'A test CE')
         self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
 
     def test_invalid_POST_repeated_title_response(self):
@@ -191,8 +183,7 @@ class NewCEPageTest(TestCase):
             'description': 'I\'m testing this CE'
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
-        html = response.content.decode('utf8')
-        self.assertIn('Culture event with this Title already exists', html, 'No title exists error message')
+        self.assertContains(response, 'Culture event with this Title already exists')
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 
@@ -202,8 +193,7 @@ class NewCEPageTest(TestCase):
             'description': 'I\'m testing this CE'
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
-        html = response.content.decode('utf8')
-        self.assertIn('This field is required', html, 'No field required error message')
+        self.assertContains(response, 'This field is required')
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 

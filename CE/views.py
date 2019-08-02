@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from CE.models import CultureEvent, Texts, PictureModel
 from CE.forms import CE_EditForm, Text_EditForm, PictureUploadForm
 from CE.settings import culture_events_shown_on_home_page
@@ -44,6 +45,7 @@ def edit(request, pk):
             ce.pk = pk
             ce.last_modified_by = str(request.user)
             ce.save()
+            messages.success(request, 'CE updated')
             if picture_form.is_valid():
                 if picture_form.cleaned_data['picture']:
                     print(picture_form.cleaned_data['picture'])
@@ -53,7 +55,7 @@ def edit(request, pk):
                     new_pic.save()
             return redirect('CE:view', pk=ce.pk)
         # todo upload multiple files at once
-        # todo image compression, pictures saved as they come
+        # todo image compression, pictures saved as they come. set to 1200x700 96 dpi
         # todo changing pictures
         # todo rotating pictures
         # todo better representation of pictures on edit screen

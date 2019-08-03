@@ -3,9 +3,12 @@
 {% block page_content %}
 
 <h1>{{ CE.title }}</h1>
+<p class="text-muted">last edited {{CE.last_modified}} by {{CE.last_modified_by}}</p>
 <a href="{% url 'CE:edit' CE.pk %}">Click here to edit</a>
 <p> {{ CE.participation }}</p>
+<h3>Description</h3>
 <p> {{ CE.description }}</p>
+<h3>Variation</h3>
 <p> {{ CE.differences }}</p>
 
 {% include 'bootstrap_carousel.html' %}

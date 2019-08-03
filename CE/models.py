@@ -5,7 +5,7 @@ class CultureEvent(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=20)
-    participation = models.TextField(blank=True)
+    participation = models.TextField(blank=True) #todo change to a many to one
     description = models.TextField(blank=True)
     differences = models.TextField(blank=True)
 

@@ -184,7 +184,7 @@ class NewCEPageTest(TestCase):
             'description' : 'I\'m testing this CE'
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
-        self.assertRedirects(response, 'CE/1')
+        self.assertRedirects(response, '/CE/2')
         # self.assertEqual(response.redirect_chain[0][1], 302, 'No redirect following POST')
         ce = models.CultureEvent.objects.get(pk=2)
         self.assertEqual(ce.title, 'A test CE', 'new CE title not correct')

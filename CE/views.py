@@ -48,17 +48,16 @@ def edit(request, pk):
             messages.success(request, 'CE updated')
             if picture_form.is_valid():
                 if picture_form.cleaned_data['picture']:
-                    print(picture_form.cleaned_data['picture'])
                     new_pic = PictureModel()
                     new_pic.ce = ce
                     new_pic.picture = picture_form.cleaned_data['picture']
                     new_pic.save()
             return redirect('CE:view', pk=ce.pk)
         # todo upload multiple files at once
-        # todo image compression, pictures saved as they come. set to 1200x700 96 dpi
         # todo changing pictures
         # todo rotating pictures
         # todo better representation of pictures on edit screen
+        # todo replace placeholder images with database images
 
     # GET request
     texts = Texts.objects.filter(ce_id=pk)

@@ -1,4 +1,9 @@
 from django.db import models
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
+from io import BytesIO
+
+import sys
 
 class CultureEvent(models.Model):
     title = models.CharField(max_length=60, blank=False, unique=True)
@@ -30,6 +35,19 @@ class PictureModel(models.Model):
 
     def __str__(self):
         return 'Picture for ' + str(self.ce)
+
+    def save(self):
+        im = Image.open(self.picture)
+        output = BytesIO()
+        im = im.resize((1200, 900))
+        im.save(output, format='JPEG', quality=90)
+        output.seek(0)
+        self.picture = InMemoryUploadedFile(output, 'PictureField',
+                                            "%s.jpg" % self.picture.name.split('.')[0],
+                                            'image/jpeg',
+                                             sys.getsizeof(output), None)
+
+        super(PictureModel, self).save()
 
 
 class Texts(models.Model):

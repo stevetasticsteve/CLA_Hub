@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from CE import models, settings, forms
 
 # A separate test class for each model or view
@@ -215,11 +216,16 @@ class NewCEPageTest(TestCase):
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 
-    def test_new_CE_page_saves_single_picture(self):
-        with open('CLAHub/static/test_data/pic(1).JPG') as image_file:
-            response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                            'picture': image_file})
-            self.assertRedirects(response, '/CE/2')
+    # def test_new_CE_page_saves_single_picture(self):
+    #     test_image = SimpleUploadedFile('test_image.jpeg', b'\xff\xd8\xff\xe0\x00\x10')
+    #     response = self.client.post(reverse('CE:new'), {'title': 'Test CE', 'file': test_image})
+    #     self.assertRedirects(response, '/CE/2')
+    #     new_ce = models.CultureEvent.objects.get(pk=2)
+    #     self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+    #     print(models.PictureModel.objects.all())
+    #     new_pic = models.PictureModel.objects.get(ce=new_ce)
+    #     self.assertEqual('test_image.jpeg', new_pic.picture, 'New CE not saved to db')
+
 
 class UnloggedUserRedirect(TestCase):
     def test_redirected_from_edit_CE_page(self):
@@ -258,6 +264,35 @@ class CE_EditFormTests(TestCase):
         form = forms.CE_EditForm(data=form_data)
         self.assertFalse(form.is_valid())
 
+# class PictureUploadForm(TestCase):
+#     def test_valid_data(self):
+#         test_image = SimpleUploadedFile('test_image.jpeg', b'file_content',
+#                                         content_type='image/jpeg')
+#
+#         form_data = {'ce': models.CultureEvent(),
+#                      'picture': test_image}
+#         form = forms.PictureUploadForm(data=form_data)
+#         self.assertTrue(form.is_valid())
+
+    # def test_invalid_data(self):
+    #     test_image = SimpleUploadedFile('test_image.mp4', b'file_content',
+    #                                     content_type='image/mp4')
+    #
+    #     form_data = {'ce': models.CultureEvent(),
+    #                  'picture': test_image}
+    #     form = forms.PictureUploadForm(data=form_data)
+    #     self.assertFalse(form.is_valid())
+
+    # def test_invalid_data_no_ce(self):
+    #     test_image = SimpleUploadedFile('test_image.jpg', b'file_content',
+    #                                     content_type='image/jpg')
+    #
+    #     form_data = {'picture': test_image}
+    #     form = forms.PictureUploadForm(data=form_data)
+    #     self.assertFalse(form.is_valid())
+
+
+
 
 # Model tests
 
@@ -285,4 +320,19 @@ class TextsModelTest(TestCase):
         text = models.Texts(ce=ce, phonetic_text='djaŋɡo')
         self.assertEqual(str(text), 'Text for Example CE1')
 
-# todo pictures model test
+
+# class PictureModelTest(TestCase):
+    # def test_invalid_file_type(self):
+    #     pic = models.PictureModel(picture='string')
+    #     pic.save()
+
+    # def test_valid_upload(self):
+    #     ce = models.CultureEvent(title='Test CE')
+    #     image = SimpleUploadedFile('test_image.jpeg', b'file_content',
+    #                                     content_type='image/jpeg')
+    #     pic = models.PictureModel(ce=ce, picture=image)
+    #     pic.save()
+
+
+    # def test_string_method(self):
+    #     pass

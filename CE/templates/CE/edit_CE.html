@@ -4,23 +4,6 @@
 
 <h1>Edit {{ CE.title }} </h1>
 
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-        {{ Form.as_table }}
-    </table>
-    <p>Current pictures: {{ CurrentPics }}</p>
-    {{ PictureUpload.as_p }}
-
-
-    <!--{% for text in TextForms %}-->
-    <!--<table>-->
-        <!--{{ text.as_table }}-->
-    <!--</table>-->
-    <!--{% endfor %}-->
-
-    <button type="input" class="btn btn-primary">Submit</button>
-
-</form>
+{% include 'CE/partial/CE_form.html' %}
 
 {% endblock %}

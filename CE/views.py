@@ -35,7 +35,7 @@ def edit(request, pk):
         })
         picture_form = PictureUploadForm()
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
         form = CE_EditForm(request.POST, instance=ce)
         picture_form = PictureUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -70,12 +70,12 @@ def edit(request, pk):
 
     context = {
     # key values are called by template
-        'CE' : ce,
-        'Texts' : texts,
-        'Form' : form,
-        'PictureUpload' : picture_form,
-        'CurrentPics' : current_pics
-        # 'TextForms' : text_forms
+        'CE': ce,
+        'Texts': texts,
+        'Form': form,
+        'PictureUpload': picture_form,
+        'CurrentPics': current_pics
+        # 'TextForms': text_forms
     }
     return render(request, 'CE/edit_CE.html', context)
 
@@ -87,7 +87,7 @@ def new(request):
         form = CE_EditForm()
         picture_form = PictureUploadForm()
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
         form = CE_EditForm(request.POST)
         picture_form = PictureUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -99,8 +99,7 @@ def new(request):
             ce.save()
             messages.success(request, 'New CE created')
             if picture_form.is_valid():
-                if picture_form.cleaned_data['picture']:
-                    print('cleaned data')
+                if picture_form.cleaned_data['picture']: #todo this loop not entered despite being identitcal to edit
                     new_pic = PictureModel()
                     new_pic.ce = ce
                     new_pic.picture = picture_form.cleaned_data['picture']
@@ -109,6 +108,6 @@ def new(request):
 
     context = {
         'Form': form,
-        'PictureUpload' : picture_form
+        'PictureUpload': picture_form
     }
     return render(request, 'CE/new_CE.html', context)

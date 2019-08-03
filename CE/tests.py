@@ -215,6 +215,12 @@ class NewCEPageTest(TestCase):
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 
+    def test_new_CE_page_saves_single_picture(self):
+        with open('CLAHub/static/test_data/pic(1).JPG') as image_file:
+            response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                            'picture': image_file})
+            self.assertRedirects(response, '/CE/2')
+
 class UnloggedUserRedirect(TestCase):
     def test_redirected_from_edit_CE_page(self):
         response = self.client.get(reverse('CE:edit', args='1'), follow=True)

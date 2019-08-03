@@ -48,7 +48,7 @@ class PictureModel(models.Model):
                                              sys.getsizeof(output), None)
 
         super(PictureModel, self).save()
-
+        # todo write a test of this new save model
 
 class Texts(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)

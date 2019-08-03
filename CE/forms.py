@@ -20,5 +20,7 @@ class PictureUploadForm(forms.ModelForm):
         model = PictureModel
         fields = ('picture',)
 
+        #todo write tests for picture upload
+
         #todo work out how to include n number of Text_EditForms along with the CE_EditForm to the edit_CE template
         #todo placeholder text

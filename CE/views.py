@@ -33,11 +33,11 @@ def edit(request, pk):
             'description' : ce.description,
             'differences' : ce.differences
         })
-        picture_form = PictureUploadForm()
+        # picture_form = PictureUploadForm()
 
     if request.method == 'POST':
         form = CE_EditForm(request.POST, instance=ce)
-        picture_form = PictureUploadForm(request.POST, request.FILES)
+        # picture_form = PictureUploadForm(request.POST, request.FILES)
         if form.is_valid():
             ce.title = form.cleaned_data['title']
             ce.participation = form.cleaned_data['participation']
@@ -46,12 +46,12 @@ def edit(request, pk):
             ce.last_modified_by = str(request.user)
             ce.save()
             messages.success(request, 'CE updated')
-            if picture_form.is_valid():
-                if picture_form.cleaned_data['picture']:
-                    new_pic = PictureModel()
-                    new_pic.ce = ce
-                    new_pic.picture = picture_form.cleaned_data['picture']
-                    new_pic.save()
+            # if picture_form.is_valid():
+            #     if picture_form.cleaned_data['picture']:
+            #         new_pic = PictureModel()
+            #         new_pic.ce = ce
+            #         new_pic.picture = picture_form.cleaned_data['picture']
+            #         new_pic.save()
             return redirect('CE:view', pk=ce.pk)
         # todo upload multiple files at once
         # todo changing pictures
@@ -73,7 +73,7 @@ def edit(request, pk):
         'CE' : ce,
         'Texts' : texts,
         'Form' : form,
-        'PictureUpload' : picture_form,
+        # 'PictureUpload' : picture_form,
         'CurrentPics' : current_pics
         # 'TextForms' : text_forms
     }
@@ -85,9 +85,11 @@ def new(request):
     # todo add pictures and texts to new Ces
     if request.method == 'GET':
         form = CE_EditForm()
+        picture_form = PictureUploadForm()
 
     if request.method == 'POST':
         form = CE_EditForm(request.POST)
+        picture_form = PictureUploadForm(request.POST, request.FILES)
         if form.is_valid():
             ce = CultureEvent()
             ce.title = form.cleaned_data['title']
@@ -95,7 +97,13 @@ def new(request):
             ce.description = form.cleaned_data['description']
             ce.last_modified_by = str(request.user)
             ce.save()
-            return redirect('CE:view', pk=ce.pk)
+        if picture_form.is_valid():
+            if picture_form.cleaned_data['picture']:
+                new_pic = PictureModel()
+                new_pic.ce = ce
+                new_pic.picture = picture_form.cleaned_data['picture']
+                new_pic.save()
+                return redirect('CE:view', pk=ce.pk)
 
     context = {
         'Form': form

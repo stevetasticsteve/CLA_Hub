@@ -321,17 +321,22 @@ class TextsModelTest(TestCase):
         self.assertEqual(str(text), 'Text for Example CE1')
 
 
-# class PictureModelTest(TestCase):
+class PictureModelTest(TestCase):
     # def test_invalid_file_type(self):
     #     pic = models.PictureModel(picture='string')
     #     pic.save()
-
+    #
     # def test_valid_upload(self):
     #     ce = models.CultureEvent(title='Test CE')
-    #     image = SimpleUploadedFile('test_image.jpeg', b'file_content',
-    #                                     content_type='image/jpeg')
+    #     ce.save()
+    #     # image = SimpleUploadedFile('test_image.jpeg', b'file_content',
+    #     #         #                                 content_type='image/jpeg')
+    #     image = 'test_data/pic(1).JPG'  # requires a uploads folder in project dir
     #     pic = models.PictureModel(ce=ce, picture=image)
     #     pic.save()
+    #     pic = models.PictureModel.objects.get(ce=ce)
+    #     self.assertEqual(pic.picture, 'test_data/pic(1).JPG')
+
 
 
     # def test_string_method(self):

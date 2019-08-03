@@ -16,10 +16,12 @@ def home_page(request):
 def view(request, pk):
     # todo show pictures
     ce = get_object_or_404(CultureEvent, pk=pk)
-    texts = Texts.objects.filter(ce_id=pk)
+    texts = Texts.objects.filter(ce=pk)
+    pictures = PictureModel.objects.filter(ce=pk)
     context = {
         'CE' : ce,
-        'Texts' : texts
+        'Texts' : texts,
+        'Pics' : pictures
     }
     return render(request, 'CE/view_CE.html', context)
 

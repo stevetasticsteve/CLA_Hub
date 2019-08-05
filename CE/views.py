@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from CE.models import CultureEvent, Texts, PictureModel
-from CE.forms import CE_EditForm, Text_EditForm, PictureUploadForm
+from CE.models import CultureEvent, Texts, PictureModel, ParticipationModel
+from CE.forms import CE_EditForm, Text_EditForm, PictureUploadForm, ParticipantForm
 from CE.settings import culture_events_shown_on_home_page
 
 def home_page(request):
@@ -14,14 +14,15 @@ def home_page(request):
     return render(request, 'CE/home_page.html', context)
 
 def view(request, pk):
-    # todo show pictures
     ce = get_object_or_404(CultureEvent, pk=pk)
     texts = Texts.objects.filter(ce=pk)
     pictures = PictureModel.objects.filter(ce=pk)
+    participants = ParticipationModel.objects.filter(ce=ce)
     context = {
         'CE' : ce,
         'Texts' : texts,
-        'Pics' : pictures
+        'Pics' : pictures,
+        'Participants' : participants
     }
     return render(request, 'CE/view_CE.html', context)
 
@@ -87,28 +88,37 @@ def new(request):
     if request.method == 'GET':
         form = CE_EditForm()
         picture_form = PictureUploadForm()
+        participant_form = ParticipantForm()
 
     elif request.method == 'POST':
         form = CE_EditForm(request.POST)
         picture_form = PictureUploadForm(request.POST, request.FILES)
+        participant_form = ParticipantForm(request.POST)
         if form.is_valid():
             ce = CultureEvent()
             ce.title = form.cleaned_data['title']
-            ce.participation = form.cleaned_data['participation']
             ce.description = form.cleaned_data['description']
             ce.last_modified_by = str(request.user)
             ce.save()
             messages.success(request, 'New CE created')
             if picture_form.is_valid():
-                if picture_form.cleaned_data['picture']: #todo this loop not entered despite being identitcal to edit
+                if picture_form.cleaned_data['picture']:
                     new_pic = PictureModel()
                     new_pic.ce = ce
                     new_pic.picture = picture_form.cleaned_data['picture']
                     new_pic.save()
+        if participant_form.is_valid():
+            participants = ParticipationModel()
+            participants.ce = ce
+            participants.team_participants = participant_form.cleaned_data['team_participants']
+            participants.national_participants = participant_form.cleaned_data['national_participants']
+            participants.date = participant_form.cleaned_data['date']
+            participants.save()
             return redirect('CE:view', pk=ce.pk)
 
     context = {
         'Form': form,
-        'PictureUpload': picture_form
+        'PictureUpload': picture_form,
+        'ParticipantForm': participant_form
     }
     return render(request, 'CE/new_CE.html', context)

@@ -3,6 +3,16 @@
     <table>
         {{ Form.as_table }}
     </table>
+    <h2>Participants</h2>
+    {{ ParticipantForm.as_p }}
+    <script>
+    $(function () {
+        $('.datetime-input'.datetimepicker({
+            format:'DD-MM-YYYY'
+            });
+        });
+    </script>
+    <h2>Picture upload</h2>
     {{ PictureUpload.as_p }}
     <button type="input" class="btn btn-primary">Submit</button>
 </form>

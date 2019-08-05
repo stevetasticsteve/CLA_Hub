@@ -17,8 +17,17 @@
 <h2>Texts</h2>
 {% if Texts %}
     {% for text in Texts %}
+    {% if text.audio.url %}
+    <audio controls> <source src="{{text.audio.url}}"></audio>
+    {% endif %}
+    {% if text.phonetic_text %}
+    <h4>Phonetic text</h4>
     <p> {{ text.phonetic_text }}</p>
+    {% endif %}
+    {% if text.orthoraphic_text %}
+    <h4>Orthographic text</h4>
     <p> {{ text.orthographic_text }}</p>
+    {% endif %}
     {% endfor %}
 {% else %}
 <p>No texts added yet</p>

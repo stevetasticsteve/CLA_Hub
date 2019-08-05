@@ -11,11 +11,11 @@ class CE_EditForm(forms.ModelForm):
         exclude = ('last_modified_by',)
 
 
-class Text_EditForm(forms.ModelForm):
+class TextForm(forms.ModelForm):
     class Meta:
-        model = CE.models.Texts
+        model = CE.models.TextModel
         fields = '__all__'
-        exclude = ('primary',)
+        exclude = ('ce',)
 
 class PictureUploadForm(forms.ModelForm):
     class Meta:

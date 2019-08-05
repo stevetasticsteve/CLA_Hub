@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from CE.models import CultureEvent, Texts, PictureModel, ParticipationModel
-from CE.forms import CE_EditForm, Text_EditForm, PictureUploadForm, ParticipantForm
+from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel
+from CE.forms import CE_EditForm, TextForm, PictureUploadForm, ParticipantForm
 from CE.settings import culture_events_shown_on_home_page
 
 def home_page(request):
@@ -15,7 +15,7 @@ def home_page(request):
 
 def view(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
-    texts = Texts.objects.filter(ce=pk)
+    texts = TextModel.objects.filter(ce=pk)
     pictures = PictureModel.objects.filter(ce=pk)
     participants = ParticipationModel.objects.filter(ce=ce)
     context = {
@@ -89,11 +89,13 @@ def new(request):
         form = CE_EditForm()
         picture_form = PictureUploadForm()
         participant_form = ParticipantForm()
+        text_form = TextForm()
 
     elif request.method == 'POST':
         form = CE_EditForm(request.POST)
         picture_form = PictureUploadForm(request.POST, request.FILES)
         participant_form = ParticipantForm(request.POST)
+        text_form = TextForm(request.POST, request.FILES)
         if form.is_valid():
             ce = CultureEvent()
             ce.title = form.cleaned_data['title']
@@ -107,6 +109,15 @@ def new(request):
                     new_pic.ce = ce
                     new_pic.picture = picture_form.cleaned_data['picture']
                     new_pic.save()
+            if text_form.is_valid():
+                print('valid text form')
+                new_text = TextModel()
+                new_text.ce = ce
+                new_text.orthographic_text = text_form.cleaned_data['orthographic_text']
+                new_text.phonetic_text = text_form.cleaned_data['phonetic_text']
+                new_text.phonetic_standard = text_form.cleaned_data['phonetic_standard']
+                new_text.audio = text_form.cleaned_data['audio']
+                new_text.save()
         if participant_form.is_valid():
             participants = ParticipationModel()
             participants.ce = ce
@@ -114,11 +125,12 @@ def new(request):
             participants.national_participants = participant_form.cleaned_data['national_participants']
             participants.date = participant_form.cleaned_data['date']
             participants.save()
-            return redirect('CE:view', pk=ce.pk)
+        return redirect('CE:view', pk=ce.pk)
 
     context = {
         'Form': form,
         'PictureUpload': picture_form,
-        'ParticipantForm': participant_form
+        'ParticipantForm': participant_form,
+        'TextForm' : text_form
     }
     return render(request, 'CE/new_CE.html', context)

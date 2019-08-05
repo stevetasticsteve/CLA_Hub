@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from CE.models import CultureEvent, Texts, PictureModel
+from CE.models import CultureEvent, TextModel, PictureModel
 
 class CEAdmin(admin.ModelAdmin):
     pass
@@ -12,6 +12,6 @@ class PicturesAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(CultureEvent, CEAdmin)
-admin.site.register(Texts, TextsAdmin)
+admin.site.register(TextModel, TextsAdmin)
 admin.site.register(PictureModel, PicturesAdmin)
 

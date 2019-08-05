@@ -58,7 +58,6 @@ def edit(request, pk):
         # todo upload multiple files at once
         # todo changing pictures
         # todo rotating pictures
-        # todo better representation of pictures on edit screen
         # todo replace placeholder images with database images
 
     # GET request

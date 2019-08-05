@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from CE import models, settings, forms
 
+import os
+
 # A separate test class for each model or view
 # a seperate test method for each set of conditions you want to test
 # test methods that describe their function
@@ -216,15 +218,44 @@ class NewCEPageTest(TestCase):
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 
-    # def test_new_CE_page_saves_single_picture(self):
-    #     test_image = SimpleUploadedFile('test_image.jpeg', b'\xff\xd8\xff\xe0\x00\x10')
-    #     response = self.client.post(reverse('CE:new'), {'title': 'Test CE', 'file': test_image})
-    #     self.assertRedirects(response, '/CE/2')
-    #     new_ce = models.CultureEvent.objects.get(pk=2)
-    #     self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
-    #     print(models.PictureModel.objects.all())
-    #     new_pic = models.PictureModel.objects.get(ce=new_ce)
-    #     self.assertEqual('test_image.jpeg', new_pic.picture, 'New CE not saved to db')
+    def test_new_CE_page_saves_single_picture(self):
+        # todo refactor - probably as new class. Extensive set up and tear down neccesarry as uploads go into project dir
+        # clean up if existing test failed and left a file there
+        if os.path.exists('uploads/CultureEventFiles/2/images/test_pic1.jpg'):
+            os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
+        with open('CLAHub/static/test_data/test_pic1.JPG', 'rb') as file:
+            file = file.read()
+            test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
+            response = self.client.post(reverse('CE:new'), {'title': 'Test CE', 'picture': test_image})
+        self.assertRedirects(response, '/CE/2')
+        new_ce = models.CultureEvent.objects.get(pk=2)
+        self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+        new_pic = models.PictureModel.objects.get(ce=new_ce)
+        self.assertEqual('CultureEventFiles/2/images/test_pic1.jpg',
+                         str(new_pic.picture), 'New CE not saved to db')
+
+        self.assertTrue(os.path.exists('uploads/CultureEventFiles/2/images'), 'upload folder doesn\'t exist')
+        folder_contents = os.listdir('uploads/CultureEventFiles/2/images')
+        self.assertIn('test_pic1.jpg', folder_contents, 'Uploaded picture not in upload folder')
+        # check smaller than 1Mb
+        self.assertTrue(os.path.getsize('uploads/CultureEventFiles/2/images/test_pic1.jpg') < 1000000, 'picture too big')
+        # check Foreign key is correct
+        self.assertEqual(new_ce, new_pic.ce, 'Foreign key not correct')
+
+        # check image displayed on view page
+        response = self.client.get(reverse('CE:view', args='2'))
+        self.assertContains(response, 'Test CE')
+        self.assertContains(response, '<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">')
+        self.assertContains(response, '<img src="/uploads/CultureEventFiles/2/images/test_pic1.jpg')
+
+        # clean up after test - test uploads go onto actual file system program uses
+        if len(folder_contents) == 1:
+            # no user pictures, folder was created for test
+            os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
+            os.removedirs('uploads/CultureEventFiles/2/images')
+        elif len(folder_contents) > 1:
+            # users have uploaded pictures themselves
+            os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
 
 
 class UnloggedUserRedirect(TestCase):
@@ -263,10 +294,11 @@ class CE_EditFormTests(TestCase):
                      'differences' : 'It went better than last time'}
         form = forms.CE_EditForm(data=form_data)
         self.assertFalse(form.is_valid())
-
+#
 # class PictureUploadForm(TestCase):
 #     def test_valid_data(self):
-#         test_image = SimpleUploadedFile('test_image.jpeg', b'file_content',
+#         with open('CLAHub/static/test_data/pic(2).JPG', ) as file:
+#             test_image = SimpleUploadedFile('test_image.jpeg', file,
 #                                         content_type='image/jpeg')
 #
 #         form_data = {'ce': models.CultureEvent(),
@@ -321,7 +353,7 @@ class TextsModelTest(TestCase):
         self.assertEqual(str(text), 'Text for Example CE1')
 
 
-class PictureModelTest(TestCase):
+# class PictureModelTest(TestCase):
     # def test_invalid_file_type(self):
     #     pic = models.PictureModel(picture='string')
     #     pic.save()

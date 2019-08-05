@@ -291,7 +291,6 @@ class CE_EditFormTests(TestCase):
     def test_valid_data(self):
         # form should be valid
         form_data = {'title' : 'An example CE',
-                     'participation' : 'Steve was there',
                      'description' : 'We did culture',
                      'differences' : 'It went better than last time'}
         form = forms.CE_EditForm(data=form_data)
@@ -304,34 +303,33 @@ class CE_EditFormTests(TestCase):
                      'differences' : 'It went better than last time'}
         form = forms.CE_EditForm(data=form_data)
         self.assertFalse(form.is_valid())
-#
-# class PictureUploadForm(TestCase):
-#     def test_valid_data(self):
-#         with open('CLAHub/static/test_data/pic(2).JPG', ) as file:
-#             test_image = SimpleUploadedFile('test_image.jpeg', file,
-#                                         content_type='image/jpeg')
-#
-#         form_data = {'ce': models.CultureEvent(),
-#                      'picture': test_image}
-#         form = forms.PictureUploadForm(data=form_data)
-#         self.assertTrue(form.is_valid())
 
-    # def test_invalid_data(self):
-    #     test_image = SimpleUploadedFile('test_image.mp4', b'file_content',
-    #                                     content_type='image/mp4')
-    #
+class PictureUploadForm(TestCase):
+    def test_valid_data(self):
+        with open('CLAHub/static/test_data/test_pic1.JPG', 'rb') as file:
+            file = file.read()
+            test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
+        form_data = {'ce': models.CultureEvent(),
+                     'picture': test_image}
+        form = forms.PictureUploadForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    # def test_not_a_picture_file(self):
+# todo a text file counts as valid image? Rejected at model level, not form level
+    #     with open('readme.md', 'rb') as file:
+    #         file = file.read()
+    #         test_image = SimpleUploadedFile('readme.md', file, content_type='text')
     #     form_data = {'ce': models.CultureEvent(),
     #                  'picture': test_image}
     #     form = forms.PictureUploadForm(data=form_data)
     #     self.assertFalse(form.is_valid())
 
-    # def test_invalid_data_no_ce(self):
-    #     test_image = SimpleUploadedFile('test_image.jpg', b'file_content',
-    #                                     content_type='image/jpg')
-    #
-    #     form_data = {'picture': test_image}
-    #     form = forms.PictureUploadForm(data=form_data)
-    #     self.assertFalse(form.is_valid())
+
+
+
+
+
+
 
 
 

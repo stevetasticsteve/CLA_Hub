@@ -6,13 +6,13 @@ The software is intended to be run on a Raspberry pi 3 on an internal team netwo
 ## Core features
 - Create web pages to document culture events (CEs)
     - Allow cross linking to other CEs
-    - Provides a template for documenting CEs
-    - Fields for phonetic and orthographic text
-    - Label phonetic text with different levels of accuracy enabling exports of thoroughly checked
+    x Provides a template for documenting CEs
+    x Fields for phonetic and orthographic text
+    x Label phonetic text with different levels of accuracy enabling exports of thoroughly checked
       phonetic data to other tools
-    - Able to tag phonetic/orthographic texts as valid for discourse analysis
-    - Able to attach/embed audio recordings of vernacular texts
-    - Able to attach/embed photos of CEs. Auto compression of pictures for low storage needs.
+    x Able to tag phonetic/orthographic texts as valid for discourse analysis
+    x Able to attach/embed audio recordings of vernacular texts
+    x Able to attach/embed photos of CEs. Auto compression of pictures for low storage needs.
     - Store CE data in a database format allowing for retrieval and other processing
     - Be able to tag vernacular text with outline of cultural materials (OCM) tags
     - Unanswered questions regarding individual CE that can be gathered summarised

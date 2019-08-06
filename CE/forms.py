@@ -1,6 +1,7 @@
 from django import forms
 import CE.models
 
+
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -19,9 +20,10 @@ class TextForm(forms.Form):
     phonetic_text = forms.CharField(
         required=False,
         label='Phonetic transcription',
-        widget=forms.TextInput(attrs={
+        widget=forms.Textarea(attrs={
         'class': 'form-control',
-        'placeholder': 'type phonetics here'
+        'placeholder': 'type phonetics here',
+        'rows': 5
     })
     )
     phonetic_standard = forms.ChoiceField(
@@ -37,13 +39,13 @@ class TextForm(forms.Form):
     orthographic_text = forms.CharField(
         required=False,
         label='Orthographic transcription',
-        widget = forms.TextInput(attrs={
+        widget = forms.Textarea(attrs={
         'class': 'form-control',
-        'rows': '5',
+        'rows': 5,
         'placeholder': 'type orthographic text here'
     })
     )
-
+# todo possible to get a form to pass validation by typing stuff in box, but result in it not creating an entry. Form passes validation, but db doesn't
 
 
 
@@ -52,10 +54,7 @@ class PictureUploadForm(forms.ModelForm):
         model = CE.models.PictureModel
         fields = ('picture',)
 
-        #todo write tests for picture upload
-
         #todo work out how to include n number of Text_EditForms along with the CE_EditForm to the edit_CE template
-        #todo placeholder text
 
 class ParticipantForm(forms.ModelForm):
     class Meta:

@@ -5,6 +5,7 @@ from PIL import Image
 from io import BytesIO
 
 import sys
+import re
 
 class CultureEvent(models.Model):
     title = models.CharField(max_length=60, blank=False, unique=True)
@@ -16,8 +17,17 @@ class CultureEvent(models.Model):
     slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
 
     def save(self):
+        self.find_regexs(self.description)
         self.slug = slugify(self.title)
         super().save()
+
+    def find_regexs(self, target):
+        tags = re.findall(r'{.+?}', target)
+        for tag in tags:
+            content = tag
+            content = content.strip('{')
+            content = content.strip('}')
+            self.description= self.description.replace(tag, '<strong>' + content + '</strong>')
 
     def __str__(self):
         return str(self.title)

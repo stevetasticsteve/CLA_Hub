@@ -8,7 +8,9 @@
 <h3>Participants</h3>
 {% include 'CE/partial/participants_table.html' %}
 <h3>Description</h3>
-<p> {{ CE.description }}</p>
+{% autoescape off %}
+<p>{{ CE.description }}</p>
+{% endautoescape %}
 <h3>Variation</h3>
 <p> {{ CE.differences }}</p>
 

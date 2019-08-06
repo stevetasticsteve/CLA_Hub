@@ -8,7 +8,6 @@
 <h3>Participants</h3>
 {% include 'CE/partial/participants_table.html' %}
 <h3>Description</h3>
-<p>slug={{CE.slug}}</p>
 <p> {{ CE.description }}</p>
 <h3>Variation</h3>
 <p> {{ CE.differences }}</p>
@@ -25,7 +24,7 @@
     <h4>Phonetic text</h4>
     <p> {{ text.phonetic_text }}</p>
     {% endif %}
-    {% if text.orthoraphic_text %}
+    {% if text.orthographic_text %}
     <h4>Orthographic text</h4>
     <p> {{ text.orthographic_text }}</p>
     {% endif %}

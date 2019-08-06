@@ -13,6 +13,7 @@ def home_page(request):
     }
     return render(request, 'CE/home_page.html', context)
 
+
 def view(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     texts = TextModel.objects.filter(ce=pk)
@@ -25,6 +26,22 @@ def view(request, pk):
         'Participants' : participants
     }
     return render(request, 'CE/view_CE.html', context)
+
+def view_slug(request, slug):
+    ce = get_object_or_404(CultureEvent, slug=slug)
+    pk = ce.pk
+    texts = TextModel.objects.filter(ce=pk)
+    pictures = PictureModel.objects.filter(ce=pk)
+    participants = ParticipationModel.objects.filter(ce=ce)
+    context = {
+        'CE' : ce,
+        'Texts' : texts,
+        'Pics' : pictures,
+        'Participants' : participants
+    }
+    return render(request, 'CE/view_CE.html', context)
+
+
 
 @login_required
 def edit(request, pk):

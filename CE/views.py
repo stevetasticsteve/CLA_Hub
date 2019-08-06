@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel
-from CE.forms import CE_EditForm, TextForm, PictureUploadForm, ParticipantForm
+from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, TextForm
 from CE.settings import culture_events_shown_on_home_page
 
 def home_page(request):
@@ -59,7 +59,6 @@ def edit(request, pk):
         # todo upload multiple files at once
         # todo changing pictures
         # todo rotating pictures
-        # todo replace placeholder images with database images
 
     # GET request
     texts = TextModel.objects.filter(ce_id=pk)
@@ -67,7 +66,6 @@ def edit(request, pk):
     # for text in texts:
     #     text_forms.append(Text_EditForm(text))
     current_pics = PictureModel.objects.filter(ce_id=pk)
-    # todo include texts form same as pictures - optional
     # todo add a new text button
 
     context = {
@@ -84,7 +82,6 @@ def edit(request, pk):
 
 @ login_required
 def new(request):
-    # todo add pictures and texts to new Ces
     if request.method == 'GET':
         form = CE_EditForm()
         picture_form = PictureUploadForm()
@@ -126,13 +123,14 @@ def new(request):
                 new_pic.picture = picture_form.cleaned_data['picture']
                 new_pic.save()
             if text_form.is_valid():
-                new_text = TextModel()
-                new_text.ce = ce
-                new_text.orthographic_text = text_form.cleaned_data['orthographic_text']
-                new_text.phonetic_text = text_form.cleaned_data['phonetic_text']
-                new_text.phonetic_standard = text_form.cleaned_data['phonetic_standard']
-                new_text.audio = text_form.cleaned_data['audio']
-                new_text.save()
+                if text_form.cleaned_data['phonetic_standard']:
+                    new_text = TextModel()
+                    new_text.ce = ce
+                    new_text.orthographic_text = text_form.cleaned_data['orthographic_text']
+                    new_text.phonetic_text = text_form.cleaned_data['phonetic_text']
+                    new_text.phonetic_standard = text_form.cleaned_data['phonetic_standard']
+                    new_text.audio = text_form.cleaned_data['audio']
+                    new_text.save()
 
         return redirect('CE:view', pk=ce.pk)
 
@@ -143,3 +141,5 @@ def new(request):
         'TextForm' : text_form
     }
     return render(request, 'CE/new_CE.html', context)
+
+

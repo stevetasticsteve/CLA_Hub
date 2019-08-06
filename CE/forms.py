@@ -11,11 +11,41 @@ class CE_EditForm(forms.ModelForm):
         exclude = ('last_modified_by', 'slug')
 
 
-class TextForm(forms.ModelForm):
-    class Meta:
-        model = CE.models.TextModel
-        fields = '__all__'
-        exclude = ('ce',)
+class TextForm(forms.Form):
+    audio = forms.FileField(
+        label='Upload audio',
+        required=False
+    )
+    phonetic_text = forms.CharField(
+        required=False,
+        label='Phonetic transcription',
+        widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'type phonetics here'
+    })
+    )
+    phonetic_standard = forms.ChoiceField(
+        choices=[('', ''),
+                 ('1', 'Unchecked'),
+                 ('2', 'Double checked by author'),
+                 ('3', 'Checked by team mate'),
+                 ('4', 'Approved by whole team'),
+                 ('5', 'Valid for linguistic analysis')],
+        label='Phonetic accuracy',
+        required=False
+    )
+    orthographic_text = forms.CharField(
+        required=False,
+        label='Orthographic transcription',
+        widget = forms.TextInput(attrs={
+        'class': 'form-control',
+        'rows': '5',
+        'placeholder': 'type orthographic text here'
+    })
+    )
+
+
+
 
 class PictureUploadForm(forms.ModelForm):
     class Meta:

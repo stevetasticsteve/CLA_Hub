@@ -195,7 +195,6 @@ class NewCEPageTest(TestCase):
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         self.assertRedirects(response, '/CE/2')
-        # self.assertEqual(response.redirect_chain[0][1], 302, 'No redirect following POST')
         ce = models.CultureEvent.objects.get(pk=2)
         self.assertEqual(ce.title, 'A test CE', 'new CE title not correct')
         self.assertEqual(ce.description, 'I\'m testing this CE', 'new CE description not correct')
@@ -203,6 +202,11 @@ class NewCEPageTest(TestCase):
         self.assertEqual(response.status_code, 200, 'New page not shown')
         self.assertContains(response, 'A test CE')
         self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
+        self.assertEqual(len(models.TextModel.objects.all()), 0, 'A blank Text was added')
+
+        response = self.client.get(reverse('CE:view', args='2'))
+        self.assertEqual(response.status_code, 200, 'New CE view page not displaying correctly')
+
 
     def test_new_CE_page_invalid_POST_repeated_title_response(self):
         # Form should be show again with error message

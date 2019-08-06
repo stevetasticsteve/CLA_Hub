@@ -10,6 +10,15 @@
     </table>
     <h2>Participants</h2>
     {{ ParticipantForm.as_p }}
+    <h2>Texts</h2>
+    {{TextForm}}
+    <h2>Picture upload</h2>
+    {{ PictureUpload.as_p }}
+    <button type="input" class="btn btn-primary">Submit</button>
+</form>
+
+
+
     <script>
     $(function () {
         $('.datetime-input'.datetimepicker({
@@ -17,9 +26,3 @@
             });
         });
     </script>
-    <h2>Texts</h2>
-    {{ TextForm.as_p }}
-    <h2>Picture upload</h2>
-    {{ PictureUpload.as_p }}
-    <button type="input" class="btn btn-primary">Submit</button>
-</form>

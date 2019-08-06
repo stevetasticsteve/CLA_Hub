@@ -62,7 +62,7 @@ def edit(request, pk):
         # todo replace placeholder images with database images
 
     # GET request
-    texts = Texts.objects.filter(ce_id=pk)
+    texts = TextModel.objects.filter(ce_id=pk)
     # text_forms = []
     # for text in texts:
     #     text_forms.append(Text_EditForm(text))
@@ -101,16 +101,31 @@ def new(request):
             ce.title = form.cleaned_data['title']
             ce.description = form.cleaned_data['description']
             ce.last_modified_by = str(request.user)
-            ce.save()
-            messages.success(request, 'New CE created')
-            if picture_form.is_valid():
-                if picture_form.cleaned_data['picture']:
-                    new_pic = PictureModel()
-                    new_pic.ce = ce
-                    new_pic.picture = picture_form.cleaned_data['picture']
-                    new_pic.save()
+
+            if participant_form.is_valid():
+                ce.save()
+                participants = ParticipationModel()
+                participants.ce = ce
+                participants.team_participants = participant_form.cleaned_data['team_participants']
+                participants.national_participants = participant_form.cleaned_data['national_participants']
+                participants.date = participant_form.cleaned_data['date']
+                participants.save()
+                messages.success(request, 'New CE created')
+        else:
+            context = {
+                'Form' : form,
+                'PictureUpload': picture_form,
+                'ParticipantForm': participant_form,
+                'TextForm' : text_form
+            }
+            return render(request, 'CE/new_CE.html', context)
+        if picture_form.is_valid():
+            if picture_form.cleaned_data['picture']:
+                new_pic = PictureModel()
+                new_pic.ce = ce
+                new_pic.picture = picture_form.cleaned_data['picture']
+                new_pic.save()
             if text_form.is_valid():
-                print('valid text form')
                 new_text = TextModel()
                 new_text.ce = ce
                 new_text.orthographic_text = text_form.cleaned_data['orthographic_text']
@@ -118,13 +133,7 @@ def new(request):
                 new_text.phonetic_standard = text_form.cleaned_data['phonetic_standard']
                 new_text.audio = text_form.cleaned_data['audio']
                 new_text.save()
-        if participant_form.is_valid():
-            participants = ParticipationModel()
-            participants.ce = ce
-            participants.team_participants = participant_form.cleaned_data['team_participants']
-            participants.national_participants = participant_form.cleaned_data['national_participants']
-            participants.date = participant_form.cleaned_data['date']
-            participants.save()
+
         return redirect('CE:view', pk=ce.pk)
 
     context = {

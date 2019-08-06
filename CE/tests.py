@@ -41,7 +41,7 @@ class TestViewPage(TestCase):
                                  description='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
-        text = models.Texts(ce=models.CultureEvent.objects.get(pk=1),
+        text = models.TextModel(ce=models.CultureEvent.objects.get(pk=1),
                             audio='musicFile.ogg',
                             phonetic_text='foᵘnɛtɪks',
                             orthographic_text='orthographic')
@@ -76,7 +76,7 @@ class TestViewPage(TestCase):
 #                                  differences='Last time it was different')
 #         ce.save()
 #         # todo text model not used in tests
-#         text = models.Texts(ce=models.CultureEvent.objects.get(pk=1),
+#         text = models.TextModel(ce=models.CultureEvent.objects.get(pk=1),
 #                             audio='musicFile.ogg',
 #                             phonetic_text='foᵘnɛtɪks',
 #                             orthographic_text='orthographic')
@@ -312,27 +312,19 @@ class PictureUploadForm(TestCase):
         form_data = {'ce': models.CultureEvent(),
                      'picture': test_image}
         form = forms.PictureUploadForm(data=form_data)
+        form.full_clean()
         self.assertTrue(form.is_valid())
 
-    # def test_not_a_picture_file(self):
+    def test_not_a_picture_file(self):
 # todo a text file counts as valid image? Rejected at model level, not form level
-    #     with open('readme.md', 'rb') as file:
-    #         file = file.read()
-    #         test_image = SimpleUploadedFile('readme.md', file, content_type='text')
-    #     form_data = {'ce': models.CultureEvent(),
-    #                  'picture': test_image}
-    #     form = forms.PictureUploadForm(data=form_data)
-    #     self.assertFalse(form.is_valid())
-
-
-
-
-
-
-
-
-
-
+        with open('readme.md', 'rb') as file:
+            file = file.read()
+            test_image = SimpleUploadedFile('readme.md', file, content_type='text')
+        form_data = {'ce': models.CultureEvent(),
+                     'picture': test_image}
+        form = forms.PictureUploadForm(data=form_data)
+        form.full_clean()
+        self.assertFalse(form.is_valid())
 
 # Model tests
 
@@ -357,7 +349,7 @@ class CEModelTest(TestCase):
 class TextsModelTest(TestCase):
     def test_string_method(self):
         ce = models.CultureEvent(title='Example CE1')
-        text = models.Texts(ce=ce, phonetic_text='djaŋɡo')
+        text = models.TextModel(ce=ce, phonetic_text='djaŋɡo')
         self.assertEqual(str(text), 'Text for Example CE1')
 
 

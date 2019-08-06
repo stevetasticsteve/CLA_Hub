@@ -13,7 +13,7 @@ class CultureEvent(models.Model):
     last_modified_by = models.CharField(max_length=20)
     description = models.TextField(blank=True)
     differences = models.TextField(blank=True)
-    slug = models.SlugField(blank=True) # set in save function, form doesn't need to validate it
+    slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
 
     def save(self):
         self.slug = slugify(self.title)

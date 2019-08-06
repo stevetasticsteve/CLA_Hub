@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.utils.text import slugify
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 from io import BytesIO
@@ -13,6 +13,11 @@ class CultureEvent(models.Model):
     last_modified_by = models.CharField(max_length=20)
     description = models.TextField(blank=True)
     differences = models.TextField(blank=True)
+    slug = models.SlugField(blank=True) # set in save function, form doesn't need to validate it
+
+    def save(self):
+        self.slug = slugify(self.title)
+        super().save()
 
     def __str__(self):
         return str(self.title)
@@ -58,11 +63,11 @@ class PictureModel(models.Model):
                                              sys.getsizeof(output), None)
 
         super(PictureModel, self).save()
-        # todo write a test of this new save model
+
 
 class TextModel(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
-    audio = models.FileField(upload_to=audio_folder, blank=True)
+    audio = models.FileField(upload_to=audio_folder, blank=False)
     phonetic_text = models.TextField(blank=True)
     phonetic_standard = models.CharField(choices=[('1', 'Unchecked' ),
                                                   ('2', 'Double checked by author'),
@@ -70,7 +75,7 @@ class TextModel(models.Model):
                                                   ('4', 'Approved by whole team'),
                                                   ('5', 'Valid for linguistic analysis')],
                                          max_length=30,
-                                         default='1')
+                                         blank=True)
     orthographic_text = models.TextField(blank=True)
 
     def __str__(self):

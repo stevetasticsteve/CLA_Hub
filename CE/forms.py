@@ -8,7 +8,7 @@ class CE_EditForm(forms.ModelForm):
     class Meta:
         model = CE.models.CultureEvent
         fields = '__all__'
-        exclude = ('last_modified_by',)
+        exclude = ('last_modified_by', 'slug')
 
 
 class TextForm(forms.ModelForm):

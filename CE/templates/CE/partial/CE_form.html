@@ -2,7 +2,7 @@
     {% csrf_token %}
     {% if error %}
     <div class="form-group has-error">
-        <span class="help-block">{{error}}</span>
+        <span class="alert-warning">{{error}}</span>
     </div>
     {% endif %}
     <table>

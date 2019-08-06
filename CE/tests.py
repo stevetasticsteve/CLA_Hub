@@ -54,6 +54,7 @@ class TestViewPage(TestCase):
         self.assertTemplateUsed('CE/view_CE.html')
         self.assertContains(response, 'Example CE1')
         self.assertContains(response, 'foᵘnɛtɪks')
+        self.assertContains(response, 'musicFile.ogg')
 
     def test_404(self):
         # test an out of range index
@@ -345,8 +346,7 @@ class CE_EditFormTests(TestCase):
 
     def test_title_missing_data(self):
         # title is a required field, form should be invalid
-        form_data = {'participation' : 'Steve was there',
-                     'description' : 'We did culture',
+        form_data = {'description' : 'We did culture',
                      'differences' : 'It went better than last time'}
         form = forms.CE_EditForm(data=form_data)
         self.assertFalse(form.is_valid())

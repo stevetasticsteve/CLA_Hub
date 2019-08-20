@@ -1,6 +1,10 @@
-<h2>Login</h2>
+{% extends 'minimal_base.html' %}
+ {% block page_content %}
+<h2 class="display-4">Login</h2>
+<hr class="my-4">
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
 </form>
+{% endblock %}

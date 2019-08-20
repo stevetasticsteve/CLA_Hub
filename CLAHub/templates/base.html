@@ -7,7 +7,6 @@
 
     <!-- Bootstrap CSS -->
     {% load static from staticfiles %}
-    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
       <link rel="stylesheet" href="{% static 'bootstrap-4.3.1-dist/css/bootstrap.min.css' %}" type="text/css">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <!--<a class="navbar-brand" href="#">CLA Hub</a>-->
@@ -22,11 +21,22 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link" href="{% url 'CE:home_page' %}">Culture Events <span class="sr-only"></span></a>
+    </div>
+      <div class="navbar-item ml-md-auto" >
+      {% if user.is_authenticated %}
+        <p>Logged in as <strong>{{ user.username }}</strong></p>
+      <a href="{% url 'logout' %}"  >Logout</a>
+      </div>
+      {% else %}
+      <p>You are not logged in</p>
+      <p>
+      <a href="{% url 'login' %}">Login</a>
+        </p>
+      {% endif %}
+    </div>
       <!--<a class="nav-item nav-link" href="#">Features</a>-->
       <!--<a class="nav-item nav-link" href="#">Pricing</a>-->
       <!--<a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
-    </div>
-  </div>
 </nav>
     <link rel="shortcut icon" type="image/png" href="{% static '/logo/CLAHub_logo_Favicon.png'   %}"/>
   </head>

@@ -123,6 +123,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'CLAHub/static'),)
 LOGIN_REDIRECT_URL = '/CE'
+LOGOUT_REDIRECT_URL = '/CE'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/uploads/'
 

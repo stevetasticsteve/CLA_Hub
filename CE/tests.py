@@ -417,6 +417,32 @@ class CEModelTest(TestCase):
         self.assertEqual(description_three, ce.description_plain_text)
         self.assertNotIn('href', ce.description)
 
+    def test_manual_hyperlink(self):
+        settings.auto_cross_reference = False
+        # create 1st CE
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+        # create 2nd CE with a hyperlink intended
+        description_two = 'A second CE, that references {example ce1}'
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text=description_two)
+        ce.save()
+        self.assertEqual(description_two, ce.description_plain_text)
+        self.assertIn('href', ce.description)
+
+        # create 3rd CE with no hyperlinks intended
+        description_three = 'A second CE, that doesn\'t {reference} example ce1'
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text=description_three)
+        self.assertEqual(description_three, ce.description_plain_text)
+        self.assertNotIn('href', ce.description)
+
+        # test invalid tags not shown
+        self.assertIn('{reference}', ce.description_plain_text)
+        self.assertNotIn('{reference}', ce.description)
+
+
 
 class TextsModelTest(TestCase):
     def test_string_method(self):

@@ -38,7 +38,7 @@ class CEHomeViewTest(TestCase):
 class TestViewPage(TestCase):
     def setUp(self):
         ce = models.CultureEvent(title='Example CE1',
-                                 description='A culture event happened',
+                                 description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
         text = models.TextModel(ce=models.CultureEvent.objects.get(pk=1),
@@ -166,7 +166,7 @@ class NewCEPageTest(TestCase):
         self.client.login(username='Tester', password='secure_password')
         # have one model previously in .db
         ce = models.CultureEvent(title='Example CE1',
-                                 description='A culture event happened',
+                                 description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
         participants = models.ParticipationModel(date='2019-08-05',
@@ -188,7 +188,7 @@ class NewCEPageTest(TestCase):
         # new CE should be created
         response = self.client.post(reverse('CE:new'), {
             'title' : 'A test CE',
-            'description' : 'I\'m testing this CE',
+            'description_plain_text' : 'I\'m testing this CE',
             'date' : '2019-04-20',
             'national_participants': 'Ulumo',
             'team_participants': 'Rhett'
@@ -197,7 +197,7 @@ class NewCEPageTest(TestCase):
         self.assertRedirects(response, '/CE/2')
         ce = models.CultureEvent.objects.get(pk=2)
         self.assertEqual(ce.title, 'A test CE', 'new CE title not correct')
-        self.assertEqual(ce.description, 'I\'m testing this CE', 'new CE description not correct')
+        self.assertEqual(ce.description_plain_text, 'I\'m testing this CE', 'new CE description not correct')
         self.assertEqual('A test CE', ce.title, 'New CE not in database')
         self.assertEqual(response.status_code, 200, 'New page not shown')
         self.assertContains(response, 'A test CE')
@@ -212,7 +212,7 @@ class NewCEPageTest(TestCase):
         # Form should be show again with error message
         response = self.client.post(reverse('CE:new'), {
             'title': 'Example CE1',
-            'description': 'I\'m testing this CE'
+            'description_plain_text': 'I\'m testing this CE'
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         self.assertContains(response, 'Culture event with this Title already exists')
@@ -222,7 +222,7 @@ class NewCEPageTest(TestCase):
     def test_new_CE_page_invalid_POST_no_title_response(self):
         # Form should be shown again with error message
         response = self.client.post(reverse('CE:new'), {
-            'description': 'I\'m testing this CE'
+            'description_plain_text': 'I\'m testing this CE'
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         self.assertContains(response, 'This field is required')
@@ -343,14 +343,14 @@ class CE_EditFormTests(TestCase):
     def test_valid_data(self):
         # form should be valid
         form_data = {'title' : 'An example CE',
-                     'description' : 'We did culture',
+                     'description_plain_text' : 'We did culture',
                      'differences' : 'It went better than last time'}
         form = forms.CE_EditForm(data=form_data)
         self.assertTrue(form.is_valid())
 
     def test_title_missing_data(self):
         # title is a required field, form should be invalid
-        form_data = {'description' : 'We did culture',
+        form_data = {'description_plain_text' : 'We did culture',
                      'differences' : 'It went better than last time'}
         form = forms.CE_EditForm(data=form_data)
         self.assertFalse(form.is_valid())
@@ -388,10 +388,10 @@ class CEModelTest(TestCase):
     def test_repeated_title_not_allowed(self):
         # CE titles should be unique
         ce = models.CultureEvent(title='Example CE1',
-                                 description='A first CE')
+                                 description_plain_text='A first CE')
         ce.save()
         ce = models.CultureEvent(title='Example CE1',
-                                 description='A second CE')
+                                 description_plain_text='A second CE')
 
         with self.assertRaises(IntegrityError):
             ce.save()

@@ -2,22 +2,46 @@
 
 {% block page_content %}
 
-<h1>{{ CE.title }}</h1>
-<p class="text-muted">last edited {{CE.last_modified}} by {{CE.last_modified_by}}</p>
-<a href="{% url 'CE:edit' CE.pk %}">Click here to edit</a>
-<h3>Participants</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-5">
+            <h1>{{ CE.title }}</h1>
+            <p class="text-muted">last edited {{CE.last_modified}} by {{CE.last_modified_by}}</p>
+        </div>
+        <div class="col-2">
+            <p></p>
+            <a href="{% url 'CE:edit' CE.pk %}" class="btn btn-info">Click here to edit</a>
+        </div>
+    </div>
+</div>
+<hr>
+
 {% include 'CE/partial/participants_table.html' %}
+
+<div class="container-fluid bg-light">
 <h3>Description</h3>
+    {% if not CE.description %}
+    <p>No description, why don't you add something?</p>
+    {% else %}
 {% autoescape off %}
 <p>{{ CE.description }}</p>
 {% endautoescape %}
+{% endif %}
+</div>
+{% if CE.differences %}
+<div class="container-fluid">
 <h3>Variation</h3>
 <p> {{ CE.differences }}</p>
+</div>
+{% endif %}
 
+{% if picture.picture %}
 {% include 'CE/partial/bootstrap_carousel.html' %}
+{% endif %}
 
-<h2>Texts</h2>
+<div class="container-fluid">
 {% if Texts %}
+    <h3>Texts</h3>
     {% for text in Texts %}
     {% if text.audio.url %}
     <audio controls> <source src="{{text.audio.url}}"></audio>
@@ -31,9 +55,8 @@
     <p> {{ text.orthographic_text }}</p>
     {% endif %}
     {% endfor %}
-{% else %}
-<p>No texts added yet</p>
 {% endif %}
+</div>
 
 
 {% endblock %}

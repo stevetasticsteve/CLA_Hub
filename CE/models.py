@@ -19,6 +19,7 @@ class CultureEvent(models.Model):
     description_plain_text = models.TextField(blank=True)
 
     differences = models.TextField(blank=True)
+    interpretation = models.TextField(blank=True)
     slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
 
     def save(self):

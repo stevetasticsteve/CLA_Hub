@@ -6,12 +6,15 @@
     </div>
     {% endif %}
     <table>
-        {{ Form.as_table }}
+        {{ Form.as_p }}
+        <hr>
     </table>
     <h2>Participants</h2>
     {{ ParticipantForm.as_p }}
+    <hr>
     <h2>Texts</h2>
     {{TextForm.as_p}}
+    <hr>
     <h2>Picture upload</h2>
     {{ PictureUpload.as_p }}
     <button type="input" class="btn btn-primary">Submit</button>

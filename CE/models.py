@@ -4,6 +4,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 from io import BytesIO
 
+import CE.settings
 import sys
 import re
 
@@ -12,22 +13,61 @@ class CultureEvent(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=20)
+    # plain text description is what the user has entered. description is a processed version of the plain text
+    # that adds hyperlinks and is displayed escaped so the html generates
     description = models.TextField(blank=True)
+    description_plain_text = models.TextField(blank=True)
+
     differences = models.TextField(blank=True)
     slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
 
     def save(self):
-        self.find_regexs(self.description)
+        # copy the user's input from plain text to description to be processed
+        self.description = self.description_plain_text
+        if CE.settings.auto_cross_reference:
+            self.auto_cross_ref()
+        else:
+            self.find_tag()
         self.slug = slugify(self.title)
         super().save()
 
-    def find_regexs(self, target):
-        tags = re.findall(r'{.+?}', target)
+    def find_tag(self):
+        # todo case sensitive, shouldn't be
+        # find anything in the plain text description with {} around it and replace it with a hyperlink if valid
+        # only triggers if auto_cross_reference is False
+        tags = re.findall(r'{.+?}', self.description)
+        ce_slugs = self.list_slugs()
         for tag in tags:
             content = tag
             content = content.strip('{')
             content = content.strip('}')
-            self.description= self.description.replace(tag, '<strong>' + content + '</strong>')
+            for i, title_slug in enumerate(ce_slugs):
+                # if slug found within {} replace with hyperlink
+                if title_slug in slugify(content):
+                    title_deslug = title_slug.replace('-', ' ')
+                    slug_href = '<a href="' + title_slug + '">' + title_deslug + '</a>'
+                    self.description = self.description.replace('{'+ title_deslug + '}', slug_href)
+                # if none of the title slugs are found remove the {}
+                elif i == len(ce_slugs) - 1:
+                    self.description = self.description.replace(tag, content)
+
+
+    def auto_cross_ref(self):
+        # todo Will miss cases where user uses a capital. Currently only works with lower case.
+        # search the plain text description for slugs and replace them with hyperlinks if found
+        # only triggers if auto_cross_reference is True
+        slugged_description = slugify(self.description_plain_text)
+        ce_slugs = self.list_slugs()
+        for title_slug in ce_slugs:
+            if title_slug in slugged_description:
+                title_deslug = title_slug.replace('-', ' ')
+                slug_href = '<a href="' + title_slug + '">' + title_deslug + '</a>'
+                self.description = self.description.replace(title_deslug, slug_href)
+
+    def list_slugs(self):
+        ce_objects = CultureEvent.objects.all()
+        ce_slugs = [i.slug for i in ce_objects]
+        return ce_slugs
 
     def __str__(self):
         return str(self.title)

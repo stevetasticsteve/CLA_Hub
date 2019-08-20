@@ -113,7 +113,7 @@ def new(request):
         if form.is_valid():
             ce = CultureEvent()
             ce.title = form.cleaned_data['title']
-            ce.description = form.cleaned_data['description']
+            ce.description_plain_text = form.cleaned_data['description_plain_text']
             ce.last_modified_by = str(request.user)
 
             if participant_form.is_valid():

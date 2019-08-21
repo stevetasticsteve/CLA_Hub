@@ -94,7 +94,6 @@ class PictureUploadForm(forms.ModelForm):
         model = CE.models.PictureModel
         fields = ('picture',)
 
-        #todo work out how to include n number of Text_EditForms along with the CE_EditForm to the edit_CE template
 
 class ParticipantForm(forms.Form):
     team_participants = forms.CharField(

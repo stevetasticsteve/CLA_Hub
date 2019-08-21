@@ -5,27 +5,30 @@
         <span class="alert-warning">{{error}}</span>
     </div>
     {% endif %}
-    <table>
+
+    <div class="container-fluid">
         {{ Form.as_p }}
-        <hr>
-    </table>
-    <h2>Participants</h2>
-    {{ ParticipantForm.as_p }}
+        </div>
     <hr>
-    <h2>Texts</h2>
-    {{TextForm.as_p}}
+
+    <div class="container-fluid">
+        <h2>Participants</h2>
+        {{ ParticipantForm.as_p }}
+        </div>
     <hr>
-    <h2>Picture upload</h2>
-    {{ PictureUpload.as_p }}
+
+    <div class="container-fluid">
+        {% include 'CE/partial/text_form.html' %}
+    </div>
+    <hr>
+
+    <div class="container-fluid">
+        <h2>Picture upload</h2>
+        {{ PictureUpload.as_p }}
+    </div>
+
     <button type="input" class="btn btn-primary">Submit</button>
 </form>
 
 
 
-    <script>
-    $(function () {
-        $('.datetime-input'.datetimepicker({
-            format:'DD-MM-YYYY'
-            });
-        });
-    </script>

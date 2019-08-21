@@ -86,6 +86,8 @@ class TextForm(forms.Form):
 # todo possible to get a form to pass validation by typing stuff in box, but result in it not creating an entry. Form passes validation, but db doesn't
 
 
+text_form_set = forms.formset_factory(TextForm, extra=1)
+
 
 class PictureUploadForm(forms.ModelForm):
     class Meta:

@@ -1,0 +1,38 @@
+{{ TextForm.management_form }}
+<h2>Texts</h2>
+
+<script type="text/html" id="item-template">
+<div id="item-__prefix__">
+    {{ TextForm.empty_form }}
+</div>
+</script>
+
+<div id="items-form-container">
+    {% for text_form in TextForm %}
+        <div id="item-{{ forloop.counter0 }}">
+            {{ text_form.id }}
+            {{ text_form.as_p }}
+        </div>
+    {% endfor %}
+</div>
+<a href="#" id="add-item-button" class="btn btn-info add-item">Add Item</a>
+
+<script>
+$(document).ready(function() {
+    $('.add-item').click(function(ev) {
+        ev.preventDefault();
+        var count = $('#items-form-container').children().length;
+        var tmplMarkup = $('#item-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('div#items-form-container').append(compiledTmpl);
+
+        // update form count
+        $('#id_form-TOTAL_FORMS').attr('value', count+1);
+
+        // some animate to scroll to view our new form
+        $('html, body').animate({
+                scrollTop: $("#add-item-button").position().top-200
+            }, 800);
+    });
+});
+</script>

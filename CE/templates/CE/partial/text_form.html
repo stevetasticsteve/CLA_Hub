@@ -1,9 +1,13 @@
 {{ TextForm.management_form }}
 <h2>Texts</h2>
+<a href="#" id="add-item-button" class="btn btn-info add-item">Add Text</a>
 
 <script type="text/html" id="item-template">
-<div id="item-__prefix__">
+<p></p>
+<div id="item-__prefix__" class="container-fluid border bg-light"  >
+    <h3>Text __prefix__</h3>
     {{ TextForm.empty_form }}
+    <p></p>
 </div>
 </script>
 
@@ -15,7 +19,6 @@
         </div>
     {% endfor %}
 </div>
-<a href="#" id="add-item-button" class="btn btn-info add-item">Add Item</a>
 
 <script>
 $(document).ready(function() {

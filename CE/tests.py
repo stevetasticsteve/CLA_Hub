@@ -44,7 +44,8 @@ class TestViewPage(TestCase):
         text = models.TextModel(ce=models.CultureEvent.objects.get(pk=1),
                             audio='musicFile.ogg',
                             phonetic_text='foᵘnɛtɪks',
-                            orthographic_text='orthographic')
+                            orthographic_text='orthographic',
+                            valid_for_DA=False)
         text.save()
 
     def test_view_page(self):
@@ -187,11 +188,13 @@ class NewCEPageTest(TestCase):
     def test_new_CE_Page_valid_POST_response(self):
         # new CE should be created
         response = self.client.post(reverse('CE:new'), {
-            'title' : 'A test CE',
+            'title': 'A test CE',
             'description_plain_text' : 'I\'m testing this CE',
-            'date' : '2019-04-20',
+            'date': '2019-04-20',
             'national_participants': 'Ulumo',
-            'team_participants': 'Rhett'
+            'team_participants': 'Rhett',
+            'form-TOTAL_FORMS': 0,
+            'form-INITIAL_FORMS': 0
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         self.assertRedirects(response, '/CE/2')
@@ -212,7 +215,9 @@ class NewCEPageTest(TestCase):
         # Form should be show again with error message
         response = self.client.post(reverse('CE:new'), {
             'Title': 'Example CE1',
-            'description_plain_text': 'I\'m testing this CE'
+            'description_plain_text': 'I\'m testing this CE',
+            'form-TOTAL_FORMS': 0,
+            'form-INITIAL_FORMS': 0
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         #todo form error messages
@@ -224,7 +229,9 @@ class NewCEPageTest(TestCase):
         # Form should be shown again with error message
         # todo no validation shown
         response = self.client.post(reverse('CE:new'), {
-            'description_plain_text': 'I\'m testing this CE'
+            'description_plain_text': 'I\'m testing this CE',
+            'form-TOTAL_FORMS': 0,
+            'form-INITIAL_FORMS': 0
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         # self.assertContains(response, 'This field is required')
@@ -243,7 +250,10 @@ class NewCEPageTest(TestCase):
                                                             'date': '2019-03-20',
                                                             'national_participants': 'Ulumo',
                                                             'team_participants': 'Philip',
-                                                            'picture': test_image})
+                                                            'picture': test_image,
+                                                            'form-TOTAL_FORMS': 0,
+                                                            'form-INITIAL_FORMS': 0
+                                                            })
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
         self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
@@ -290,7 +300,11 @@ class NewCEPageTest(TestCase):
                                                             'phonetic_text': test_phonetics,
                                                             'orthographic_text': test_orthography,
                                                             'phonetic_standard': '1',
-                                                            'audio': test_audio})
+                                                            'audio': test_audio,
+                                                            'valid_for_DA': False,
+                                                            'form-TOTAL_FORMS': 1,
+                                                            'form-INITIAL_FORMS': 0
+                                                            })
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
         self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
@@ -319,7 +333,6 @@ class NewCEPageTest(TestCase):
         elif len(folder_contents) > 1:
             # users have uploaded pictures themselves
             os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
-
 
 
 class UnloggedUserRedirect(TestCase):

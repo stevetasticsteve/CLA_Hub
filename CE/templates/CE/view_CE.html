@@ -58,5 +58,17 @@
 {% endif %}
 </div>
 
+<div class="container-fluid">
+    {% if Questions %}
+    <h3>Questions</h3>
+    {% for q in Questions %}
+    <p>
+        {{ q.question }}
+        Asked by {{q.asked_by}}
+    </p>
+    {% endfor %}
+    {% endif %}
+</div>
+
 
 {% endblock %}

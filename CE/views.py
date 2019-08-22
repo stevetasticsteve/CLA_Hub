@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel
-from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, QuestionForm, text_form_set
+from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
+from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 
 def home_page(request):
@@ -19,11 +19,13 @@ def view(request, pk):
     texts = TextModel.objects.filter(ce=pk)
     pictures = PictureModel.objects.filter(ce=pk)
     participants = ParticipationModel.objects.filter(ce=ce)
+    questions = QuestionModel.objects.filter(ce=ce)
     context = {
         'CE' : ce,
         'Texts' : texts,
         'Pics' : pictures,
-        'Participants' : participants
+        'Participants' : participants,
+        'Questions': questions
     }
     return render(request, 'CE/view_CE.html', context)
 
@@ -103,12 +105,14 @@ def new(request):
         picture_form = PictureUploadForm()
         participant_form = ParticipantForm()
         text_form = text_form_set(request.GET or None, prefix='text')
+        question_form = question_form_set(request.GET or None, prefix='question')
 
         context = {
             'Form': form,
             'PictureUpload': picture_form,
             'ParticipantForm': participant_form,
-            'TextForm': text_form
+            'TextForm': text_form,
+            'QuestionForm' : question_form
         }
         return render(request, 'CE/new_CE.html', context)
 
@@ -117,6 +121,7 @@ def new(request):
         picture_form = PictureUploadForm(request.POST, request.FILES)
         participant_form = ParticipantForm(request.POST)
         text_form = text_form_set(request.POST, request.FILES, prefix='text')
+        question_form = question_form_set(request.POST, prefix='question')
         if form.is_valid():
             ce = CultureEvent()
             ce.title = form.cleaned_data['title']
@@ -137,7 +142,8 @@ def new(request):
                 'Form' : form,
                 'PictureUpload': picture_form,
                 'ParticipantForm': participant_form,
-                'TextForm' : text_form
+                'TextForm' : text_form,
+                'QuestionForm' : question_form
             }
             return render(request, 'CE/new_CE.html', context)
         if picture_form.is_valid():
@@ -165,9 +171,16 @@ def new(request):
                         new_text.valid_for_DA = False
                     new_text.audio = t_form.cleaned_data['audio']
                     new_text.save()
-        # if QuestionForm.is_valid():
-        #     pass
-            #todo finish integrating questions
+        for question in question_form:
+            if question.is_valid():
+                if question.cleaned_data:
+                    new_question = QuestionModel()
+                    new_question.ce = ce
+                    new_question.asked_by = str(request.user)
+                    new_question.last_modified_by = str(request.user)
+                    new_question.question = question.cleaned_data['question']
+                    new_question.answer = question.cleaned_data['answer']
+                    new_question.save()
 
         return redirect('CE:view', pk=ce.pk)
 

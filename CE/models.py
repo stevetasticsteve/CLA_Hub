@@ -146,5 +146,6 @@ class QuestionModel(models.Model):
     question = models.CharField(max_length=200)
     answer = models.CharField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
+    asked_by = models.CharField(max_length=30)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=20)

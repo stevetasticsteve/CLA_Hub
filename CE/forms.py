@@ -137,7 +137,7 @@ class QuestionForm(forms.Form):
         label='Question about CE',
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Write questions here?',
+            'placeholder': 'Write a question here',
         })
     )
     answer = forms.CharField(
@@ -148,5 +148,7 @@ class QuestionForm(forms.Form):
             'placeholder': 'If you know the answer provide it here',
         })
     )
+
+question_form_set = forms.formset_factory(QuestionForm, extra=0)
 
 

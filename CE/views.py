@@ -181,6 +181,7 @@ def new(request):
                     new_question.question = question.cleaned_data['question']
                     new_question.answer = question.cleaned_data['answer']
                     new_question.save()
+                    #todo write question tests
 
         return redirect('CE:view', pk=ce.pk)
 

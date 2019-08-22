@@ -1,24 +1,28 @@
 {{ TextForm.management_form }}
 <h2>Texts</h2>
-<a href="#" id="add-item-button" class="btn btn-info add-item">Add Text</a>
 
 <script type="text/html" id="item-template">
 <p></p>
 <div id="item-__prefix__" class="container-fluid border bg-light"  >
     <h3>Text __prefix__</h3>
-    {{ TextForm.empty_form }}
+    {{ TextForm.empty_form.as_p }}
     <p></p>
 </div>
 </script>
+
+
 
 <div id="items-form-container">
     {% for text_form in TextForm %}
         <div id="item-{{ forloop.counter0 }}">
             {{ text_form.id }}
-            {{ text_form.as_p }}
+            {{ text_form.as_table }}
         </div>
     {% endfor %}
 </div>
+<p></p>
+<a href="#" id="add-item-button" class="btn btn-info add-item">Add Text</a>
+
 
 <script>
 $(document).ready(function() {

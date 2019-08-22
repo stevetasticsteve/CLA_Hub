@@ -152,6 +152,11 @@ def new(request):
                                 new_text.phonetic_standard = 1
                             else:
                                 new_text.phonetic_standard = t_form.cleaned_data['phonetic_standard']
+                        if t_form.cleaned_data['valid_for_DA']:
+                            new_text.valid_for_DA = True
+                            new_text.discourse_type = t_form.cleaned_data['discourse_type']
+                        else:
+                            new_text.valid_for_DA = False
                         new_text.audio = t_form.cleaned_data['audio']
                         new_text.save()
 

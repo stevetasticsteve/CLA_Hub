@@ -120,7 +120,7 @@ class TextModel(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
     audio = models.FileField(upload_to=audio_folder, blank=False)
     phonetic_text = models.TextField(blank=True)
-    phonetic_standard = models.CharField(choices=[('1', 'Unchecked' ),
+    phonetic_standard = models.CharField(choices=[('1', 'Unchecked'),
                                                   ('2', 'Double checked by author'),
                                                   ('3', 'Checked by team mate'),
                                                   ('4', 'Approved by whole team'),
@@ -128,6 +128,14 @@ class TextModel(models.Model):
                                          max_length=30,
                                          blank=True)
     orthographic_text = models.TextField(blank=True)
+    valid_for_DA = models.BooleanField()
+    discourse_type = models.CharField(choices=[('1', 'Narrative'),
+                                               ('2', 'Hortatory'),
+                                               ('3', 'Procedural'),
+                                               ('4', 'Expository'),
+                                               ('5', 'Descriptive')],
+                                      max_length=15,
+                                      blank=True)
 
     def __str__(self):
         return 'Text for ' + str(self.ce)

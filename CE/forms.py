@@ -83,6 +83,16 @@ class TextForm(forms.Form):
         'placeholder': 'type orthographic text here'
     })
     )
+    valid_for_DA = forms.BooleanField(label='Valid for Discourse Analysis')
+    discourse_type = forms.ChoiceField(
+        choices=[('', ''),
+                ('1', 'Narrative'),
+                ('2', 'Hortatory'),
+                ('3', 'Procedural'),
+                ('4', 'Expository'),
+                ('5', 'Descriptive')],
+        label='Discourse type'
+    )
 # todo possible to get a form to pass validation by typing stuff in box, but result in it not creating an entry. Form passes validation, but db doesn't
 
 

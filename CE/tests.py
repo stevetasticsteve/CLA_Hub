@@ -193,8 +193,8 @@ class NewCEPageTest(TestCase):
             'date': '2019-04-20',
             'national_participants': 'Ulumo',
             'team_participants': 'Rhett',
-            'form-TOTAL_FORMS': 0,
-            'form-INITIAL_FORMS': 0
+            'text-TOTAL_FORMS': 0,
+            'text-INITIAL_FORMS': 0
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         self.assertRedirects(response, '/CE/2')
@@ -216,8 +216,8 @@ class NewCEPageTest(TestCase):
         response = self.client.post(reverse('CE:new'), {
             'Title': 'Example CE1',
             'description_plain_text': 'I\'m testing this CE',
-            'form-TOTAL_FORMS': 0,
-            'form-INITIAL_FORMS': 0
+            'text-TOTAL_FORMS': 0,
+            'text-INITIAL_FORMS': 0
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         #todo form error messages
@@ -230,8 +230,8 @@ class NewCEPageTest(TestCase):
         # todo no validation shown
         response = self.client.post(reverse('CE:new'), {
             'description_plain_text': 'I\'m testing this CE',
-            'form-TOTAL_FORMS': 0,
-            'form-INITIAL_FORMS': 0
+            'text-TOTAL_FORMS': 0,
+            'text-INITIAL_FORMS': 0
         }, follow=True)
         self.assertTemplateUsed('CE/new_CE.html')
         # self.assertContains(response, 'This field is required')
@@ -251,8 +251,8 @@ class NewCEPageTest(TestCase):
                                                             'national_participants': 'Ulumo',
                                                             'team_participants': 'Philip',
                                                             'picture': test_image,
-                                                            'form-TOTAL_FORMS': 0,
-                                                            'form-INITIAL_FORMS': 0
+                                                            'text-TOTAL_FORMS': 0,
+                                                            'text-INITIAL_FORMS': 0
                                                             })
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
@@ -297,14 +297,14 @@ class NewCEPageTest(TestCase):
                                                             'date': '2019-03-20',
                                                             'national_participants': 'Ulumo',
                                                             'team_participants': 'Philip',
-                                                            'form-0-phonetic_text': test_phonetics,
-                                                            'form-0-orthographic_text': test_orthography,
-                                                            'form-0-phonetic_standard': '1',
-                                                            'form-0-audio': test_audio,
-                                                            'form-0-valid_for_DA': False,
-                                                            'form-0-discourse_type': '',
-                                                            'form-TOTAL_FORMS': 1,
-                                                            'form-INITIAL_FORMS': 0
+                                                            'text-0-phonetic_text': test_phonetics,
+                                                            'text-0-orthographic_text': test_orthography,
+                                                            'text-0-phonetic_standard': '1',
+                                                            'text-0-audio': test_audio,
+                                                            'text-0-valid_for_DA': False,
+                                                            'text-0-discourse_type': '',
+                                                            'text-TOTAL_FORMS': 1,
+                                                            'text-INITIAL_FORMS': 0
                                                             })
             # todo can't mock a formset post submission
         self.assertRedirects(response, '/CE/2')

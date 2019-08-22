@@ -141,4 +141,10 @@ class TextModel(models.Model):
         return 'Text for ' + str(self.ce)
 
 
-
+class QuestionModel(models.Model):
+    ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
+    question = models.CharField(max_length=200)
+    answer = models.CharField(max_length=200)
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    last_modified_by = models.CharField(max_length=20)

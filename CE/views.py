@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel
-from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, TextForm, text_form_set
+from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, QuestionForm, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 
 def home_page(request):
@@ -92,7 +92,6 @@ def edit(request, pk):
         'Form': form,
         'PictureUpload': picture_form,
         'CurrentPics': current_pics
-        # 'TextForms': text_forms
     }
     return render(request, 'CE/edit_CE.html', context)
 
@@ -103,13 +102,21 @@ def new(request):
         form = CE_EditForm()
         picture_form = PictureUploadForm()
         participant_form = ParticipantForm()
-        text_form = text_form_set(request.GET or None)
+        text_form = text_form_set(request.GET or None, prefix='text')
+
+        context = {
+            'Form': form,
+            'PictureUpload': picture_form,
+            'ParticipantForm': participant_form,
+            'TextForm': text_form
+        }
+        return render(request, 'CE/new_CE.html', context)
 
     elif request.method == 'POST':
         form = CE_EditForm(request.POST)
         picture_form = PictureUploadForm(request.POST, request.FILES)
         participant_form = ParticipantForm(request.POST)
-        text_form = text_form_set(request.POST, request.FILES)
+        text_form = text_form_set(request.POST, request.FILES, prefix='text')
         if form.is_valid():
             ce = CultureEvent()
             ce.title = form.cleaned_data['title']
@@ -158,15 +165,12 @@ def new(request):
                         new_text.valid_for_DA = False
                     new_text.audio = t_form.cleaned_data['audio']
                     new_text.save()
+        # if QuestionForm.is_valid():
+        #     pass
+            #todo finish integrating questions
 
         return redirect('CE:view', pk=ce.pk)
 
-    context = {
-        'Form': form,
-        'PictureUpload': picture_form,
-        'ParticipantForm': participant_form,
-        'TextForm' : text_form
-    }
-    return render(request, 'CE/new_CE.html', context)
+
 
 

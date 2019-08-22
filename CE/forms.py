@@ -131,3 +131,22 @@ class ParticipantForm(forms.Form):
     )
 
 
+class QuestionForm(forms.Form):
+    question = forms.CharField(
+        required=True,
+        label='Question about CE',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Write questions here?',
+        })
+    )
+    answer = forms.CharField(
+        required=True,
+        label='Answer',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'If you know the answer provide it here',
+        })
+    )
+
+

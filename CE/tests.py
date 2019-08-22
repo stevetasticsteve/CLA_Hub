@@ -272,7 +272,7 @@ class NewCEPageTest(TestCase):
         # check image displayed on view page
         response = self.client.get(reverse('CE:view', args='2'))
         self.assertContains(response, 'Test CE')
-        self.assertContains(response, '<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">')
+        self.assertContains(response, '<div id="carouselExampleIndicators"')
         self.assertContains(response, '<img src="/uploads/CultureEventFiles/2/images/test_pic1.jpg')
 
         # clean up after test - test uploads go onto actual file system program uses
@@ -297,14 +297,16 @@ class NewCEPageTest(TestCase):
                                                             'date': '2019-03-20',
                                                             'national_participants': 'Ulumo',
                                                             'team_participants': 'Philip',
-                                                            'phonetic_text': test_phonetics,
-                                                            'orthographic_text': test_orthography,
-                                                            'phonetic_standard': '1',
-                                                            'audio': test_audio,
-                                                            'valid_for_DA': False,
+                                                            'form-0-phonetic_text': test_phonetics,
+                                                            'form-0-orthographic_text': test_orthography,
+                                                            'form-0-phonetic_standard': '1',
+                                                            'form-0-audio': test_audio,
+                                                            'form-0-valid_for_DA': False,
+                                                            'form-0-discourse_type': '',
                                                             'form-TOTAL_FORMS': 1,
                                                             'form-INITIAL_FORMS': 0
                                                             })
+            # todo can't mock a formset post submission
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
         self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')

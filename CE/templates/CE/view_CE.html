@@ -43,7 +43,7 @@
 {% if Texts %}
     <h3>Texts</h3>
     {% for text in Texts %}
-    {% if text.audio.url %}
+    {% if text.audio %}
     <audio controls> <source src="{{text.audio.url}}"></audio>
     {% endif %}
     {% if text.phonetic_text %}

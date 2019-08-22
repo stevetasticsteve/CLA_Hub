@@ -1,6 +1,7 @@
 {{ TextForm.management_form }}
 <h2>Texts</h2>
 
+<!--Hidden template that includes form-->
 <script type="text/html" id="item-template">
 <p></p>
 <div id="item-__prefix__" class="container-fluid border bg-light"  >
@@ -10,6 +11,7 @@
 </div>
 </script>
 
+<!--Include text forms sent by server-->
 <div id="items-form-container">
     {% for text_form in TextForm %}
         <div id="item-{{ forloop.counter0 }}">
@@ -19,9 +21,10 @@
     {% endfor %}
 </div>
 <p></p>
+<!--Add new text button-->
 <a href="#" id="add-item-button" class="btn btn-info add-item">Add Text</a>
 
-
+<!--Script to make new form appear-->
 <script>
 $(document).ready(function() {
     $('.add-item').click(function(ev) {

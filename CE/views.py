@@ -139,26 +139,25 @@ def new(request):
                 new_pic.ce = ce
                 new_pic.picture = picture_form.cleaned_data['picture']
                 new_pic.save()
-        if text_form.is_valid():
-            for t_form in text_form:
-                if t_form.is_valid():
-                    if t_form.cleaned_data:
-                        new_text = TextModel()
-                        new_text.ce = ce
-                        new_text.orthographic_text = t_form.cleaned_data['orthographic_text']
-                        new_text.phonetic_text = t_form.cleaned_data['phonetic_text']
-                        if t_form.cleaned_data['phonetic_text']:
-                            if t_form.cleaned_data['phonetic_standard'] == '':
-                                new_text.phonetic_standard = 1
-                            else:
-                                new_text.phonetic_standard = t_form.cleaned_data['phonetic_standard']
-                        if t_form.cleaned_data['valid_for_DA']:
-                            new_text.valid_for_DA = True
-                            new_text.discourse_type = t_form.cleaned_data['discourse_type']
+        for t_form in text_form:
+            if t_form.is_valid():
+                if t_form.cleaned_data:
+                    new_text = TextModel()
+                    new_text.ce = ce
+                    new_text.orthographic_text = t_form.cleaned_data['orthographic_text']
+                    new_text.phonetic_text = t_form.cleaned_data['phonetic_text']
+                    if t_form.cleaned_data['phonetic_text']:
+                        if t_form.cleaned_data['phonetic_standard'] == '':
+                            new_text.phonetic_standard = 1
                         else:
-                            new_text.valid_for_DA = False
-                        new_text.audio = t_form.cleaned_data['audio']
-                        new_text.save()
+                            new_text.phonetic_standard = t_form.cleaned_data['phonetic_standard']
+                    if t_form.cleaned_data['valid_for_DA']:
+                        new_text.valid_for_DA = True
+                        new_text.discourse_type = t_form.cleaned_data['discourse_type']
+                    else:
+                        new_text.valid_for_DA = False
+                    new_text.audio = t_form.cleaned_data['audio']
+                    new_text.save()
 
         return redirect('CE:view', pk=ce.pk)
 

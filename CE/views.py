@@ -147,7 +147,11 @@ def new(request):
                         new_text.ce = ce
                         new_text.orthographic_text = t_form.cleaned_data['orthographic_text']
                         new_text.phonetic_text = t_form.cleaned_data['phonetic_text']
-                        new_text.phonetic_standard = t_form.cleaned_data['phonetic_standard']
+                        if t_form.cleaned_data['phonetic_text']:
+                            if t_form.cleaned_data['phonetic_standard'] == '':
+                                new_text.phonetic_standard = 1
+                            else:
+                                new_text.phonetic_standard = t_form.cleaned_data['phonetic_standard']
                         new_text.audio = t_form.cleaned_data['audio']
                         new_text.save()
 

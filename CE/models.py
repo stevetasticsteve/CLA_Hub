@@ -144,8 +144,13 @@ class TextModel(models.Model):
 class QuestionModel(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     question = models.CharField(max_length=200)
-    answer = models.CharField(max_length=200)
+    answer = models.CharField(max_length=200,
+                              blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     asked_by = models.CharField(max_length=30)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=20)
+    answered_by = models.CharField(max_length=20)
+
+    def __str__(self):
+        return 'Question about ' + str(self.ce) + ' CE'

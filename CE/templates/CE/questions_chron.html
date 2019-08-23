@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block page_content %}
+
+<div class="container-fluid">
+    <h1>Questions</h1>
+    <div class="btn=group" role="group" aria-label="Filter options" >
+        <a href="{% url 'CE:questions_alph' %}" role="button" class="btn btn-secondary">Alphabetically</a>
+        <button type="button" class="btn btn-primary">Chronologically</button>
+        <a href="{% url 'CE:questions_unanswered' %}" role="button" class="btn btn-secondary">Unanswered</a>
+        <a href="{% url 'CE:questions_recent' %}" role="button" class="btn btn-secondary">Recent answers</a>
+    </div>
+    <p>Ordered most recently asked question first</p>
+</div>
+
+{% include 'CE/partial/question_table.html' %}
+
+
+{% endblock %}

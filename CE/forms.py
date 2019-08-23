@@ -141,7 +141,7 @@ class QuestionForm(forms.Form):
         })
     )
     answer = forms.CharField(
-        required=True,
+        required=False,
         label='Answer',
         widget=forms.TextInput(attrs={
             'class': 'form-control',

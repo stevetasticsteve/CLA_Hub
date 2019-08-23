@@ -1,0 +1,26 @@
+{% for ce in CEs %}
+<div class="container-fluid border">
+    <h3><a href="{{ce.id}}">{{ ce.title }}</a></h3>
+    <table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Question</th>
+        <th scope="col">Asked by</th>
+        <th scope="col">Answer</th>
+        <th scope="col">Answered by</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for q in Questions %}
+    {% if q.ce == ce %}
+    <td>{{q.question}}</td>
+    <td>{{q.asked_by}} on {{q.date_created}}</td>
+    <td>{{q.answer}}</td>
+    <td>{{q.answered_by}}</td>
+    {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+<p></p>
+{% endfor %}

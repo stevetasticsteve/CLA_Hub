@@ -180,11 +180,49 @@ def new(request):
                     new_question.last_modified_by = str(request.user)
                     new_question.question = question.cleaned_data['question']
                     new_question.answer = question.cleaned_data['answer']
+                    if question.cleaned_data['answer']:
+                        new_question.answered_by = str(request.user)
                     new_question.save()
                     #todo write question tests
 
         return redirect('CE:view', pk=ce.pk)
 
 
+def questions_chron(request):
+    questions = QuestionModel.objects.order_by('-date_created', 'ce')
+    set_ces = set([i.ce for i in questions])
+    context = {
+        'Questions': questions,
+        'CEs': set_ces
+    }
+    return render(request, 'CE/questions_chron.html', context)
 
 
+def questions_alph(request):
+    q = QuestionModel.objects.all()
+    set_ces = set([i.ce for i in q])
+    set_ces = sorted(set_ces, key=lambda x: x.title.lower())
+    context = {
+        'Questions': q,
+        'CEs': set_ces
+    }
+    return render(request, 'CE/questions_alph.html', context)
+
+def questions_unanswered(request):
+    questions = QuestionModel.objects.filter(answer='').order_by('ce', '-last_modified')
+    set_ces = set([i.ce for i in questions])
+    context = {
+        'Questions': questions,
+        'CEs': set_ces
+    }
+    return render(request, 'CE/questions_unanswered.html', context)
+
+
+def questions_recent(request):
+    questions = QuestionModel.objects.all().exclude(answer='').order_by('ce', '-last_modified')
+    set_ces = set([i.ce for i in questions])
+    context = {
+        'Questions': questions,
+        'CEs': set_ces
+    }
+    return render(request, 'CE/questions_recent.html', context)

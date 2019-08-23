@@ -189,7 +189,7 @@ def new(request):
 
 
 def questions_chron(request):
-    questions = QuestionModel.objects.order_by('-date_created', 'ce')
+    questions = QuestionModel.objects.order_by('-date_created')
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,

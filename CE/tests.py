@@ -6,6 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from CE import models, settings, forms
 
 import os
+import time
 
 # A separate test class for each model or view
 # a seperate test method for each set of conditions you want to test
@@ -471,17 +472,15 @@ class QuestionPageTest(TestCase):
         questions = models.QuestionModel(question='First question',
                                          answer='First answer',
                                          asked_by='Tester',
-                                         date_created='2019-08-06',
                                          ce=ce)
         questions.save()
-
+        time.sleep(0.1)
         ce = models.CultureEvent(title='Cats like Example CE2',
                                  description_plain_text='A culture event happened again',
                                  differences='Last time it was different')
         ce.save()
         questions = models.QuestionModel(question='Second question',
                                          asked_by='Tester',
-                                         date_created='2019-08-10',
                                          ce=ce)
         questions.save()
         participants = models.ParticipationModel(date='2019-08-06',
@@ -489,6 +488,7 @@ class QuestionPageTest(TestCase):
                                                  national_participants='Ulumo',
                                                  ce=ce)
         participants.save()
+        time.sleep(0.1)
 
         ce = models.CultureEvent(title='because I can Example CE3',
                                  description_plain_text='A culture event happened a third time',
@@ -496,12 +496,11 @@ class QuestionPageTest(TestCase):
         ce.save()
         questions = models.QuestionModel(question='Third question',
                                          asked_by='Tester',
-                                         date_created='2019-08-07',
                                          ce=ce)
         questions.save()
+        time.sleep(0.1)
         questions = models.QuestionModel(question='Fourth question',
                                          asked_by='Tester',
-                                         date_created='2019-08-07',
                                          ce=ce)
         questions.save()
         participants = models.ParticipationModel(date='2019-08-07',
@@ -518,6 +517,11 @@ class QuestionPageTest(TestCase):
         self.assertContains(response, 'First question')
         # get a ordered list from .db and then check slice position of each question
         q = models.QuestionModel.objects.all().order_by('-date_created')
+        # check that questions were uploaded in the right order on class initialisation
+        self.assertEqual(q[0].question, 'Fourth question', 'Test data not in correct order')
+        self.assertEqual(q[1].question, 'Third question', 'Test data not in correct order')
+        self.assertEqual(q[2].question, 'Second question', 'Test data not in correct order')
+        self.assertEqual(q[3].question, 'First question', 'Test data not in correct order')
         html = response.content.decode('utf8')
         q1_pos = html.find(q[0].question)
         q2_pos = html.find(q[1].question)
@@ -528,7 +532,29 @@ class QuestionPageTest(TestCase):
         self.assertGreater(q4_pos, q3_pos)
 
     def test_alphabetical_question_page(self):
-        self.fail('Finish the test!')
+        response = self.client.get(reverse('CE:questions_alph'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('CE/questions_alph.html')
+        self.assertContains(response, 'An Example CE1')
+        self.assertContains(response, 'because I can Example CE3')
+        # get a ordered list from .db and then check slice position of each question
+        q = models.QuestionModel.objects.all()
+        self.assertEqual(len(q), 4, 'Wrong number of questions')
+        set_ces = set([i.ce for i in q])
+        set_ces = sorted(set_ces, key=lambda x: x.title.lower())
+        self.assertEqual(len(set_ces), 3, 'Wrong number of unique CEs')
+        # check that questions were uploaded in the right order on class initialisation
+        self.assertEqual(set_ces[0].title, 'An Example CE1', 'Test data not in correct order')
+        self.assertEqual(set_ces[1].title, 'because I can Example CE3', 'Test data not in correct order')
+        self.assertEqual(set_ces[2].title, 'Cats like Example CE2', 'Test data not in correct order')
+        html = response.content.decode('utf8')
+        ce1_pos = html.find(set_ces[0].title)
+        ce2_pos = html.find(set_ces[1].title)
+        ce3_pos = html.find(set_ces[2].title)
+        self.assertGreater(ce2_pos, ce1_pos)
+        self.assertGreater(ce3_pos, ce2_pos)
+
+
 
 # Form tests
 class CE_EditFormTests(TestCase):

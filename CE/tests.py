@@ -459,7 +459,7 @@ class QuestionPageTest(TestCase):
     def setUp(self):
         self.client.login(username='Tester', password='secure_password')
         # have one model previously in .db
-        ce = models.CultureEvent(title='Example CE1',
+        ce = models.CultureEvent(title='An Example CE1',
                                  description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
@@ -475,13 +475,13 @@ class QuestionPageTest(TestCase):
                                          ce=ce)
         questions.save()
 
-        ce = models.CultureEvent(title='Example CE2',
+        ce = models.CultureEvent(title='Cats like Example CE2',
                                  description_plain_text='A culture event happened again',
                                  differences='Last time it was different')
         ce.save()
         questions = models.QuestionModel(question='Second question',
                                          asked_by='Tester',
-                                         date_created='2019-08-07',
+                                         date_created='2019-08-10',
                                          ce=ce)
         questions.save()
         participants = models.ParticipationModel(date='2019-08-06',
@@ -490,7 +490,7 @@ class QuestionPageTest(TestCase):
                                                  ce=ce)
         participants.save()
 
-        ce = models.CultureEvent(title='Example CE3',
+        ce = models.CultureEvent(title='because I can Example CE3',
                                  description_plain_text='A culture event happened a third time',
                                  differences='Last time it was different')
         ce.save()
@@ -516,7 +516,19 @@ class QuestionPageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('CE/questions_chron.html')
         self.assertContains(response, 'First question')
-        self.fail('Finish this test')
+        # get a ordered list from .db and then check slice position of each question
+        q = models.QuestionModel.objects.all().order_by('-date_created')
+        html = response.content.decode('utf8')
+        q1_pos = html.find(q[0].question)
+        q2_pos = html.find(q[1].question)
+        q3_pos = html.find(q[2].question)
+        q4_pos = html.find(q[3].question)
+        self.assertGreater(q2_pos, q1_pos)
+        self.assertGreater(q3_pos, q2_pos)
+        self.assertGreater(q4_pos, q3_pos)
+
+    def test_alphabetical_question_page(self):
+        self.fail('Finish the test!')
 
 # Form tests
 class CE_EditFormTests(TestCase):

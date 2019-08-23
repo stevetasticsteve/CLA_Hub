@@ -316,7 +316,6 @@ class NewCEPageTest(TestCase):
                                                             'question-TOTAL_FORMS': 0,
                                                             'question-INITIAL_FORMS': 0
                                                             })
-            # todo can't mock a formset post submission
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
         self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
@@ -346,6 +345,90 @@ class NewCEPageTest(TestCase):
             # users have uploaded pictures themselves
             os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
 
+    def test_single_question_submit(self):
+        question = 'Does this work?'
+        answer = 'I hope so!'
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                            'date': '2019-03-20',
+                                                            'national_participants': 'Ulumo',
+                                                            'team_participants': 'Philip',
+                                                            'text-TOTAL_FORMS': 0,
+                                                            'text-INITIAL_FORMS': 0,
+                                                            'question-TOTAL_FORMS': 1,
+                                                            'question-INITIAL_FORMS': 0,
+                                                            'question-0-question': question,
+                                                            'question-0-answer': answer
+                                                            })
+        self.assertRedirects(response, '/CE/2')
+        q = models.QuestionModel.objects.all()
+        self.assertEqual(len(q), 1)
+        self.assertEqual(q[0].question, question)
+        self.assertEqual(q[0].answer, answer)
+        self.assertEqual(q[0].asked_by, 'Tester')
+        self.assertEqual(q[0].last_modified_by, 'Tester')
+
+    def test_incomplete_question_sumbit(self):
+        question = 'Does this work?'
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'date': '2019-03-20',
+                                                        'national_participants': 'Ulumo',
+                                                        'team_participants': 'Philip',
+                                                        'text-TOTAL_FORMS': 0,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 1,
+                                                        'question-INITIAL_FORMS': 0,
+                                                        'question-0-question': question,
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        q = models.QuestionModel.objects.all()
+        self.assertEqual(len(q), 1)
+        self.assertEqual(q[0].question, question)
+        self.assertEqual(q[0].answer, '')
+        self.assertEqual(q[0].asked_by, 'Tester')
+        self.assertEqual(q[0].last_modified_by, 'Tester')
+
+    def test_multiple_question_submit(self):
+        question = 'Does this work?'
+        answer = 'I hope so!'
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'date': '2019-03-20',
+                                                        'national_participants': 'Ulumo',
+                                                        'team_participants': 'Philip',
+                                                        'text-TOTAL_FORMS': 0,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 40,
+                                                        # todo blank forms are being added by JS
+                                                        'question-INITIAL_FORMS': 0,
+                                                        'question-0-question': question,
+                                                        'question-0-answer': answer,
+                                                        'question-2-question': question,
+                                                        'question-2-answer': answer,
+                                                        'question-4-question': question,
+                                                        'question-4-answer': answer
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        q = models.QuestionModel.objects.all()
+        self.assertEqual(len(q), 3)
+        for thing in q:
+            self.assertEqual(thing.question, question)
+            self.assertEqual(thing.answer, answer)
+            self.assertEqual(thing.asked_by, 'Tester')
+            self.assertEqual(thing.last_modified_by, 'Tester')
+
+    def blank_questions_submitted(self):
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'date': '2019-03-20',
+                                                        'national_participants': 'Ulumo',
+                                                        'team_participants': 'Philip',
+                                                        'text-TOTAL_FORMS': 0,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 10,
+                                                        'question-INITIAL_FORMS': 0,
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        q = models.QuestionModel.objects.all()
+        self.assertEqual(len(q), 0)
+
 
 class UnloggedUserRedirect(TestCase):
     def test_redirected_from_edit_CE_page(self):
@@ -363,6 +446,77 @@ class UnloggedUserRedirect(TestCase):
         self.assertEqual(response.status_code, 200,
                          'Unlogged User not redirected from edit CE page')
         self.assertRedirects(response, '/accounts/login/?next=/CE/new')
+
+
+class QuestionPageTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        credentials = User(username='Tester')
+        credentials.set_password('secure_password')
+        credentials.save()
+
+    def setUp(self):
+        self.client.login(username='Tester', password='secure_password')
+        # have one model previously in .db
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A culture event happened',
+                                 differences='Last time it was different')
+        ce.save()
+        participants = models.ParticipationModel(date='2019-08-05',
+                                                 team_participants='Steve',
+                                                 national_participants='Ulumo',
+                                                 ce=ce)
+        participants.save()
+        questions = models.QuestionModel(question='First question',
+                                         answer='First answer',
+                                         asked_by='Tester',
+                                         date_created='2019-08-06',
+                                         ce=ce)
+        questions.save()
+
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text='A culture event happened again',
+                                 differences='Last time it was different')
+        ce.save()
+        questions = models.QuestionModel(question='Second question',
+                                         asked_by='Tester',
+                                         date_created='2019-08-07',
+                                         ce=ce)
+        questions.save()
+        participants = models.ParticipationModel(date='2019-08-06',
+                                                 team_participants='Rhett',
+                                                 national_participants='Ulumo',
+                                                 ce=ce)
+        participants.save()
+
+        ce = models.CultureEvent(title='Example CE3',
+                                 description_plain_text='A culture event happened a third time',
+                                 differences='Last time it was different')
+        ce.save()
+        questions = models.QuestionModel(question='Third question',
+                                         asked_by='Tester',
+                                         date_created='2019-08-07',
+                                         ce=ce)
+        questions.save()
+        questions = models.QuestionModel(question='Fourth question',
+                                         asked_by='Tester',
+                                         date_created='2019-08-07',
+                                         ce=ce)
+        questions.save()
+        participants = models.ParticipationModel(date='2019-08-07',
+                                                 team_participants='Philip',
+                                                 national_participants='Ulumo',
+                                                 ce=ce)
+        participants.save()
+
+
+    def test_chron_question_page(self):
+        response = self.client.get(reverse('CE:questions_chron'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('CE/questions_chron.html')
+        self.assertContains(response, 'First question')
+        self.fail('Finish this test')
 
 # Form tests
 class CE_EditFormTests(TestCase):

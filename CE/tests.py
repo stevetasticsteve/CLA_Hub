@@ -14,7 +14,6 @@ import time
 
 # view tests
 class CEHomeViewTest(TestCase):
-
     def setUp(self):
         self.total_CEs = settings.culture_events_shown_on_home_page + 1
         for i in range(self.total_CEs):
@@ -661,6 +660,26 @@ class CEModelTest(TestCase):
         self.assertIn('{reference}', ce.description_plain_text)
         self.assertNotIn('{reference}', ce.description)
 
+    def test_invalid_HTML_removed(self):
+        settings.auto_cross_reference = True
+        # create 1st CE
+        ce = models.CultureEvent(title='First CE',
+                                 description_plain_text='<strong>Example CE1</strong>'
+                                                        '<a href="Dodgywebsite.come">Click here</a>'
+                                                        '<script>Nasty JS</script>')
+        ce.save()
+        # <script> removed
+        self.assertIn('<script>', ce.description_plain_text)
+        self.assertNotIn('<script>', ce.description)
+
+        # <a> removed
+        self.assertIn('<a href', ce.description_plain_text)
+        self.assertNotIn('<a href', ce.description)
+
+        # <strong> allowed
+        settings.bleach_allowed = ['strong']
+        self.assertIn('<strong>', ce.description_plain_text)
+        self.assertIn('<strong>', ce.description)
 
 
 class TextsModelTest(TestCase):

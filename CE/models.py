@@ -7,6 +7,7 @@ from io import BytesIO
 import CE.settings
 import sys
 import re
+import bleach
 
 class CultureEvent(models.Model):
     title = models.CharField(max_length=60, blank=False, unique=True)
@@ -24,7 +25,10 @@ class CultureEvent(models.Model):
 
     def save(self):
         # copy the user's input from plain text to description to be processed
-        self.description = self.description_plain_text
+        # uses bleach to remove potentially harmful HTML code
+        self.description = bleach.clean(str(self.description_plain_text),
+                                        tags=CE.settings.bleach_allowed,
+                                        strip=True)
         if CE.settings.auto_cross_reference:
             self.auto_cross_ref()
         else:

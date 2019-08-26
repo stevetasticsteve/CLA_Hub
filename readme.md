@@ -5,14 +5,14 @@ The software is intended to be run on a Raspberry pi 3 on an internal team netwo
 
 ## Core features
 - Create web pages to document culture events (CEs)
-    x Allow cross linking to other CEs
-    x Provides a template for documenting CEs
-    x Fields for phonetic and orthographic text
-    x Label phonetic text with different levels of accuracy enabling exports of thoroughly checked
+    - Allow cross linking to other CEs
+    - Provides a template for documenting CEs
+    - Fields for phonetic and orthographic text
+    - Label phonetic text with different levels of accuracy enabling exports of thoroughly checked
       phonetic data to other tools
-    x Able to tag phonetic/orthographic texts as valid for discourse analysis
-    x Able to attach/embed audio recordings of vernacular texts
-    x Able to attach/embed photos of CEs. Auto compression of pictures for low storage needs.
+    - Able to tag phonetic/orthographic texts as valid for discourse analysis
+    - Able to attach/embed audio recordings of vernacular texts
+    - Able to attach/embed photos of CEs. Auto compression of pictures for low storage needs.
     - Store CE data in a database format allowing for retrieval and other processing
     - Be able to tag vernacular text with outline of cultural materials (OCM) tags
     - Unanswered questions regarding individual CE that can be gathered summarised
@@ -51,3 +51,9 @@ The software is intended to be run on a Raspberry pi 3 on an internal team netwo
 - List of language activities for each CE (TPR, photobook etc.)
 - Auto create anki decks.
 - Deployment tools to help non techie missionaries set up Raspi web server
+
+## Request features from team mates
+- OCM Guide
+- Text accent tag
+- Texts added to navbar - search and filter texts
+- Caption to picture

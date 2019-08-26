@@ -77,7 +77,6 @@ class TestViewPage(TestCase):
 #                                  participation='Rhett did it',
 #                                  differences='Last time it was different')
 #         ce.save()
-#         # todo text model not used in tests
 #         text = models.TextModel(ce=models.CultureEvent.objects.get(pk=1),
 #                             audio='musicFile.ogg',
 #                             phonetic_text='foᵘnɛtɪks',
@@ -176,6 +175,24 @@ class NewCEPageTest(TestCase):
                                                  ce=ce)
         participants.save()
 
+    def full_valid_POST(self, follow):
+        posted_data = {
+            'title': 'A test CE',
+            'description_plain_text': 'I\'m testing this CE',
+            'interpretation': 'I feel good about this',
+            'variation': 'last time it was different',
+            'date': '2019-04-20',
+            'national_participants': 'Ulumo',
+            'team_participants': 'Rhett',
+            'text-TOTAL_FORMS': 0,
+            'text-INITIAL_FORMS': 0,
+            'question-TOTAL_FORMS': 0,
+            'question-INITIAL_FORMS': 0
+        }
+        response = self.client.post(reverse('CE:new'), posted_data , follow=follow)
+
+        return response, posted_data
+
     def test_new_CE_page_GET_response(self):
         # blank form should be returned
         response = self.client.get(reverse('CE:new'))
@@ -185,32 +202,27 @@ class NewCEPageTest(TestCase):
         self.assertContains(response, '<form')
         self.assertContains(response, '<label for="id_title">CE title:</label>')
 
-    def test_new_CE_Page_valid_POST_response(self):
-        # new CE should be created
-        response = self.client.post(reverse('CE:new'), {
-            'title': 'A test CE',
-            'description_plain_text' : 'I\'m testing this CE',
-            'date': '2019-04-20',
-            'national_participants': 'Ulumo',
-            'team_participants': 'Rhett',
-            'text-TOTAL_FORMS': 0,
-            'text-INITIAL_FORMS': 0,
-            'question-TOTAL_FORMS': 0,
-            'question-INITIAL_FORMS': 0
-        }, follow=True)
+    def test_redirect_after_POST(self):
+        response, _ = self.full_valid_POST(follow=False)
         self.assertTemplateUsed('CE/new_CE.html')
+        self.assertEqual(response.status_code, 302)
+
+    def test_redirects_to_new_CE_after_POST(self):
+        response, _ = self.full_valid_POST(follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('CE/view_CE.html')
         self.assertRedirects(response, '/CE/2')
+
+    def test_new_CE_Page_in_db_after_POST(self):
+        response, posted_data = self.full_valid_POST(follow=True)
         ce = models.CultureEvent.objects.get(pk=2)
-        self.assertEqual(ce.title, 'A test CE', 'new CE title not correct')
-        self.assertEqual(ce.description_plain_text, 'I\'m testing this CE', 'new CE description not correct')
-        self.assertEqual('A test CE', ce.title, 'New CE not in database')
-        self.assertEqual(response.status_code, 200, 'New page not shown')
-        self.assertContains(response, 'A test CE')
-        self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
+        self.assertEqual(ce.title, posted_data['title'], 'new CE title not correct')
+        self.assertEqual(ce.description_plain_text, posted_data['description_plain_text'],
+                         'new CE description not correct')
+        self.assertEqual(ce.last_modified_by, 'Tester',
+                         'Last modified by not updated')
         self.assertEqual(len(models.TextModel.objects.all()), 0, 'A blank Text was added')
 
-        response = self.client.get(reverse('CE:view', args='2'))
-        self.assertEqual(response.status_code, 200, 'New CE view page not displaying correctly')
 
 
     def test_new_CE_page_invalid_POST_repeated_title_response(self):

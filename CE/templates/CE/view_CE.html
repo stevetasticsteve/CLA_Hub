@@ -34,6 +34,13 @@
 <p> {{ CE.differences }}</p>
 </div>
 {% endif %}
+<div class="container-fluid">
+{% if CE.interpretation %}
+<h3>Interpretation</h3>
+<p> {{ CE.interpretation }}</p>
+</div>
+</div>
+{% endif %}
 
 {% if Pics %}
 {% include 'CE/partial/bootstrap_carousel.html' %}
@@ -43,6 +50,8 @@
 {% if Texts %}
     <h3>Texts</h3>
     {% for text in Texts %}
+    <div class="container-fluid border">
+    <h4>Text {{forloop.counter}}</h4>
     {% if text.audio %}
     <audio controls> <source src="{{text.audio.url}}"></audio>
     {% endif %}
@@ -54,21 +63,39 @@
     <h4>Orthographic text</h4>
     <p> {{ text.orthographic_text }}</p>
     {% endif %}
+    </div>
+    <p></p>
     {% endfor %}
 {% endif %}
 </div>
 
 <div class="container-fluid">
     {% if Questions %}
+    <p></p>
     <h3>Questions</h3>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Question</th>
+        <th scope="col">Asked by</th>
+        <th scope="col">Answer</th>
+        <th scope="col">Answered by</th>
+    </tr>
+    </thead>
+    <tbody>
     {% for q in Questions %}
-    <p>
-        {{ q.question }}
-        Asked by {{q.asked_by}}
-    </p>
+    <td>{{q.question}}</td>
+    <td>{{q.asked_by}} on {{q.date_created}}</td>
+    <td>{{q.answer}}</td>
+    <td>{{q.answered_by}}</td>
     {% endfor %}
-    {% endif %}
+    </tbody>
+</table>
+</div>
+{% endif %}
 </div>
 
+<p></p>
 
 {% endblock %}

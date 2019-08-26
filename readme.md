@@ -5,7 +5,7 @@ The software is intended to be run on a Raspberry pi 3 on an internal team netwo
 
 ## Core features
 - Create web pages to document culture events (CEs)
-    - Allow cross linking to other CEs
+    x Allow cross linking to other CEs
     x Provides a template for documenting CEs
     x Fields for phonetic and orthographic text
     x Label phonetic text with different levels of accuracy enabling exports of thoroughly checked

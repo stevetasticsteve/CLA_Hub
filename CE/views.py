@@ -66,6 +66,8 @@ def edit(request, pk):
             ce.description = form.cleaned_data['description']
             ce.pk = pk
             ce.last_modified_by = str(request.user)
+            ce.interpretation = form.cleaned_data['interpretation']
+            ce.variation = form.cleaned_data['variation']
             ce.save()
             messages.success(request, 'CE updated')
             if picture_form.is_valid():

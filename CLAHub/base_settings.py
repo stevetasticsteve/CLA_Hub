@@ -100,7 +100,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'CLAHub/static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'CLAHub/assets'),)
+STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
 LOGIN_REDIRECT_URL = '/CE'
 LOGOUT_REDIRECT_URL = '/CE'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')

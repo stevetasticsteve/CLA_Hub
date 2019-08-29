@@ -1,0 +1,92 @@
+Deployment steps on Linux
+
+1. Clone the github repo
+git clone https://github.com/stevetasticsteve/CLA_Hub destination_folder
+
+(cd to new folder)
+
+2. Create virtual environment
+python3 -m venv venv
+
+3. Activate venv
+source venv/bin/activate
+
+4. Install dependencies
+pip install -r requirements.txt
+
+(disable venv)
+5. Install Apache2
+sudo apt-get install apache2
+
+6. Enable Apache2 Proxy
+sudo a2enmod proxy_http
+
+7. Configure Apache settings at:
+/etc/apache2/sites-available/000-default.conf
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	DocumentRoot destination_folder
+	ServerName CLAHub
+	ServerAlias CLAHub
+
+	ErrorLog ${APACHE_LOG_DIR}/CLAHub-error.log
+	CustomLog ${APACHE_LOG_DIR}/CLAHub-access.log
+	
+	ProxyPreserveHost On
+	ProxyPass /static/ !
+	ProxyPass /uploads/ !
+	ProxyPass other_urls_you_want_unproxied !
+	ProxyPass / http://localhost:8000/
+	ProxyPassReverse / http://localhost:8000/
+	Alias /static/ destination_folder/CLAHub/static/
+	Alias /uploads/ destination_folder/CLAHub/uploads/
+
+	<Directory destination_folder/static/>
+	Order deny,allow
+	Allow from all
+	Options Indexes FollowSymLinks Multiviews
+	Satisfy Any
+	</Directory>
+
+	<Directory destination_folder/uploads/>
+	Order deny,allow
+	Allow from all
+	Options Indexes FollowSymLinks Multiviews
+	Satisfy Any
+	</Directory>
+</VirtualHost>
+
+8. Restart Apache
+sudo service apache2 restart
+
+9. Set Gunicorn to auto start on boot
+sudo nano /etc/systemd/system/CLAHub.service
+
+[Unit]
+Description=Gunicorn server for running CLAHub
+After=network.target
+
+[Serice]
+User=pi
+Restart=on-failure
+WorkingDirectory=destination_folder
+EnvironmentFile=destination_folder/.env
+
+ExecStart=destination_folder/venv/bin/gunicorn CLAHub.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+
+10. set .env variables
+cd destination_folder
+echo ALLOWED_HOSTS=$(hostname -I) >> .env
+echo SECRET_KEY=${date +%s | sha256sum | base64 | head -c 50) >> .env
+
+
+11. Update system services
+sudo systemctl daemon-reload
+sudo systsemctl enable CLAHub
+sudo systemctl start CLAHub
+sudo service apache2 restart
+

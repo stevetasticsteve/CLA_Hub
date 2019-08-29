@@ -4,6 +4,7 @@ from django.contrib import messages
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
+from CE import OCM_categories
 
 def home_page(request):
     most_recent_ces = CultureEvent.objects.all().order_by(
@@ -228,3 +229,10 @@ def questions_recent(request):
         'CEs': set_ces
     }
     return render(request, 'CE/questions_recent.html', context)
+
+def OCM_home(request):
+    OCM = OCM_categories.create_OCM_list()
+    context = {
+        'OCM': OCM
+    }
+    return render(request, 'CE/OCM_home.html', context)

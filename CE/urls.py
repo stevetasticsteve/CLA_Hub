@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.home_page, name='home_page'),
     path('<int:pk>/edit', views.edit, name='edit'),
     path('new', views.new, name='new'),
+    path('ocm', views.OCM_home, name='OCM_home'),
     path('questions_chron', views.questions_chron, name='questions_chron'),
     path('questions_alph', views.questions_alph, name='questions_alph'),
     path('questions_recent', views.questions_recent, name='questions_recent'),

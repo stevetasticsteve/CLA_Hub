@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from CE import models, settings, forms
+from CE import models, settings, forms, OCM_categories
 
 import os
 import time
@@ -223,8 +223,6 @@ class NewCEPageTest(TestCase):
                          'Last modified by not updated')
         self.assertEqual(len(models.TextModel.objects.all()), 0, 'A blank Text was added')
 
-
-
     def test_new_CE_page_invalid_POST_repeated_title_response(self):
         # Form should be show again with error message
         response = self.client.post(reverse('CE:new'), {
@@ -235,7 +233,6 @@ class NewCEPageTest(TestCase):
             'question-TOTAL_FORMS': 0,
             'question-INITIAL_FORMS': 0
         }, follow=True)
-        self.assertTemplateUsed('CE/new_CE.html')
         #todo form error messages
         # self.assertContains(response, 'Culture event with this Title already exists')
         with self.assertRaises(models.CultureEvent.DoesNotExist):
@@ -243,7 +240,8 @@ class NewCEPageTest(TestCase):
 
     def test_new_CE_page_invalid_POST_no_title_response(self):
         # Form should be shown again with error message
-        # todo no validation shown
+        # No extra CE should be added to .db
+        # todo no form error message shown
         response = self.client.post(reverse('CE:new'), {
             'description_plain_text': 'I\'m testing this CE',
             'text-TOTAL_FORMS': 0,
@@ -261,7 +259,7 @@ class NewCEPageTest(TestCase):
         # clean up if existing test failed and left a file there
         if os.path.exists('uploads/CultureEventFiles/2/images/test_pic1.jpg'):
             os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
-        with open('CLAHub/static/test_data/test_pic1.JPG', 'rb') as file:
+        with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
             file = file.read()
             test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
             response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
@@ -310,7 +308,7 @@ class NewCEPageTest(TestCase):
             os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
         test_phonetics = 'fʌni foᵘnɛtɪk sɪmbɔlz ŋ tʃ ʒ'
         test_orthography = 'orthography'
-        with open('CLAHub/static/test_data/test_audio1.mp3', 'rb') as file:
+        with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
             file = file.read()
             test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
             response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
@@ -587,7 +585,7 @@ class CE_EditFormTests(TestCase):
 
 class PictureUploadForm(TestCase):
     def test_valid_data(self):
-        with open('CLAHub/static/test_data/test_pic1.JPG', 'rb') as file:
+        with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
             file = file.read()
             test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
         form_data = {'ce': models.CultureEvent(),
@@ -721,3 +719,22 @@ class TextsModelTest(TestCase):
 
     # def test_string_method(self):
     #     pass
+
+class OCMHomePageTest(TestCase):
+
+    def test_ocm_home_page_displays(self):
+        response = self.client.get(reverse('CE:OCM_home'))
+        self.assertTemplateUsed('CE/OCM_home.html')
+        self.assertEqual(response.status_code, 200, 'OCM Home not displaying')
+
+
+class UtilityTests(TestCase):
+    def test_create_OCM_list_returns_correct_types(self):
+        OCM = OCM_categories.create_OCM_list()
+        self.assertEqual(type(OCM), list, 'Top level should be list')
+        self.assertEqual(type(OCM[0]), dict, 'Second level should be dict')
+        self.assertEqual(type(OCM[0]), dict, 'Second level should be dict')
+        self.assertEqual(type(OCM[0]['title']), str, 'Third level should be string')
+        self.assertEqual(type(OCM[0]['sub_categories']), list, 'Third level should be list')
+        self.assertEqual(type(OCM[0]['sub_categories'][0]), dict, 'Fourth level should be dict')
+        self.assertEqual(type(OCM[0]['sub_categories'][1]['sub_category_code']), str, 'Fifth level should be string')

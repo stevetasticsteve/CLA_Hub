@@ -83,10 +83,14 @@ cd destination_folder
 echo ALLOWED_HOSTS=$(hostname -I) >> .env
 echo SECRET_KEY=${date +%s | sha256sum | base64 | head -c 50) >> .env
 
+11. remove Apache greeting page
+sudo rm /var/www/html/index.html
 
-11. Update system services
+12. Updated system services
 sudo systemctl daemon-reload
 sudo systsemctl enable CLAHub
 sudo systemctl start CLAHub
 sudo service apache2 restart
+
+
 

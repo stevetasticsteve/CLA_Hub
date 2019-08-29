@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            {% for category in OCM %}
+            {% if category.cat_code <= 4 %}
+            <h3>{{category.cat_code}}. {{category.title}}</h3>
+            {% for sub_category_dict in category.sub_categories %}
+            <p>{{sub_category_dict.sub_category_code}} {{sub_category_dict.sub_category_title}}</p>
+            {% endfor %}
+            <br>
+            {% endif %}
+            {% endfor %}
+         </div>
+        <div class="col-4">
+        {% for category in OCM %}
+        {% if category.cat_code > 4 %}
+            <h3>{{category.cat_code}}. {{category.title}}</h3>
+            {% for sub_category_dict in category.sub_categories %}
+            <p>{{sub_category_dict.sub_category_code}} {{sub_category_dict.sub_category_title}}</p>
+            {% endfor %}
+            <br>
+            {% endif %}
+            {% endfor %}
+         </div>
+    </div>
+</div>

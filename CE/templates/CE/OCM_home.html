@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
 
 {% block page_content%}
-{% for catagory in OCM %}
-<h3>{{catagory.title}}</h3>
-{% for sub_catagory_dict in category.sub_categories %}
-<p>{{sub_catagory_dict.sub_category_code}}: {{sub_category_dict.sub_category_title}}</p>
-{% endfor %}
-{% endfor %}
+
+{% include 'CE/partial/OCM_plain_list.html' %}
+
 {% endblock %}

@@ -134,7 +134,7 @@ def create_OCM_list():
     OCM_sub_cat = OCM_sub_categories
     OCM = []
     for i, cat in enumerate(OCM_cat.values(), 1):
-        d = {'title': cat}
+        d = {'title': cat, 'cat_code': i}
         sub = []
         for scat in OCM_sub_cat.keys():
             if scat.startswith(str(i)):

@@ -726,15 +726,3 @@ class OCMHomePageTest(TestCase):
         response = self.client.get(reverse('CE:OCM_home'))
         self.assertTemplateUsed('CE/OCM_home.html')
         self.assertEqual(response.status_code, 200, 'OCM Home not displaying')
-
-
-class UtilityTests(TestCase):
-    def test_create_OCM_list_returns_correct_types(self):
-        OCM = OCM_categories.create_OCM_list()
-        self.assertEqual(type(OCM), list, 'Top level should be list')
-        self.assertEqual(type(OCM[0]), dict, 'Second level should be dict')
-        self.assertEqual(type(OCM[0]), dict, 'Second level should be dict')
-        self.assertEqual(type(OCM[0]['title']), str, 'Third level should be string')
-        self.assertEqual(type(OCM[0]['sub_categories']), list, 'Third level should be list')
-        self.assertEqual(type(OCM[0]['sub_categories'][0]), dict, 'Fourth level should be dict')
-        self.assertEqual(type(OCM[0]['sub_categories'][1]['sub_category_code']), str, 'Fifth level should be string')

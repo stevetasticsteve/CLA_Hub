@@ -231,8 +231,8 @@ def questions_recent(request):
     return render(request, 'CE/questions_recent.html', context)
 
 def OCM_home(request):
-    OCM = OCM_categories.create_OCM_list()
     context = {
-        'OCM': OCM
+        'OCM_categories': OCM_categories.OCM_categories,
+        'OCM_sub_categories': OCM_categories.OCM_sub_categories
     }
     return render(request, 'CE/OCM_home.html', context)

@@ -1,25 +1,16 @@
 <div class="container">
     <div class="row">
-        <div class="col-4">
-            {% for category in OCM %}
-            {% if category.cat_code <= 4 %}
-            <h3>{{category.cat_code}}. {{category.title}}</h3>
-            {% for sub_category_dict in category.sub_categories %}
-            <p>{{sub_category_dict.sub_category_code}} {{sub_category_dict.sub_category_title}}</p>
+        <div class="col-6">
+            {% for category in OCM_categories %}
+            <h3>{{category}}</h3>
+            {% for sub_category_list in OCM_sub_categories %}
+            {% if forloop.counter0 == forloop.parentloop.counter0 %}
+            {% for sub_category in sub_category_list %}
+            <p>{{sub_category}}</p>
             {% endfor %}
-            <br>
             {% endif %}
             {% endfor %}
-         </div>
-        <div class="col-4">
-        {% for category in OCM %}
-        {% if category.cat_code > 4 %}
-            <h3>{{category.cat_code}}. {{category.title}}</h3>
-            {% for sub_category_dict in category.sub_categories %}
-            <p>{{sub_category_dict.sub_category_code}} {{sub_category_dict.sub_category_title}}</p>
-            {% endfor %}
             <br>
-            {% endif %}
             {% endfor %}
          </div>
     </div>

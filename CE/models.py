@@ -9,6 +9,15 @@ import sys
 import re
 import bleach
 
+class Tags(models.Model):
+    tag = models.CharField(max_length=30)
+
+    class Meta:
+        ordering = ('tag',)
+
+    def __str__(self):
+        return self.tag
+
 class CultureEvent(models.Model):
     title = models.CharField(max_length=60, blank=False, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -22,6 +31,7 @@ class CultureEvent(models.Model):
     differences = models.TextField(blank=True)
     interpretation = models.TextField(blank=True)
     slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
+    tags = models.ManyToManyField(Tags)
 
     def save(self):
         # copy the user's input from plain text to description to be processed
@@ -158,3 +168,5 @@ class QuestionModel(models.Model):
 
     def __str__(self):
         return 'Question about ' + str(self.ce) + ' CE'
+
+

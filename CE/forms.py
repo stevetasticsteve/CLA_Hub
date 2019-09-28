@@ -22,6 +22,15 @@ class CE_EditForm(forms.Form):
             'placeholder': 'Title (Required)',
         })
     )
+
+    tags = forms.CharField(
+        required=False,
+        label='Tags',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'write, tags, here',
+        })
+    )
     description_plain_text = forms.CharField(
         required=False,
         label='Description: What happened? Try to stick to the facts.',

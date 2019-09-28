@@ -16,6 +16,11 @@
 </div>
 <hr>
 
+<h3>Tags</h3>
+{% for tag in Tags %}
+<p>{{tag}}</p>
+{% endfor %}
+
 {% include 'CE/partial/participants_table.html' %}
 
 <div class="container-fluid bg-light">

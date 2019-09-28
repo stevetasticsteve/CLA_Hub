@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
+from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel, Tags
 from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
@@ -21,12 +21,15 @@ def view(request, pk):
     pictures = PictureModel.objects.filter(ce=pk)
     participants = ParticipationModel.objects.filter(ce=ce)
     questions = QuestionModel.objects.filter(ce=ce)
+    tags = ce.tags.all()
+    print(tags)
     context = {
         'CE' : ce,
         'Texts' : texts,
         'Pics' : pictures,
         'Participants' : participants,
-        'Questions': questions
+        'Questions': questions,
+        'Tags': tags,
     }
     return render(request, 'CE/view_CE.html', context)
 
@@ -133,6 +136,10 @@ def new(request):
 
             if participant_form.is_valid():
                 ce.save()
+                newtag = Tags()
+                newtag.tag = form.cleaned_data['tags']
+                newtag.save()
+                ce.tags.add(newtag)
                 participants = ParticipationModel()
                 participants.ce = ce
                 participants.team_participants = participant_form.cleaned_data['team_participants']

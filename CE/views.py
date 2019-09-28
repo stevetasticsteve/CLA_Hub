@@ -230,9 +230,21 @@ def questions_recent(request):
     }
     return render(request, 'CE/questions_recent.html', context)
 
+
 def OCM_home(request):
+    template = 'CE/OCM_home.html'
     context = {
         'OCM_categories': OCM_categories.OCM_categories,
         'OCM_sub_categories': OCM_categories.OCM_sub_categories
     }
-    return render(request, 'CE/OCM_home.html', context)
+    return render(request, template, context)
+
+
+def OCM_category(request, category_code, subcategory_code):
+    template = 'CE/OCM_category.html'
+    context = {
+        'code': category_code,
+        'sub': subcategory_code
+    }
+
+    return render(request, template, context)

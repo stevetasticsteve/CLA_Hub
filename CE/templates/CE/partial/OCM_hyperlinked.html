@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            {% for category in OCM_categories %}
+            <h3>{{category}}</h3>
+            {% for sub_category_list in OCM_sub_categories %}
+            {% if forloop.counter0 == forloop.parentloop.counter0 %}
+            {% for sub_category in sub_category_list %}
+            <a href="link">{{sub_category}}</a>
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+            <br>
+            {% endfor %}
+         </div>
+    </div>
+</div>

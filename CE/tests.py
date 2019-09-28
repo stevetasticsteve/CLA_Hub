@@ -726,3 +726,11 @@ class OCMHomePageTest(TestCase):
         response = self.client.get(reverse('CE:OCM_home'))
         self.assertTemplateUsed('CE/OCM_home.html')
         self.assertEqual(response.status_code, 200, 'OCM Home not displaying')
+
+
+class OCMCategoryPageTest(TestCase):
+
+    def test_ocm_category_page_displays(self):
+        response =self.client.get(reverse('CE:OCM_category', args=(1, 1)))
+        self.assertTemplateUsed('CE/OCM_category.html')
+        self.assertEqual(response.status_code, 200, 'OCM category page not displaying')

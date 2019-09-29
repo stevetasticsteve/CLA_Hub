@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from taggit.managers import TaggableManager
 from PIL import Image
 from io import BytesIO
 
@@ -9,14 +10,6 @@ import sys
 import re
 import bleach
 
-class Tags(models.Model):
-    tag = models.CharField(max_length=30)
-
-    class Meta:
-        ordering = ('tag',)
-
-    def __str__(self):
-        return self.tag
 
 class CultureEvent(models.Model):
     title = models.CharField(max_length=60, blank=False, unique=True)
@@ -31,8 +24,7 @@ class CultureEvent(models.Model):
     differences = models.TextField(blank=True)
     interpretation = models.TextField(blank=True)
     slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
-    tags = models.ManyToManyField(Tags)
-
+    tags = TaggableManager()
     def save(self, *args, **kwargs):
         # copy the user's input from plain text to description to be processed
         # uses bleach to remove potentially harmful HTML code

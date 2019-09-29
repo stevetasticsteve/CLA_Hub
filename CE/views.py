@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel, Tags
+from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
@@ -135,10 +135,9 @@ def new(request):
 
             if participant_form.is_valid():
                 ce.save()
-                newtag = Tags()
-                newtag.tag = form.cleaned_data['tags']
-                newtag.save()
-                ce.tags.add(newtag)
+                if form.cleaned_data['tags']:
+                    for tag in form.cleaned_data['tags']:
+                        ce.tags.add(tag)
                 participants = ParticipationModel()
                 participants.ce = ce
                 participants.team_participants = participant_form.cleaned_data['team_participants']

@@ -1,4 +1,5 @@
 from django import forms
+import taggit.forms
 import CE.models
 import CE.settings
 
@@ -23,10 +24,10 @@ class CE_EditForm(forms.Form):
         })
     )
 
-    tags = forms.CharField(
+    tags = taggit.forms.TagField(
         required=False,
         label='Tags',
-        widget=forms.TextInput(attrs={
+        widget=taggit.forms.TagWidget(attrs={
             'class': 'form-control',
             'placeholder': 'write, tags, here',
         })

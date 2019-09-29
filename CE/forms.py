@@ -29,7 +29,10 @@ class CE_EditForm(forms.Form):
         label='Tags',
         widget=taggit.forms.TagWidget(attrs={
             'class': 'form-control',
-            'placeholder': 'write, tags, here',
+            'data-role': 'tagsinput',
+            'type':'text',
+            'name':'tags'
+            #'placeholder': 'write, tags, here',
         })
     )
     description_plain_text = forms.CharField(

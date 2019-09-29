@@ -33,7 +33,7 @@ class CultureEvent(models.Model):
     slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
     tags = models.ManyToManyField(Tags)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         # copy the user's input from plain text to description to be processed
         # uses bleach to remove potentially harmful HTML code
         self.description = bleach.clean(str(self.description_plain_text),
@@ -44,7 +44,7 @@ class CultureEvent(models.Model):
         else:
             self.find_tag()
         self.slug = slugify(self.title)
-        super().save()
+        super().save(*args, **kwargs)
 
     def find_tag(self):
         # todo case sensitive, shouldn't be

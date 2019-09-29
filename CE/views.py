@@ -22,7 +22,6 @@ def view(request, pk):
     participants = ParticipationModel.objects.filter(ce=ce)
     questions = QuestionModel.objects.filter(ce=ce)
     tags = ce.tags.all()
-    print(tags)
     context = {
         'CE' : ce,
         'Texts' : texts,

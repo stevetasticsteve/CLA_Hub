@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
+from taggit.models import Tag
 from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
@@ -250,6 +251,19 @@ def OCM_category(request, category_code, subcategory_code):
     context = {
         'code': category_code,
         'sub': subcategory_code
+    }
+
+    return render(request, template, context)
+
+def tag_summary_page(request, slug):
+    template = 'CE/tag_summary_page.html'
+    tag = get_object_or_404(Tag, slug=slug)
+    # filter CEs by tag name
+    CEs = CultureEvent.objects.filter(tags=tag)
+
+    context = {
+        'tag':tag,
+        'CEs':CEs,
     }
 
     return render(request, template, context)

@@ -32,7 +32,6 @@ class CE_EditForm(forms.Form):
             'data-role': 'tagsinput',
             'type':'text',
             'name':'tags'
-            #'placeholder': 'write, tags, here',
         })
     )
     description_plain_text = forms.CharField(

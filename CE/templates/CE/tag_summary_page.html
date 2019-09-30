@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<h1>Culture events with {{tag}} tag</h1>
+
+{% for CE in CEs %}
+<ul>
+    <a href="{% url 'CE:view' CE.pk %}">{{CE.title}}</a>
+</ul>
+{% endfor %}
+
+{% endblock %}

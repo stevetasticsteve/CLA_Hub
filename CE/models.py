@@ -25,6 +25,7 @@ class CultureEvent(models.Model):
     interpretation = models.TextField(blank=True)
     slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
     tags = TaggableManager()
+
     def save(self, *args, **kwargs):
         # copy the user's input from plain text to description to be processed
         # uses bleach to remove potentially harmful HTML code

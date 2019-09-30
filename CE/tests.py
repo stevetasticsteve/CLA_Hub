@@ -734,3 +734,20 @@ class OCMCategoryPageTest(TestCase):
         response =self.client.get(reverse('CE:OCM_category', args=(1, 1)))
         self.assertTemplateUsed('CE/OCM_category.html')
         self.assertEqual(response.status_code, 200, 'OCM category page not displaying')
+
+
+class Utilities(TestCase):
+
+    def test_ocm_slug_dictionary(self):
+        slug_list = OCM_categories.slugs
+        self.assertIn('1-1', slug_list)
+        self.assertEqual('Geography & Weather', slug_list['1-1'])
+        self.assertIn('1-15', slug_list)
+        self.assertEqual('Sky, Land & Water', slug_list['1-15'])
+        self.assertIn('9-10', slug_list)
+        self.assertNotIn('9-11', slug_list)
+
+    def test_is_ocm_tag(self):
+        self.assertEqual(OCM_categories.is_OCM_tag('1-1'), ('1-1', 'Geography & Weather'))
+        self.assertEqual(OCM_categories.is_OCM_tag('1-15'), ('1-15', 'Sky, Land & Water'))
+        self.assertEqual(OCM_categories.is_OCM_tag('1-20'), None)

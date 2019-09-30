@@ -1,5 +1,7 @@
+import re
+
 OCM_categories = ['1 Material institution',
-                  '2 Kinsip institution',
+                  '2 Kinship institution',
                   '3 Social institution',
                   '4 Art and play institution',
                   '5 Religious institution',
@@ -122,3 +124,25 @@ OCM_sub_categories = [
     '9.9 Military Affairs',
     '9.10 Coups & Revolution']
 ]
+
+
+def OCM_slug_dictionary():
+    # provides a list of slugged codes (1-1) that can be used to identify OCM tags
+    ocm_codes = re.findall(r'\d+.\d+', str(OCM_sub_categories))
+    slug_codes = [code.replace('.', '-') for code in ocm_codes]
+    categories = []
+    for category in OCM_sub_categories:
+        for subcategory in category:
+            r = re.search(r'\d+.\d+ ', subcategory)
+            categories.append(subcategory[r.end():])
+    return dict(zip(slug_codes, categories))
+
+
+slugs = OCM_slug_dictionary()
+
+
+def is_OCM_tag(string):
+    # a lookup method for OCM strings
+    if string in slugs:
+        return (string, slugs[string])
+

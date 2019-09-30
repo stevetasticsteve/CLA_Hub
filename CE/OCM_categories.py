@@ -1,4 +1,5 @@
 import re
+import taggit.utils
 
 OCM_categories = ['1 Material institution',
                   '2 Kinship institution',
@@ -140,9 +141,9 @@ def OCM_slug_dictionary():
 
 slugs = OCM_slug_dictionary()
 
-
-def is_OCM_tag(string):
-    # a lookup method for OCM strings
-    if string in slugs:
-        return (string, slugs[string])
-
+def check_tags_for_OCM(tagstring):
+    tags = taggit.utils._parse_tags(tagstring)
+    for i, tag in enumerate(tags):
+        if tag in slugs:
+            tags[i] = tag + ' ' + slugs[tag]
+    return tags

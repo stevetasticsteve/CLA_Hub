@@ -4,6 +4,7 @@ from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from CE import models, settings, forms, OCM_categories
+import taggit.utils
 
 import os
 import time
@@ -747,7 +748,16 @@ class Utilities(TestCase):
         self.assertIn('9-10', slug_list)
         self.assertNotIn('9-11', slug_list)
 
-    def test_is_ocm_tag(self):
-        self.assertEqual(OCM_categories.is_OCM_tag('1-1'), ('1-1', 'Geography & Weather'))
-        self.assertEqual(OCM_categories.is_OCM_tag('1-15'), ('1-15', 'Sky, Land & Water'))
-        self.assertEqual(OCM_categories.is_OCM_tag('1-20'), None)
+    def test_ocm_tags_changed(self):
+        # create a test CE
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+        # call the custom tag parser to check it handles OCM tags, and leaves other things alone
+        tags = OCM_categories.check_tags_for_OCM('What a tag, 1-1, 1-16')
+        for tag in tags:
+            ce.tags.add(tag)
+        results = ce.tags.all().values()
+        self.assertIn('What a tag', str(results))
+        self.assertIn('1-16', str(results))
+        self.assertIn('1-1 Geography & Weather', str(results))

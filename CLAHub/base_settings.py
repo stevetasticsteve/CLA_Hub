@@ -108,6 +108,8 @@ LOGOUT_REDIRECT_URL = '/CE'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/uploads/'
 
+TAGGIT_TAGS_FROM_STRING = 'CE.OCM_categories.check_tags_for_OCM'
+
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
     messages.INFO: 'alert-info',

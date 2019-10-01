@@ -10,29 +10,23 @@
         {{ Form.as_p }}
         </div>
     <hr>
-
-    <div class="container-fluid">
-        <h2>Participants</h2>
-        {{ ParticipantForm.as_p }}
-        </div>
-    <hr>
-
-    <div class="container-fluid">
-        {% include 'CE/partial/text_form.html' %}
-    </div>
-    <hr>
-
     <div class="container-fluid">
         <h2>Picture upload</h2>
         {{ PictureUpload.as_p }}
-    </div>
-    <hr>
 
+    </div>
+
+    <hr>
+    <div class="container-fluid">
+        {% include 'CE/partial/text_form.html' %}
+    </div>
+
+    <hr>
     <div class="container-fluid">
         {% include 'CE/partial/questions_form.html' %}
     </div>
 
-
+<p></p>
     <button type="input" class="btn btn-primary">Submit</button>
 </form>
 

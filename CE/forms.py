@@ -36,6 +36,30 @@ class CE_EditForm(forms.Form):
             'name': 'tags'
         })
     )
+
+    date = forms.DateField(
+        required=True,
+        label='Date (Required)',
+        widget=DateInput()
+    )
+
+    team_participants = forms.CharField(
+        required=False,
+        label='Team members present',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Who was there?',
+        })
+    )
+    national_participants = forms.CharField(
+        required=False,
+        label='Nationals present',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Who else was there?',
+        })
+    )
+
     description_plain_text = forms.CharField(
         required=False,
         label='Description: What happened? Try to stick to the facts.',
@@ -63,29 +87,6 @@ class CE_EditForm(forms.Form):
             'rows': 3
         })
     )
-
-    team_participants = forms.CharField(
-        required=False,
-        label='Team members present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who was there?',
-        })
-    )
-    national_participants = forms.CharField(
-        required=False,
-        label='Nationals present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who else was there?',
-        })
-    )
-    date = forms.DateField(
-        required=True,
-        label='Date (Required)',
-        widget=DateInput()
-    )
-
     picture = forms.ImageField(required=False)
 
 

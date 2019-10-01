@@ -4,7 +4,6 @@ from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from CE import models, settings, forms, OCM_categories
-import taggit.utils
 
 import os
 import time
@@ -728,6 +727,33 @@ class OCMHomePageTest(TestCase):
         self.assertTemplateUsed('CE/OCM_home.html')
         self.assertEqual(response.status_code, 200, 'OCM Home not displaying')
 
+
+class test_tag_summary_page(TestCase):
+    def setUp(self):
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+        tags = OCM_categories.check_tags_for_OCM('1-1, 1-16')
+        for tag in tags:
+            ce.tags.add(tag)
+
+    def test_tag_summary_response(self):
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'1-1-geography-weather'}))
+        self.assertTemplateUsed('CE/tag_summary_page.html')
+        self.assertEqual(response.status_code, 200, 'No response')
+
+    def test_non_OCM_tag(self):
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug': '1-16'}))
+        self.assertTemplateUsed('CE/tag_summary_page.html')
+        self.assertEqual(response.status_code, 200, 'No response')
+
+    def test_tag_summary_content(self):
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'1-1-geography-weather'}))
+        self.assertContains(response, 'A first CE')
+
+    def test_404_response(self):
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug': '1-900'}))
+        self.assertEqual(response.status_code, 404, 'No response')
 
 
 class Utilities(TestCase):

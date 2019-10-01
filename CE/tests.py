@@ -214,6 +214,10 @@ class NewCEPageTest(TestCase):
         self.assertTemplateUsed('CE/view_CE.html')
         self.assertRedirects(response, '/CE/2')
 
+    def test_confirmation_message_after_POST(self):
+        response, _ = self.full_valid_POST(follow=True)
+        self.assertContains(response, 'New CE created')
+
     def test_new_CE_Page_in_db_after_POST(self):
         response, posted_data = self.full_valid_POST(follow=True)
         ce = models.CultureEvent.objects.get(pk=2)

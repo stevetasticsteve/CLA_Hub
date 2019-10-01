@@ -130,18 +130,7 @@ def new(request):
         if form.is_valid():
             ce = form.save(request)
 
-            # if participant_form.is_valid():
-            #     ce.save()
-            #     if form.cleaned_data['tags']:
-            #         for tag in form.cleaned_data['tags']:
-            #             ce.tags.add(tag)
-            #     participants = ParticipationModel()
-            #     participants.ce = ce
-            #     participants.team_participants = participant_form.cleaned_data['team_participants']
-            #     participants.national_participants = participant_form.cleaned_data['national_participants']
-            #     participants.date = participant_form.cleaned_data['date']
-            #     participants.save()
-            #     messages.success(request, 'New CE created')
+
         else:
             context = {
                 'Form' : form,

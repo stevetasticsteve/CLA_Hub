@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib import messages
+
 import taggit.forms
 import CE.models
 import CE.settings
@@ -101,6 +103,8 @@ class CE_EditForm(forms.Form):
         if self.cleaned_data['tags']:
             for tag in self.cleaned_data['tags']:
                 ce.tags.add(tag)
+
+        messages.success(request, 'New CE created')
         return ce
 
 class TextForm(forms.Form):

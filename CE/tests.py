@@ -729,24 +729,27 @@ class OCMHomePageTest(TestCase):
         self.assertEqual(response.status_code, 200, 'OCM Home not displaying')
 
 
-class OCMCategoryPageTest(TestCase):
-
-    def test_ocm_category_page_displays(self):
-        response =self.client.get(reverse('CE:OCM_category', args=(1, 1)))
-        self.assertTemplateUsed('CE/OCM_category.html')
-        self.assertEqual(response.status_code, 200, 'OCM category page not displaying')
-
 
 class Utilities(TestCase):
 
     def test_ocm_slug_dictionary(self):
-        slug_list = OCM_categories.slugs
+        slug_list = OCM_categories._slugs
         self.assertIn('1-1', slug_list)
         self.assertEqual('Geography & Weather', slug_list['1-1'])
         self.assertIn('1-15', slug_list)
         self.assertEqual('Sky, Land & Water', slug_list['1-15'])
         self.assertIn('9-10', slug_list)
         self.assertNotIn('9-11', slug_list)
+
+    def test_generate_OCM(self):
+        OCM = OCM_categories.OCM
+        self.assertEqual(OCM[0][0]['code'], '1-1')
+        self.assertEqual(OCM[0][0]['slug'], '1-1-geography-weather')
+        self.assertEqual(OCM[0][0]['name'], '1-1 Geography & Weather')
+
+        self.assertEqual(OCM[2][4]['code'], '3-5')
+        self.assertEqual(OCM[2][4]['name'], '3-5 National & Global Relationships')
+        self.assertEqual(OCM[2][4]['slug'], '3-5-national-global-relationships')
 
     def test_ocm_tags_changed(self):
         # create a test CE

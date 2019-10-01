@@ -1,13 +1,13 @@
 <div class="container">
     <div class="row">
         <div class="col-6">
-            {% for category in OCM_categories %}
+            {% for category in Sections %}
             <h3>{{category}}</h3>
-            {% for sub_category_list in OCM_sub_categories %}
+            {% for sub_category_list in OCM %}
             {% if forloop.counter0 == forloop.parentloop.counter0 %}
             {% for sub_category in sub_category_list %}
             <ul>
-                <a href="ocm/{{forloop.parentloop.counter}}-{{forloop.counter}}">{{sub_category}}</a>
+                <a href="tag/{{sub_category.slug}}">{{sub_category.name}}</a>
             </ul>
             {% endfor %}
             {% endif %}

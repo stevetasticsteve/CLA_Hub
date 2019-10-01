@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils.text import slugify
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from taggit.models import Tag
 from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
@@ -240,20 +241,11 @@ def questions_recent(request):
 def OCM_home(request):
     template = 'CE/OCM_home.html'
     context = {
-        'OCM_categories': OCM_categories.OCM_categories,
-        'OCM_sub_categories': OCM_categories.OCM_sub_categories
+        'OCM': OCM_categories.OCM,
+        'Sections': OCM_categories.OCM_categories
     }
     return render(request, template, context)
 
-
-def OCM_category(request, category_code, subcategory_code):
-    template = 'CE/OCM_category.html'
-    context = {
-        'code': category_code,
-        'sub': subcategory_code
-    }
-
-    return render(request, template, context)
 
 def tag_summary_page(request, slug):
     template = 'CE/tag_summary_page.html'

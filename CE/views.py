@@ -111,7 +111,7 @@ def new(request):
     if request.method == 'GET':
         form = CE_EditForm()
         picture_form = PictureUploadForm()
-        text_form = text_form_set(request.GET or None, prefix='text')
+        text_form = text_form_set(prefix='text')
         question_form = question_form_set(request.GET or None, prefix='question')
 
         context = {
@@ -129,7 +129,6 @@ def new(request):
         question_form = question_form_set(request.POST, prefix='question')
         if form.is_valid():
             ce = form.save(request)
-
 
         else:
             context = {

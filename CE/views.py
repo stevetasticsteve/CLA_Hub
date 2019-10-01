@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Count
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from taggit.models import Tag
-from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
+from CE.forms import CE_EditForm, PictureUploadForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
 
@@ -111,14 +111,12 @@ def new(request):
     if request.method == 'GET':
         form = CE_EditForm()
         picture_form = PictureUploadForm()
-        participant_form = ParticipantForm()
         text_form = text_form_set(request.GET or None, prefix='text')
         question_form = question_form_set(request.GET or None, prefix='question')
 
         context = {
             'Form': form,
             'PictureUpload': picture_form,
-            'ParticipantForm': participant_form,
             'TextForm': text_form,
             'QuestionForm' : question_form
         }
@@ -127,29 +125,27 @@ def new(request):
     elif request.method == 'POST':
         form = CE_EditForm(request.POST)
         picture_form = PictureUploadForm(request.POST, request.FILES)
-        participant_form = ParticipantForm(request.POST)
         text_form = text_form_set(request.POST, request.FILES, prefix='text')
         question_form = question_form_set(request.POST, prefix='question')
         if form.is_valid():
             ce = form.save(request)
 
-            if participant_form.is_valid():
-                ce.save()
-                if form.cleaned_data['tags']:
-                    for tag in form.cleaned_data['tags']:
-                        ce.tags.add(tag)
-                participants = ParticipationModel()
-                participants.ce = ce
-                participants.team_participants = participant_form.cleaned_data['team_participants']
-                participants.national_participants = participant_form.cleaned_data['national_participants']
-                participants.date = participant_form.cleaned_data['date']
-                participants.save()
-                messages.success(request, 'New CE created')
+            # if participant_form.is_valid():
+            #     ce.save()
+            #     if form.cleaned_data['tags']:
+            #         for tag in form.cleaned_data['tags']:
+            #             ce.tags.add(tag)
+            #     participants = ParticipationModel()
+            #     participants.ce = ce
+            #     participants.team_participants = participant_form.cleaned_data['team_participants']
+            #     participants.national_participants = participant_form.cleaned_data['national_participants']
+            #     participants.date = participant_form.cleaned_data['date']
+            #     participants.save()
+            #     messages.success(request, 'New CE created')
         else:
             context = {
                 'Form' : form,
                 'PictureUpload': picture_form,
-                'ParticipantForm': participant_form,
                 'TextForm' : text_form,
                 'QuestionForm' : question_form
             }

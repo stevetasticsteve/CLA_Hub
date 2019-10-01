@@ -62,12 +62,45 @@ class CE_EditForm(forms.Form):
         })
     )
 
+    team_participants = forms.CharField(
+        required=False,
+        label='Team members present',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Who was there?',
+        })
+    )
+    national_participants = forms.CharField(
+        required=False,
+        label='Nationals present',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Who else was there?',
+        })
+    )
+    date = forms.DateField(
+        required=True,
+        label='Date (Required)',
+        widget=DateInput()
+    )
+
     def save(self, request):
         ce = CE.models.CultureEvent()
         ce.title = self.cleaned_data['title']
         ce.description_plain_text = self.cleaned_data['description_plain_text']
         ce.last_modified_by = str(request.user)
+        ce.save()
 
+        participants = CE.models.ParticipationModel()
+        participants.ce = ce
+        participants.team_participants = self.cleaned_data['team_participants']
+        participants.national_participants = self.cleaned_data['national_participants']
+        participants.date = self.cleaned_data['date']
+        participants.save()
+
+        if self.cleaned_data['tags']:
+            for tag in self.cleaned_data['tags']:
+                ce.tags.add(tag)
         return ce
 
 class TextForm(forms.Form):
@@ -129,28 +162,7 @@ class PictureUploadForm(forms.ModelForm):
         fields = ('picture',)
 
 
-class ParticipantForm(forms.Form):
-    team_participants = forms.CharField(
-        required=False,
-        label='Team members present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who was there?',
-        })
-    )
-    national_participants = forms.CharField(
-        required=False,
-        label='Nationals present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who else was there?',
-        })
-    )
-    date = forms.DateField(
-        required=True,
-        label='Date (Required)',
-        widget=DateInput()
-    )
+
 
 
 class QuestionForm(forms.Form):

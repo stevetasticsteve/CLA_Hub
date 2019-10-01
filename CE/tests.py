@@ -581,7 +581,8 @@ class CE_EditFormTests(TestCase):
         # form should be valid
         form_data = {'title' : 'An example CE',
                      'description_plain_text' : 'We did culture',
-                     'differences' : 'It went better than last time'}
+                     'differences' : 'It went better than last time',
+                     'date': '2019-08-06'}
         form = forms.CE_EditForm(data=form_data)
         self.assertTrue(form.is_valid())
 

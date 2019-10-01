@@ -93,7 +93,6 @@ def edit(request, pk):
     # for text in texts:
     #     text_forms.append(Text_EditForm(text))
     current_pics = PictureModel.objects.filter(ce_id=pk)
-    # todo add a new text button
 
     context = {
     # key values are called by template
@@ -142,8 +141,6 @@ def new(request):
                 'QuestionForm' : question_form
             }
             return render(request, template, context)
-
-
 
 
 def questions_chron(request):
@@ -212,6 +209,7 @@ def tag_list_page(request):
     template = 'CE/tag_list_page.html'
     tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-num')
     context = {
-        'Tags':tags
+        'Tags': tags
     }
     return render(request, template, context)
+

@@ -179,6 +179,7 @@ class NewCEPageTest(TestCase):
         posted_data = {
             'title': 'A test CE',
             'description_plain_text': 'I\'m testing this CE',
+            'tags': 'Some tags written here 1-1',
             'interpretation': 'I feel good about this',
             'variation': 'last time it was different',
             'date': '2019-04-20',
@@ -425,7 +426,7 @@ class NewCEPageTest(TestCase):
             self.assertEqual(thing.asked_by, 'Tester')
             self.assertEqual(thing.last_modified_by, 'Tester')
 
-    def blank_questions_submitted(self):
+    def test_blank_questions_submitted(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
                                                         'date': '2019-03-20',
                                                         'national_participants': 'Ulumo',
@@ -438,6 +439,14 @@ class NewCEPageTest(TestCase):
         self.assertRedirects(response, '/CE/2')
         q = models.QuestionModel.objects.all()
         self.assertEqual(len(q), 0)
+
+    def test_tags_added_to_db(self):
+        self.full_valid_POST(follow=True)
+        ce = models.CultureEvent.objects.get(pk=2)
+        self.assertIn('Some', str(ce.tags.all().values()))
+        self.assertIn('1-1-geography-weather', str(ce.tags.all().values()))
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'here'}))
+        self.assertEqual(response.status_code, 200, 'Tag view page not showing')
 
 
 class UnloggedUserRedirect(TestCase):

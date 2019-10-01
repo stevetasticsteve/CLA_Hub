@@ -30,8 +30,8 @@ class CE_EditForm(forms.Form):
         widget=taggit.forms.TagWidget(attrs={
             'class': 'form-control',
             'data-role': 'tagsinput',
-            'type':'text',
-            'name':'tags'
+            'type': 'text',
+            'name': 'tags'
         })
     )
     description_plain_text = forms.CharField(
@@ -61,6 +61,14 @@ class CE_EditForm(forms.Form):
             'rows': 3
         })
     )
+
+    def save(self, request):
+        ce = CE.models.CultureEvent()
+        ce.title = self.cleaned_data['title']
+        ce.description_plain_text = self.cleaned_data['description_plain_text']
+        ce.last_modified_by = str(request.user)
+
+        return ce
 
 class TextForm(forms.Form):
     audio = forms.FileField(
@@ -107,6 +115,8 @@ class TextForm(forms.Form):
         label='Discourse type',
         required=False
     )
+
+
 # todo possible to get a form to pass validation by typing stuff in box, but result in it not creating an entry. Form passes validation, but db doesn't
 
 

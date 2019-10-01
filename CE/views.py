@@ -131,10 +131,7 @@ def new(request):
         text_form = text_form_set(request.POST, request.FILES, prefix='text')
         question_form = question_form_set(request.POST, prefix='question')
         if form.is_valid():
-            ce = CultureEvent()
-            ce.title = form.cleaned_data['title']
-            ce.description_plain_text = form.cleaned_data['description_plain_text']
-            ce.last_modified_by = str(request.user)
+            ce = form.save(request)
 
             if participant_form.is_valid():
                 ce.save()

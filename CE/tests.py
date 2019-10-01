@@ -9,7 +9,7 @@ import os
 import time
 
 # A separate test class for each model or view
-# a seperate test method for each set of conditions you want to test
+# a separate test method for each set of conditions you want to test
 # test methods that describe their function
 
 # view tests

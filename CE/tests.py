@@ -748,7 +748,7 @@ class test_tag_summary_page(TestCase):
 
     def test_tag_summary_response(self):
         response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'1-1-geography-weather'}))
-        self.assertTemplateUsed('CE/tag_summary_page.html')
+        self.assertTemplateUsed('CE/tag_detail_page.html')
         self.assertEqual(response.status_code, 200, 'No response')
 
     def test_non_OCM_tag(self):
@@ -763,6 +763,41 @@ class test_tag_summary_page(TestCase):
     def test_404_response(self):
         response = self.client.get(reverse('CE:view_tag', kwargs={'slug': '1-900'}))
         self.assertEqual(response.status_code, 404, 'No response')
+
+class TagListViewTest(TestCase):
+    def setUp(self):
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+        tags = OCM_categories.check_tags_for_OCM('1-1, 1-16, Culture')
+        for tag in tags:
+            ce.tags.add(tag)
+
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text='A second CE')
+        ce.save()
+        tags = OCM_categories.check_tags_for_OCM('Culture')
+        for tag in tags:
+            ce.tags.add(tag)
+
+    def test_tag_list_response(self):
+        response = self.client.get(reverse('CE:list_tags'))
+        self.assertEqual(response.status_code, 200, 'No response')
+        self.assertTemplateUsed(response, 'CE/tag_list_page.html')
+
+    def test_tags_in_content(self):
+        response = self.client.get(reverse('CE:list_tags'))
+        self.assertContains(response, 'Culture')
+        self.assertContains(response, '1-1 Geography') # avoid dealing with the &
+        self.assertContains(response, '1-16')
+
+    def test_most_recent_tags_at_top(self):
+        # Culture should be linked to 2 CEs, and be at top of page
+        response = self.client.get(reverse('CE:list_tags'))
+        html = response.content.decode('utf8')
+        pos1 = html.find('Culture')
+        pos2 = html.find('1-16')
+        self.assertGreater(pos2, pos1)
 
 
 class Utilities(TestCase):
@@ -785,6 +820,7 @@ class Utilities(TestCase):
         self.assertEqual(OCM[2][4]['code'], '3-5')
         self.assertEqual(OCM[2][4]['name'], '3-5 National & Global Relationships')
         self.assertEqual(OCM[2][4]['slug'], '3-5-national-global-relationships')
+
 
     def test_ocm_tags_changed(self):
         # create a test CE

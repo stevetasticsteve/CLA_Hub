@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Count
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from taggit.models import Tag
 from CE.forms import CE_EditForm, PictureUploadForm, ParticipantForm, question_form_set, text_form_set
@@ -247,8 +248,8 @@ def OCM_home(request):
     return render(request, template, context)
 
 
-def tag_summary_page(request, slug):
-    template = 'CE/tag_summary_page.html'
+def tag_detail_page(request, slug):
+    template = 'CE/tag_detail_page.html'
     tag = get_object_or_404(Tag, slug=slug)
     # filter CEs by tag name
     CEs = CultureEvent.objects.filter(tags=tag)
@@ -258,4 +259,12 @@ def tag_summary_page(request, slug):
         'CEs':CEs,
     }
 
+    return render(request, template, context)
+
+def tag_list_page(request):
+    template = 'CE/tag_list_page.html'
+    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-num')
+    context = {
+        'Tags':tags
+    }
     return render(request, template, context)

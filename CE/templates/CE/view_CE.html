@@ -12,14 +12,15 @@
             <p></p>
             <a href="{% url 'CE:edit' CE.pk %}" class="btn btn-info">Click here to edit</a>
         </div>
+
     </div>
 </div>
+{% for tag in Tags %}
+<a href ="{% url 'CE:view_tag' tag.slug %}" class="{% cycle 'badge badge-primary' 'badge badge-success' 'badge badge-warning' 'badge badge-secondary' 'badge badge-info' 'badge badge-danger' %}">{{tag}}</a>
+{% endfor %}
+{% resetcycle %}
 <hr>
 
-<h3>Tags</h3>
-{% for tag in Tags %}
-<p>{{tag}}</p>
-{% endfor %}
 
 {% include 'CE/partial/participants_table.html' %}
 

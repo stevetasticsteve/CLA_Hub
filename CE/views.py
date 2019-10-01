@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Count
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from taggit.models import Tag
-from CE.forms import CE_EditForm, PictureUploadForm, question_form_set, text_form_set
+from CE.forms import CE_EditForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
 
@@ -111,27 +111,22 @@ def new(request):
     template = 'CE/new_CE.html'
     if request.method == 'GET':
         form = CE_EditForm()
-        picture_form = PictureUploadForm()
         text_form = text_form_set(prefix='text')
         question_form = question_form_set(prefix='question')
 
         context = {
             'Form': form,
-            'PictureUpload': picture_form,
             'TextForm': text_form,
             'QuestionForm' : question_form
         }
         return render(request, template, context)
 
     elif request.method == 'POST':
-        form = CE_EditForm(request.POST)
-        picture_form = PictureUploadForm(request.POST, request.FILES)
+        form = CE_EditForm(request.POST, request.FILES)
         text_form = text_form_set(request.POST, request.FILES, prefix='text')
         question_form = question_form_set(request.POST, prefix='question')
         if form.is_valid():
             ce = form.save(request)
-            if picture_form.is_valid():
-                picture_form.save(ce)
             for t_form in text_form:
                 if t_form.is_valid():
                     t_form.save(ce)
@@ -143,7 +138,6 @@ def new(request):
         else:
             context = {
                 'Form' : form,
-                'PictureUpload': picture_form,
                 'TextForm' : text_form,
                 'QuestionForm' : question_form
             }

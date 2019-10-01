@@ -86,6 +86,9 @@ class CE_EditForm(forms.Form):
         widget=DateInput()
     )
 
+    picture = forms.ImageField(required=False)
+
+
     def save(self, request):
         ce = CE.models.CultureEvent()
         ce.title = self.cleaned_data['title']
@@ -103,6 +106,12 @@ class CE_EditForm(forms.Form):
         if self.cleaned_data['tags']:
             for tag in self.cleaned_data['tags']:
                 ce.tags.add(tag)
+
+        if self.cleaned_data['picture']:
+            new_pic = CE.models.PictureModel()
+            new_pic.ce = ce
+            new_pic.picture = self.cleaned_data['picture']
+            new_pic.save()
 
         messages.success(request, 'New CE created')
         return ce
@@ -173,21 +182,6 @@ class TextForm(forms.Form):
             new_text.save()
 
 text_form_set = forms.formset_factory(TextForm, extra=0)
-
-# todo could move this into main form by reformatting as a form.form
-class PictureUploadForm(forms.ModelForm):
-    class Meta:
-        model = CE.models.PictureModel
-        fields = ('picture',)
-
-    def save(self, ce):
-        if self.cleaned_data['picture']:
-            new_pic = CE.models.PictureModel()
-            new_pic.ce = ce
-            new_pic.picture = self.cleaned_data['picture']
-            new_pic.save()
-
-
 
 
 class QuestionForm(forms.Form):

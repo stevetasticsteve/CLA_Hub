@@ -152,19 +152,40 @@ class TextForm(forms.Form):
         label='Discourse type',
         required=False
     )
-
-
-# todo possible to get a form to pass validation by typing stuff in box, but result in it not creating an entry. Form passes validation, but db doesn't
-
+    
+    def save(self, ce):
+        if self.cleaned_data:
+            new_text = CE.models.TextModel()
+            new_text.ce = ce
+            new_text.orthographic_text = self.cleaned_data['orthographic_text']
+            new_text.phonetic_text = self.cleaned_data['phonetic_text']
+            if self.cleaned_data['phonetic_text']:
+                if self.cleaned_data['phonetic_standard'] == '':
+                    new_text.phonetic_standard = 1
+                else:
+                    new_text.phonetic_standard = self.cleaned_data['phonetic_standard']
+            if self.cleaned_data['valid_for_DA']:
+                new_text.valid_for_DA = True
+                new_text.discourse_type = self.cleaned_data['discourse_type']
+            else:
+                new_text.valid_for_DA = False
+            new_text.audio = self.cleaned_data['audio']
+            new_text.save()
 
 text_form_set = forms.formset_factory(TextForm, extra=0)
 
-
+# todo could move this into main form by reformatting as a form.form
 class PictureUploadForm(forms.ModelForm):
     class Meta:
         model = CE.models.PictureModel
         fields = ('picture',)
 
+    def save(self, ce):
+        if self.cleaned_data['picture']:
+            new_pic = CE.models.PictureModel()
+            new_pic.ce = ce
+            new_pic.picture = self.cleaned_data['picture']
+            new_pic.save()
 
 
 
@@ -186,6 +207,18 @@ class QuestionForm(forms.Form):
             'placeholder': 'If you know the answer provide it here',
         })
     )
+
+    def save(self, ce,request):
+        if self.cleaned_data:
+            new_question = CE.models.QuestionModel()
+            new_question.ce = ce
+            new_question.asked_by = str(request.user)
+            new_question.last_modified_by = str(request.user)
+            new_question.question = self.cleaned_data['question']
+            new_question.answer = self.cleaned_data['answer']
+            if self.cleaned_data['answer']:
+                new_question.answered_by = str(request.user)
+            new_question.save()
 
 question_form_set = forms.formset_factory(QuestionForm, extra=0)
 

@@ -108,11 +108,12 @@ def edit(request, pk):
 
 @ login_required
 def new(request):
+    template = 'CE/new_CE.html'
     if request.method == 'GET':
         form = CE_EditForm()
         picture_form = PictureUploadForm()
         text_form = text_form_set(prefix='text')
-        question_form = question_form_set(request.GET or None, prefix='question')
+        question_form = question_form_set(prefix='question')
 
         context = {
             'Form': form,
@@ -120,7 +121,7 @@ def new(request):
             'TextForm': text_form,
             'QuestionForm' : question_form
         }
-        return render(request, 'CE/new_CE.html', context)
+        return render(request, template, context)
 
     elif request.method == 'POST':
         form = CE_EditForm(request.POST)
@@ -129,6 +130,15 @@ def new(request):
         question_form = question_form_set(request.POST, prefix='question')
         if form.is_valid():
             ce = form.save(request)
+            if picture_form.is_valid():
+                picture_form.save(ce)
+            for t_form in text_form:
+                if t_form.is_valid():
+                    t_form.save(ce)
+            for question in question_form:
+                if question.is_valid():
+                    question.save(ce, request)
+            return redirect('CE:view', pk=ce.pk)
 
         else:
             context = {
@@ -137,47 +147,9 @@ def new(request):
                 'TextForm' : text_form,
                 'QuestionForm' : question_form
             }
-            return render(request, 'CE/new_CE.html', context)
-        if picture_form.is_valid():
-            if picture_form.cleaned_data['picture']:
-                new_pic = PictureModel()
-                new_pic.ce = ce
-                new_pic.picture = picture_form.cleaned_data['picture']
-                new_pic.save()
-        for t_form in text_form:
-            if t_form.is_valid():
-                if t_form.cleaned_data:
-                    new_text = TextModel()
-                    new_text.ce = ce
-                    new_text.orthographic_text = t_form.cleaned_data['orthographic_text']
-                    new_text.phonetic_text = t_form.cleaned_data['phonetic_text']
-                    if t_form.cleaned_data['phonetic_text']:
-                        if t_form.cleaned_data['phonetic_standard'] == '':
-                            new_text.phonetic_standard = 1
-                        else:
-                            new_text.phonetic_standard = t_form.cleaned_data['phonetic_standard']
-                    if t_form.cleaned_data['valid_for_DA']:
-                        new_text.valid_for_DA = True
-                        new_text.discourse_type = t_form.cleaned_data['discourse_type']
-                    else:
-                        new_text.valid_for_DA = False
-                    new_text.audio = t_form.cleaned_data['audio']
-                    new_text.save()
-        for question in question_form:
-            if question.is_valid():
-                if question.cleaned_data:
-                    new_question = QuestionModel()
-                    new_question.ce = ce
-                    new_question.asked_by = str(request.user)
-                    new_question.last_modified_by = str(request.user)
-                    new_question.question = question.cleaned_data['question']
-                    new_question.answer = question.cleaned_data['answer']
-                    if question.cleaned_data['answer']:
-                        new_question.answered_by = str(request.user)
-                    new_question.save()
-                    #todo write question tests
+            return render(request, template, context)
 
-        return redirect('CE:view', pk=ce.pk)
+
 
 
 def questions_chron(request):

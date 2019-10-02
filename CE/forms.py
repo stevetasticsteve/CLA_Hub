@@ -95,6 +95,8 @@ class CE_EditForm(forms.Form):
         ce.title = self.cleaned_data['title']
         ce.description_plain_text = self.cleaned_data['description_plain_text']
         ce.last_modified_by = str(request.user)
+        ce.interpretation = self.cleaned_data['interpretation'],
+        ce.differences = self.cleaned_data['differences']
         ce.save()
 
         participants = CE.models.ParticipationModel()
@@ -116,6 +118,21 @@ class CE_EditForm(forms.Form):
 
         messages.success(request, 'New CE created')
         return ce
+
+def prepopulated_CE_form(ce):
+    participation_info = CE.models.ParticipationModel.objects.get(ce=ce)
+    form = CE_EditForm(initial={
+    'title': ce.title,
+    'tags': ce.tags.all(),
+    'date': participation_info.date,
+    'team_participants': participation_info.team_participants,
+    'national_participants': participation_info.national_participants,
+    'description_plain_text': ce.description_plain_text,
+    'differences': ce.differences,
+    'interpretation': ce.interpretation,
+    })
+
+    return form
 
 class TextForm(forms.Form):
     audio = forms.FileField(

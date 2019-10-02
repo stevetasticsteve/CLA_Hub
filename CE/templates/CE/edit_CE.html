@@ -6,8 +6,10 @@
 
 {% include 'CE/partial/CE_form.html' %}
 
-<h3>Current pictures</h3>
-{% for picture in CurrentPics %}
-<img src="{{picture.picture.url}}" alt="CE picture found in database" height="100">
-{% endfor %}
-{% endblock %}
+<div class="container container-fluid">
+    <h3>Current pictures</h3>
+    {% for picture in CurrentPics %}
+    <img src="{{picture.picture.url}}" alt="CE picture found in database" height="100">
+    {% endfor %}
+    {% endblock %}
+</div>

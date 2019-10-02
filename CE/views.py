@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.db.models import Count
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from taggit.models import Tag
-from CE.forms import CE_EditForm, question_form_set, text_form_set
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
+
+import CE.forms
 
 
 def home_page(request):
@@ -53,65 +53,54 @@ def view_slug(request, slug):
 
 @login_required
 def edit(request, pk):
+    template = 'CE/edit_CE.html'
     ce = get_object_or_404(CultureEvent, pk=pk)
-    if request.method == 'GET':
-        form = CE_EditForm(initial= {
-            'title' : ce.title,
-            'participation' : ce.participation,
-            'description' : ce.description,
-            'differences' : ce.differences
-        })
-        picture_form = PictureUploadForm()
+    texts = TextModel.objects.filter(ce_id=pk)
+    current_pics = PictureModel.objects.filter(ce_id=pk)
 
-    elif request.method == 'POST':
-        form = CE_EditForm(request.POST, instance=ce)
-        picture_form = PictureUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            ce.title = form.cleaned_data['title']
-            ce.participation = form.cleaned_data['participation']
-            ce.description = form.cleaned_data['description']
-            ce.pk = pk
-            ce.last_modified_by = str(request.user)
-            ce.interpretation = form.cleaned_data['interpretation']
-            ce.variation = form.cleaned_data['variation']
-            ce.save()
-            messages.success(request, 'CE updated')
-            if picture_form.is_valid():
-                if picture_form.cleaned_data['picture']:
-                    new_pic = PictureModel()
-                    new_pic.ce = ce
-                    new_pic.picture = picture_form.cleaned_data['picture']
-                    new_pic.save()
-            return redirect('CE:view', pk=ce.pk)
-        # todo upload multiple files at once
-        # todo changing pictures
-        # todo rotating pictures
+    if request.method == 'GET':
+        form = CE.forms.prepopulated_CE_form(ce)
+
+
+    # elif request.method == 'POST':
+    #     form = CE.forms.CE_EditForm(request.POST, instance=ce)
+    #     if form.is_valid():
+    #         ce.title = form.cleaned_data['title']
+    #         ce.participation = form.cleaned_data['participation']
+    #         ce.description = form.cleaned_data['description']
+    #         ce.pk = pk
+    #         ce.last_modified_by = str(request.user)
+    #         ce.interpretation = form.cleaned_data['interpretation']
+    #         ce.variation = form.cleaned_data['variation']
+    #         ce.save()
+    #         messages.success(request, 'CE updated')
+    #         return redirect('CE:view', pk=ce.pk)
+    #     # todo upload multiple files at once
+    #     # todo changing pictures
+    #     # todo rotating pictures
 
     # GET request
-    texts = TextModel.objects.filter(ce_id=pk)
     # text_forms = []
     # for text in texts:
     #     text_forms.append(Text_EditForm(text))
-    current_pics = PictureModel.objects.filter(ce_id=pk)
 
     context = {
     # key values are called by template
         'CE': ce,
         'Texts': texts,
         'Form': form,
-        'PictureUpload': picture_form,
         'CurrentPics': current_pics
     }
-    return render(request, 'CE/edit_CE.html', context)
+    return render(request, template, context)
 
 
 @ login_required
 def new(request):
     template = 'CE/new_CE.html'
     if request.method == 'GET':
-        form = CE_EditForm()
-        text_form = text_form_set(prefix='text')
-        question_form = question_form_set(prefix='question')
+        form = CE.forms.CE_EditForm()
+        text_form = CE.forms.text_form_set(prefix='text')
+        question_form = CE.forms.question_form_set(prefix='question')
 
         context = {
             'Form': form,
@@ -121,9 +110,9 @@ def new(request):
         return render(request, template, context)
 
     elif request.method == 'POST':
-        form = CE_EditForm(request.POST, request.FILES)
-        text_form = text_form_set(request.POST, request.FILES, prefix='text')
-        question_form = question_form_set(request.POST, prefix='question')
+        form = CE.forms.CE_EditForm(request.POST, request.FILES)
+        text_form = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
+        question_form = CE.forms.question_form_set(request.POST, prefix='question')
         if form.is_valid():
             ce = form.save(request)
             for t_form in text_form:

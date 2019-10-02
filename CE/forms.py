@@ -201,6 +201,19 @@ class TextForm(forms.Form):
 
 text_form_set = forms.formset_factory(TextForm, extra=0)
 
+def text_formset_prepopulated(ce_list):
+    for ce in ce_list:
+        text_data = CE.models.TextModel.objects.get(ce=ce)
+        text_forms = text_form_set(initial=[{
+            'audio': text_data.audio,
+            'phonetic_text': text_data.phonetic_text,
+            'orthographic_text': text_data.orthographic_text,
+            'phonetic_standard': text_data.phonetic_standard,
+            'valid_for_DA': text_data.valid_for_DA,
+            'discourse_type': text_data.discourse_type
+        }])
+
+    return text_forms
 
 class QuestionForm(forms.Form):
     question = forms.CharField(

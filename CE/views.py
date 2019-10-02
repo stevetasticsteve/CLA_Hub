@@ -55,11 +55,12 @@ def view_slug(request, slug):
 def edit(request, pk):
     template = 'CE/edit_CE.html'
     ce = get_object_or_404(CultureEvent, pk=pk)
-    texts = TextModel.objects.filter(ce_id=pk)
+    # texts = TextModel.objects.filter(ce_id=pk)
     current_pics = PictureModel.objects.filter(ce_id=pk)
 
     if request.method == 'GET':
         form = CE.forms.prepopulated_CE_form(ce)
+        texts = CE.forms.text_formset_prepopulated([ce])
 
 
     # elif request.method == 'POST':
@@ -87,7 +88,7 @@ def edit(request, pk):
     context = {
     # key values are called by template
         'CE': ce,
-        'Texts': texts,
+        'TextForm': texts,
         'Form': form,
         'CurrentPics': current_pics
     }

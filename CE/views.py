@@ -60,7 +60,7 @@ def edit(request, pk):
 
     if request.method == 'GET':
         form = CE.forms.prepopulated_CE_form(ce)
-        texts = CE.forms.text_formset_prepopulated([ce])
+        texts = CE.forms.text_formset_prepopulated(ce)
 
 
     # elif request.method == 'POST':

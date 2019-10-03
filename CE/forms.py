@@ -90,8 +90,13 @@ class CE_EditForm(forms.Form):
     picture = forms.ImageField(required=False)
 
 
-    def save(self, request):
-        ce = CE.models.CultureEvent()
+    def save(self, request, **kwargs):
+        # the instance kwarg is passed in if a prexisting record needs updating
+        # without an instance a new .db entry is created
+        if kwargs['instance']:
+            ce = CE.models.CultureEvent.objects.get(pk=kwargs['instance'].pk)
+        else:
+            ce = CE.models.CultureEvent()
         ce.title = self.cleaned_data['title']
         ce.description_plain_text = self.cleaned_data['description_plain_text']
         ce.last_modified_by = str(request.user)
@@ -99,7 +104,10 @@ class CE_EditForm(forms.Form):
         ce.differences = self.cleaned_data['differences']
         ce.save()
 
-        participants = CE.models.ParticipationModel()
+        if kwargs['instance']:
+            participants = CE.models.ParticipationModel.objects.get(ce=kwargs['instance'])
+        else:
+            participants = CE.models.ParticipationModel()
         participants.ce = ce
         participants.team_participants = self.cleaned_data['team_participants']
         participants.national_participants = self.cleaned_data['national_participants']
@@ -116,8 +124,12 @@ class CE_EditForm(forms.Form):
             new_pic.picture = self.cleaned_data['picture']
             new_pic.save()
 
-        messages.success(request, 'New CE created')
+        if kwargs['instance']:
+            messages.success(request, 'CE updated')
+        else:
+            messages.success(request, 'New CE created')
         return ce
+
 
 def prepopulated_CE_form(ce):
     participation_info = CE.models.ParticipationModel.objects.get(ce=ce)

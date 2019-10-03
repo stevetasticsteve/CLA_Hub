@@ -55,7 +55,6 @@ def view_slug(request, slug):
 def edit(request, pk):
     template = 'CE/edit_CE.html'
     ce = get_object_or_404(CultureEvent, pk=pk)
-    # texts = TextModel.objects.filter(ce_id=pk)
     current_pics = PictureModel.objects.filter(ce_id=pk)
 
     if request.method == 'GET':
@@ -63,31 +62,22 @@ def edit(request, pk):
         texts = CE.forms.text_formset_prepopulated(ce)
         questions = CE.forms.question_formset_prepopulated(ce)
 
-
-    # elif request.method == 'POST':
-    #     form = CE.forms.CE_EditForm(request.POST, instance=ce)
-    #     if form.is_valid():
-    #         ce.title = form.cleaned_data['title']
-    #         ce.participation = form.cleaned_data['participation']
-    #         ce.description = form.cleaned_data['description']
-    #         ce.pk = pk
-    #         ce.last_modified_by = str(request.user)
-    #         ce.interpretation = form.cleaned_data['interpretation']
-    #         ce.variation = form.cleaned_data['variation']
-    #         ce.save()
-    #         messages.success(request, 'CE updated')
-    #         return redirect('CE:view', pk=ce.pk)
+    elif request.method == 'POST':
+        # CE.forms.update_CE(request, ce)
+        form = CE.forms.CE_EditForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save(request, instance=ce)
+        # texts = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
+        # questions = CE.forms.question_form_set(prefix='question')
+        # if form.is_valid():
+        #     form.save(request)
+        return redirect('CE:view', pk=ce.pk)
     #     # todo upload multiple files at once
     #     # todo changing pictures
     #     # todo rotating pictures
 
-    # GET request
-    # text_forms = []
-    # for text in texts:
-    #     text_forms.append(Text_EditForm(text))
 
     context = {
-    # key values are called by template
         'CE': ce,
         'TextForm': texts,
         'Form': form,

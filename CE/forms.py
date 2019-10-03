@@ -95,7 +95,7 @@ class CE_EditForm(forms.Form):
         ce.title = self.cleaned_data['title']
         ce.description_plain_text = self.cleaned_data['description_plain_text']
         ce.last_modified_by = str(request.user)
-        ce.interpretation = self.cleaned_data['interpretation'],
+        ce.interpretation = self.cleaned_data['interpretation']
         ce.differences = self.cleaned_data['differences']
         ce.save()
 
@@ -129,7 +129,7 @@ def prepopulated_CE_form(ce):
     'national_participants': participation_info.national_participants,
     'description_plain_text': ce.description_plain_text,
     'differences': ce.differences,
-    'interpretation': ce.interpretation,
+    'interpretation': ce.interpretation
     })
 
     return form
@@ -202,7 +202,6 @@ class TextForm(forms.Form):
 text_form_set = forms.formset_factory(TextForm, extra=0)
 
 def text_formset_prepopulated(ce):
-
     text_data = CE.models.TextModel.objects.filter(ce=ce)
     text_forms = []
     for data in text_data:
@@ -250,3 +249,14 @@ class QuestionForm(forms.Form):
 question_form_set = forms.formset_factory(QuestionForm, extra=0)
 
 
+def question_formset_prepopulated(ce):
+    question_data = CE.models.QuestionModel.objects.filter(ce=ce)
+    question_forms = []
+    for data in question_data:
+        question_form = question_form_set(initial=[{
+            'question': data.question,
+            'answer': data.answer,
+
+        }])
+        question_forms.append(question_form)
+    return question_forms

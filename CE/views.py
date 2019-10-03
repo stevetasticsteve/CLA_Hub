@@ -61,6 +61,7 @@ def edit(request, pk):
     if request.method == 'GET':
         form = CE.forms.prepopulated_CE_form(ce)
         texts = CE.forms.text_formset_prepopulated(ce)
+        questions = CE.forms.question_formset_prepopulated(ce)
 
 
     # elif request.method == 'POST':
@@ -90,7 +91,8 @@ def edit(request, pk):
         'CE': ce,
         'TextForm': texts,
         'Form': form,
-        'CurrentPics': current_pics
+        'CurrentPics': current_pics,
+        'QuestionForm': questions
     }
     return render(request, template, context)
 

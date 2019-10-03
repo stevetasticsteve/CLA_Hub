@@ -5,7 +5,7 @@
 <script type="text/html" id="item-template">
 <p></p>
 <div id="item-__prefix__" class="container-fluid border bg-light"  >
-    <h3>Text __prefix__</h3>
+    <h3>New text __prefix__</h3>
     {{ TextForm.empty_form.as_p }}
     <p></p>
 </div>
@@ -13,12 +13,14 @@
 
 <!--Include text forms sent by server-->
 <div id="items-form-container">
-    {% for text_form in TextForm %}
+     <div class="container-fluid border bg-light">
+        {% for text_form in TextForm %}
         <div id="item-{{ forloop.counter0 }}">
-            {{ text_form.id }}
-            {{ text_form.as_table }}
+            <h3>Text {{forloop.counter}}</h3>
+            {{ text_form.as_p }}
         </div>
-    {% endfor %}
+        {% endfor %}
+     </div>
 </div>
 <p></p>
 <!--Add new text button-->

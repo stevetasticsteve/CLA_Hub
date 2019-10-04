@@ -3,17 +3,18 @@
 
 <!--Hidden template that includes form-->
 <script type="text/html" id="item-template">
-<p></p>
 <div id="item-__prefix__" class="container-fluid border bg-light"  >
-    <h3>New text __prefix__</h3>
+    <p></p>
+    <h3>New text</h3>
     {{ TextForm.empty_form.as_p }}
     <p></p>
 </div>
 </script>
 
 <!--Include text forms sent by server-->
-<div id="items-form-container">
-     <div class="container-fluid border bg-light">
+
+<div id="server-items">
+    <div class="container-fluid border bg-light">
         {% for text_form in TextForm %}
         <div id="item-{{ forloop.counter0 }}">
             <h3>Text {{forloop.counter}}</h3>
@@ -22,6 +23,10 @@
         {% endfor %}
      </div>
 </div>
+
+<div id="items-form-container">
+</div>
+
 <p></p>
 <!--Add new text button-->
 <a href="#" id="add-item-button" class="btn btn-info add-item">Add Text</a>

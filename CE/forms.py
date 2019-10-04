@@ -130,6 +130,7 @@ class CE_EditForm(forms.Form):
             messages.success(request, 'New CE created')
         return ce
 
+#todo participations need to become formsets like texts and questions as multiple are expected.
 
 def prepopulated_CE_form(ce):
     participation_info = CE.models.ParticipationModel.objects.get(ce=ce)

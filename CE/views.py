@@ -90,24 +90,18 @@ def edit(request, pk):
 @ login_required
 def new(request):
     template = 'CE/new_CE.html'
-    if request.method == 'GET':
-        form = CE.forms.CE_EditForm()
-        text_form = CE.forms.text_form_set(prefix='text')
-        question_form = CE.forms.question_form_set(prefix='question')
+    errors = None
 
-        context = {
-            'Form': form,
-            'TextForm': text_form,
-            'QuestionForm' : question_form
-        }
-        return render(request, template, context)
-
-    elif request.method == 'POST':
+    if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
         text_form = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
         question_form = CE.forms.question_form_set(request.POST, prefix='question')
-        if form.is_valid():
+        participation_form = CE.forms.participant_formset(request.POST, prefix='participants')
+        if form.is_valid() and participation_form.is_valid():
+            print('Valid forms')
             ce = form.save(request)
+            for p_form in participation_form:
+                p_form.save(ce)
             for t_form in text_form:
                 if t_form.is_valid():
                     t_form.save(ce)
@@ -115,14 +109,26 @@ def new(request):
                 if question.is_valid():
                     question.save(ce, request)
             return redirect('CE:view', pk=ce.pk)
-
         else:
-            context = {
-                'Form' : form,
-                'TextForm' : text_form,
-                'QuestionForm' : question_form
-            }
-            return render(request, template, context)
+            errors = participation_form.errors
+            print(errors)
+
+
+    # GET request
+    form = CE.forms.CE_EditForm()
+    text_form = CE.forms.text_form_set(prefix='text')
+    question_form = CE.forms.question_form_set(prefix='question')
+    participation_form = CE.forms.participant_formset(prefix='participants')
+
+    context = {
+            'Form': form,
+            'TextForm': text_form,
+            'QuestionForm': question_form,
+            'ParticipationForm': participation_form,
+            'Errors': errors
+        }
+
+    return render(request, template, context)
 
 
 def questions_chron(request):

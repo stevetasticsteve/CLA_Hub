@@ -37,29 +37,6 @@ class CE_EditForm(forms.Form):
         })
     )
 
-    date = forms.DateField(
-        required=True,
-        label='Date (Required)',
-        widget=DateInput()
-    )
-
-    team_participants = forms.CharField(
-        required=False,
-        label='Team members present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who was there?',
-        })
-    )
-    national_participants = forms.CharField(
-        required=False,
-        label='Nationals present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who else was there?',
-        })
-    )
-
     description_plain_text = forms.CharField(
         required=False,
         label='Description: What happened? Try to stick to the facts.',
@@ -69,6 +46,8 @@ class CE_EditForm(forms.Form):
             'rows': 5
         })
     )
+
+
     differences = forms.CharField(
         required=False,
         label='Variation',
@@ -103,16 +82,6 @@ class CE_EditForm(forms.Form):
         ce.interpretation = self.cleaned_data['interpretation']
         ce.differences = self.cleaned_data['differences']
         ce.save()
-
-        if 'instance' in kwargs:
-            participants = CE.models.ParticipationModel.objects.get(ce=kwargs['instance'])
-        else:
-            participants = CE.models.ParticipationModel()
-        participants.ce = ce
-        participants.team_participants = self.cleaned_data['team_participants']
-        participants.national_participants = self.cleaned_data['national_participants']
-        participants.date = self.cleaned_data['date']
-        participants.save()
 
         if self.cleaned_data['tags']:
             for tag in self.cleaned_data['tags']:
@@ -273,3 +242,47 @@ def question_formset_prepopulated(ce):
         }])
         question_forms.append(question_form)
     return question_forms
+
+
+class ParticipationForm(forms.Form):
+    date = forms.DateField(
+        required=True,
+        label='Date (Required)',
+        widget=DateInput()
+    )
+
+    team_participants = forms.CharField(
+        required=False,
+        label='Team members present',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Who was there?',
+        })
+    )
+    national_participants = forms.CharField(
+        required=False,
+        label='Nationals present',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Who else was there?',
+        })
+    )
+
+    def save(self, ce, **kwargs):
+        if 'instance' in kwargs:
+            participants = CE.models.ParticipationModel.objects.get(ce=kwargs['instance'])
+        else:
+            participants = CE.models.ParticipationModel()
+        participants.ce = ce
+        participants.team_participants = self.cleaned_data['team_participants']
+        participants.national_participants = self.cleaned_data['national_participants']
+        participants.date = self.cleaned_data['date']
+        participants.save()
+
+class RequiredFormset(forms.BaseFormSet):
+    def __init__(self, *args, **kwargs):
+        super(RequiredFormset, self).__init__(*args, **kwargs)
+        self.forms[0].empty_permitted = False
+
+
+participant_formset = forms.formset_factory(ParticipationForm, formset=RequiredFormset, extra=1)

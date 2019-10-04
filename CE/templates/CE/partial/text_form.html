@@ -2,8 +2,8 @@
 <h2>Texts</h2>
 
 <!--Hidden template that includes form-->
-<script type="text/html" id="item-template">
-<div id="item-__prefix__" class="container-fluid border bg-light"  >
+<script type="text/html" id="text-template">
+<div id="text-__prefix__" class="container-fluid border bg-light"  >
     <p></p>
     <h3>New text</h3>
     {{ TextForm.empty_form.as_p }}
@@ -13,10 +13,10 @@
 
 <!--Include text forms sent by server-->
 
-<div id="server-items">
+<div id="text-server-items">
     <div class="container-fluid border bg-light">
         {% for text_form in TextForm %}
-        <div id="item-{{ forloop.counter0 }}">
+        <div id="text-{{ forloop.counter0 }}">
             <h3>Text {{forloop.counter}}</h3>
             {{ text_form.as_p }}
         </div>
@@ -24,22 +24,22 @@
      </div>
 </div>
 
-<div id="items-form-container">
+<div id="text-form-container">
 </div>
 
 <p></p>
 <!--Add new text button-->
-<a href="#" id="add-item-button" class="btn btn-info add-item">Add Text</a>
+<a href="#" id="add-text-button" class="btn btn-info add-text">Add Text</a>
 
 <!--Script to make new form appear-->
 <script>
 $(document).ready(function() {
-    $('.add-item').click(function(ev) {
+    $('.add-text').click(function(ev) {
         ev.preventDefault();
-        var count = $('#items-form-container').children().length;
-        var tmplMarkup = $('#item-template').html();
+        var count = $('#text-form-container').children().length;
+        var tmplMarkup = $('#text-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-        $('div#items-form-container').append(compiledTmpl);
+        $('div#text-form-container').append(compiledTmpl);
 
         // update form count
         $('#id_text-TOTAL_FORMS').attr('value', count+1);

@@ -1,2 +1,46 @@
+{{ ParticipationForm.management_form }}
 
-{{ParticipationForm.as_p}}
+
+<script type="text/html" id="participants-template">
+<div id="participants-__prefix__" class="container-fluid border bg-light">
+    <p></p>
+    {{ ParticipationForm.empty_form.as_p }}
+    <p></p>
+</div>
+</script>
+
+<!--Include text forms sent by server-->
+<div id="participants-server-items">
+    <div class="container-fluid border bg-light">
+        {% for p_form in ParticipationForm %}
+        <div id="partipants_item-{{ forloop.counter0 }}">
+            {{ p_form.id }}
+            {{ p_form.as_table }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="participants-form-container">
+</div>
+<p></p>
+
+<!--Add new text button-->
+<a href="#" id="add-participant-button" class="btn btn-success add-participant">+</a>
+
+<!--Script to make new form appear-->
+<script>
+$(document).ready(function() {
+    $('.add-participant').click(function(ev) {
+        ev.preventDefault();
+        var count = $('#participants-form-container').children().length;
+        var tmplMarkup = $('#participants-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('div#participants-form-container').append(compiledTmpl);
+
+        // update form count
+        $('#id_participants-TOTAL_FORMS').attr('value', count+1);
+
+    });
+});
+</script>

@@ -97,10 +97,15 @@ def new(request):
         text_form = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
         question_form = CE.forms.question_form_set(request.POST, prefix='question')
         participation_form = CE.forms.participant_formset(request.POST, prefix='participants')
-        if form.is_valid() and participation_form.is_valid():
+        if form.is_valid():
             ce = form.save(request)
             for p_form in participation_form:
-                p_form.save(ce)
+                if p_form.is_valid():
+# todo current behaviour is that first date is required, you have to submit a date to the first entry
+#todo to get the form to pass, but afterwards that error passes silently.
+#todo a failed form returns a blank new form - will be annoying if lots of data is entered in by user
+#todo should I consider making the date field non required?
+                    p_form.save(ce)
             for t_form in text_form:
                 if t_form.is_valid():
                     t_form.save(ce)
@@ -110,8 +115,6 @@ def new(request):
             return redirect('CE:view', pk=ce.pk)
         else:
             errors = participation_form.errors
-            print(errors)
-
 
     # GET request
     form = CE.forms.CE_EditForm()

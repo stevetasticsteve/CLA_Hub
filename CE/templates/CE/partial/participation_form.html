@@ -9,19 +9,16 @@
 </div>
 </script>
 
-<!--Include text forms sent by server-->
-<div id="participants-server-items">
-    <div class="container-fluid border bg-light">
-        {% for p_form in ParticipationForm %}
-        <div id="partipants_item-{{ forloop.counter0 }}">
-            {{ p_form.id }}
-            {{ p_form.as_table }}
-        </div>
-    </div>
-    {% endfor %}
-</div>
 
 <div id="participants-form-container">
+    <div id="participant-server-items">
+        {% for p_form in ParticipationForm %}
+        <div class="container-fluid border bg-light" id="participants-{{ forloop.counter0 }}">
+            {{ p_form.id }}
+            {{ p_form.as_table }}
+            {% endfor %}
+        </div>
+    </div>
 </div>
 <p></p>
 

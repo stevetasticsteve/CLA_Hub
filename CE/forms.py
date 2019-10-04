@@ -93,7 +93,7 @@ class CE_EditForm(forms.Form):
     def save(self, request, **kwargs):
         # the instance kwarg is passed in if a prexisting record needs updating
         # without an instance a new .db entry is created
-        if kwargs['instance']:
+        if 'instance' in kwargs:
             ce = CE.models.CultureEvent.objects.get(pk=kwargs['instance'].pk)
         else:
             ce = CE.models.CultureEvent()
@@ -104,7 +104,7 @@ class CE_EditForm(forms.Form):
         ce.differences = self.cleaned_data['differences']
         ce.save()
 
-        if kwargs['instance']:
+        if 'instance' in kwargs:
             participants = CE.models.ParticipationModel.objects.get(ce=kwargs['instance'])
         else:
             participants = CE.models.ParticipationModel()
@@ -124,7 +124,7 @@ class CE_EditForm(forms.Form):
             new_pic.picture = self.cleaned_data['picture']
             new_pic.save()
 
-        if kwargs['instance']:
+        if 'instance' in kwargs:
             messages.success(request, 'CE updated')
         else:
             messages.success(request, 'New CE created')

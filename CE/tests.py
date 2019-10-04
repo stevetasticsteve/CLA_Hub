@@ -360,6 +360,36 @@ class NewCEPageTest(TestCase):
             # users have uploaded pictures themselves
             os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
 
+    def test_can_add_multiple_texts(self):
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'date': '2019-03-20',
+                                                        'national_participants': 'Ulumo',
+                                                        'team_participants': 'Philip',
+                                                        'text-0-phonetic_text': 'Wam',
+                                                        'text-0-orthographic_text': 'Bam',
+                                                        'text-0-phonetic_standard': '1',
+                                                        'text-0-valid_for_DA': False,
+                                                        'text-0-discourse_type': '',
+                                                        'text-1-phonetic_text': 'number 2',
+                                                        'text-1-orthographic_text': 'second',
+                                                        'text-1-phonetic_standard': '2',
+                                                        'text-1-valid_for_DA': False,
+                                                        'text-1-discourse_type': '1',
+                                                        'text-TOTAL_FORMS': 2,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 0,
+                                                        'question-INITIAL_FORMS': 0
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        new_ce = models.CultureEvent.objects.get(pk=2)
+        self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+
+        texts = models.TextModel.objects.filter(ce=new_ce)
+        self.assertEqual(len(texts), 2, 'There aren\'t two texts in the db')
+        self.assertEqual(texts[1].phonetic_text, 'number 2')
+        self.assertEqual(texts[0].orthographic_text, 'Bam')
+        self.assertEqual(texts[0].phonetic_standard, '1')
+
     def test_single_question_submit(self):
         question = 'Does this work?'
         answer = 'I hope so!'
@@ -411,15 +441,14 @@ class NewCEPageTest(TestCase):
                                                         'team_participants': 'Philip',
                                                         'text-TOTAL_FORMS': 0,
                                                         'text-INITIAL_FORMS': 0,
-                                                        'question-TOTAL_FORMS': 40,
-                                                        # todo blank forms are being added by JS
+                                                        'question-TOTAL_FORMS': 3,
                                                         'question-INITIAL_FORMS': 0,
                                                         'question-0-question': question,
                                                         'question-0-answer': answer,
+                                                        'question-1-question': question,
+                                                        'question-1-answer': answer,
                                                         'question-2-question': question,
-                                                        'question-2-answer': answer,
-                                                        'question-4-question': question,
-                                                        'question-4-answer': answer
+                                                        'question-2-answer': answer
                                                         })
         self.assertRedirects(response, '/CE/2')
         q = models.QuestionModel.objects.all()
@@ -437,7 +466,7 @@ class NewCEPageTest(TestCase):
                                                         'team_participants': 'Philip',
                                                         'text-TOTAL_FORMS': 0,
                                                         'text-INITIAL_FORMS': 0,
-                                                        'question-TOTAL_FORMS': 10,
+                                                        'question-TOTAL_FORMS': 2,
                                                         'question-INITIAL_FORMS': 0,
                                                         })
         self.assertRedirects(response, '/CE/2')

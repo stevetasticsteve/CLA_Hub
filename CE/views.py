@@ -98,7 +98,6 @@ def new(request):
         question_form = CE.forms.question_form_set(request.POST, prefix='question')
         participation_form = CE.forms.participant_formset(request.POST, prefix='participants')
         if form.is_valid() and participation_form.is_valid():
-            print('Valid forms')
             ce = form.save(request)
             for p_form in participation_form:
                 p_form.save(ce)

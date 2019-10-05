@@ -273,11 +273,11 @@ class ParticipationForm(forms.Form):
             participants = CE.models.ParticipationModel.objects.filter(ce=kwargs['instance'])
         else:
             participants = CE.models.ParticipationModel()
-        participants.ce = ce
-        participants.team_participants = self.cleaned_data['team_participants']
-        participants.national_participants = self.cleaned_data['national_participants']
-        participants.date = self.cleaned_data['date']
-        participants.save()
-
+        if self.cleaned_data:
+            participants.ce = ce
+            participants.team_participants = self.cleaned_data['team_participants']
+            participants.national_participants = self.cleaned_data['national_participants']
+            participants.date = self.cleaned_data['date']
+            participants.save()
 
 participant_formset = forms.formset_factory(ParticipationForm, extra=1)

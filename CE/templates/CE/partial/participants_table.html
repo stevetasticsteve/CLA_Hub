@@ -2,20 +2,20 @@
     <h3>Participants</h3>
 <table class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">Date</th>
-        <th scope="col">Team participants</th>
-        <th scope="col">National participants</th>
-    </tr>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Team participants</th>
+            <th scope="col">National participants</th>
+        </tr>
     </thead>
     <tbody>
-    <tr>
-    {% for occasion in Participants %}
-    <td>{{occasion.date}}</td>
-    <td>{{occasion.team_participants}}</td>
-    <td>{{occasion.national_participants}}</td>
-    {% endfor %}
-    </tr>
+        {% for occasion in Participants %}
+        <tr>
+            <td>{{occasion.date}}</td>
+            <td>{{occasion.team_participants}}</td>
+            <td>{{occasion.national_participants}}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
     </div>

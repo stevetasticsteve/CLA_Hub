@@ -19,6 +19,7 @@ class TestEditPage(TestCase):
         'valid_for_DA': False,
         'tags': 'taggie'
     }
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

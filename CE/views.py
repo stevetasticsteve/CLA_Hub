@@ -7,8 +7,10 @@ from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
 
 import CE.forms
+import CE.utilities
 
 
+@CE.utilities.conditional_login
 def home_page(request):
     most_recent_ces = CultureEvent.objects.all().order_by(
         '-last_modified')[:culture_events_shown_on_home_page]
@@ -18,6 +20,7 @@ def home_page(request):
     return render(request, 'CE/home_page.html', context)
 
 
+@CE.utilities.conditional_login
 def view(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     texts = TextModel.objects.filter(ce=pk)
@@ -35,6 +38,8 @@ def view(request, pk):
     }
     return render(request, 'CE/view_CE.html', context)
 
+
+@CE.utilities.conditional_login
 def view_slug(request, slug):
     ce = get_object_or_404(CultureEvent, slug=slug)
     pk = ce.pk
@@ -48,7 +53,6 @@ def view_slug(request, slug):
         'Participants' : participants
     }
     return render(request, 'CE/view_CE.html', context)
-
 
 
 @login_required
@@ -132,6 +136,7 @@ def new(request):
     return render(request, template, context)
 
 
+@CE.utilities.conditional_login
 def questions_chron(request):
     questions = QuestionModel.objects.order_by('-date_created')
     set_ces = set([i.ce for i in questions])
@@ -142,6 +147,7 @@ def questions_chron(request):
     return render(request, 'CE/questions_chron.html', context)
 
 
+@CE.utilities.conditional_login
 def questions_alph(request):
     q = QuestionModel.objects.all()
     set_ces = set([i.ce for i in q])
@@ -152,6 +158,8 @@ def questions_alph(request):
     }
     return render(request, 'CE/questions_alph.html', context)
 
+
+@CE.utilities.conditional_login
 def questions_unanswered(request):
     questions = QuestionModel.objects.filter(answer='').order_by('ce', '-last_modified')
     set_ces = set([i.ce for i in questions])
@@ -162,6 +170,7 @@ def questions_unanswered(request):
     return render(request, 'CE/questions_unanswered.html', context)
 
 
+@CE.utilities.conditional_login
 def questions_recent(request):
     questions = QuestionModel.objects.all().exclude(answer='').order_by('ce', '-last_modified')
     set_ces = set([i.ce for i in questions])
@@ -172,6 +181,7 @@ def questions_recent(request):
     return render(request, 'CE/questions_recent.html', context)
 
 
+@CE.utilities.conditional_login
 def OCM_home(request):
     template = 'CE/OCM_home.html'
     context = {
@@ -181,6 +191,7 @@ def OCM_home(request):
     return render(request, template, context)
 
 
+@CE.utilities.conditional_login
 def tag_detail_page(request, slug):
     template = 'CE/tag_detail_page.html'
     tag = get_object_or_404(Tag, slug=slug)
@@ -194,6 +205,8 @@ def tag_detail_page(request, slug):
 
     return render(request, template, context)
 
+
+@CE.utilities.conditional_login
 def tag_list_page(request):
     template = 'CE/tag_list_page.html'
     tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-num')

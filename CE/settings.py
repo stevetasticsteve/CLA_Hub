@@ -5,3 +5,4 @@ culture_events_shown_on_home_page = 10
 auto_cross_reference = True
 # A list of allowed HTML tags the user can enter to HTML escaped fields.
 bleach_allowed = ['strong', 'p']
+login_everywhere = False

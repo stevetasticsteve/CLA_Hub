@@ -392,21 +392,3 @@ class NewCEPageTest(TestCase):
         ce = models.CultureEvent.objects.get(pk=2)
         part = models.ParticipationModel.objects.filter(ce=ce)
         self.assertEqual(len(part), 0)
-
-
-class UnloggedUserRedirect(TestCase):
-    def test_redirected_from_edit_CE_page(self):
-        response = self.client.get(reverse('CE:edit', args='1'), follow=True)
-        self.assertTemplateUsed('CE/edit.html')
-        self.assertEqual(response.redirect_chain[0][1], 302)
-        self.assertEqual(response.status_code, 200,
-                         'Unlogged User not redirected from edit CE page')
-        self.assertRedirects(response, '/accounts/login/?next=/CE/1/edit')
-
-    def test_redirected_from_new_CE_page(self):
-        response = self.client.get(reverse('CE:new'), follow=True)
-        self.assertTemplateUsed('CE/edit.html')
-        self.assertEqual(response.redirect_chain[0][1], 302)
-        self.assertEqual(response.status_code, 200,
-                         'Unlogged User not redirected from edit CE page')
-        self.assertRedirects(response, '/accounts/login/?next=/CE/new')

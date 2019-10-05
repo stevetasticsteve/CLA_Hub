@@ -1,7 +1,5 @@
 {{ QuestionForm.management_form }}
-<h2>Questions</h2>
 
-<!--Hidden template that includes form-->
 <script type="text/html" id="question-template">
 <div id="question-__prefix__" class="container-fluid border bg-light">
     <p></p>
@@ -10,16 +8,18 @@
 </div>
 </script>
 
-<!--Include text forms sent by server-->
+<h2>Questions</h2>
 <div id="questions-form-container">
-    {% for question in QuestionForm %}
-        <div id="item-{{ forloop.counter0 }}">
-            {{ question.id }}
+    <div id="question-server-items">
+        {% for question in QuestionForm %}
+        <div class="container container-fluid" id="item-{{ forloop.counter0 }}">
             {{ question.as_table }}
         </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 <p></p>
+
 <!--Add new text button-->
 <a href="#" id="add-question-button" class="btn btn-info add-question">Add Question</a>
 

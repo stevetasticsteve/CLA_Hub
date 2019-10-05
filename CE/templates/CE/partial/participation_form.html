@@ -9,20 +9,19 @@
 </div>
 </script>
 
-
+<h3>Participants</h3>
 <div id="participants-form-container">
     <div id="participant-server-items">
         {% for p_form in ParticipationForm %}
         <div class="container-fluid border bg-light" id="participants-{{ forloop.counter0 }}">
-            {{ p_form.id }}
-            {{ p_form.as_table }}
-            {% endfor %}
+            {{ p_form.as_p }}
         </div>
+        {% endfor %}
     </div>
 </div>
 <p></p>
 
-<!--Add new text button-->
+<!--Add new participant button-->
 <a href="#" id="add-participant-button" class="btn btn-success add-participant">+</a>
 
 <!--Script to make new form appear-->

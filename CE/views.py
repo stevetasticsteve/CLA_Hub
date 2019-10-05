@@ -61,6 +61,8 @@ def edit(request, pk):
         form = CE.forms.prepopulated_CE_form(ce)
         texts = CE.forms.text_formset_prepopulated(ce)
         questions = CE.forms.question_formset_prepopulated(ce)
+        participants = CE.forms.prepopulated_participants_formset(ce)
+
 
     elif request.method == 'POST':
         # CE.forms.update_CE(request, ce)
@@ -81,6 +83,7 @@ def edit(request, pk):
         'CE': ce,
         'TextForm': texts,
         'Form': form,
+        'ParticipationForm': participants,
         'CurrentPics': current_pics,
         'QuestionForm': questions
     }

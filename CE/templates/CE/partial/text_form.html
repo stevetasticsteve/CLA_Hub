@@ -1,7 +1,6 @@
 {{ TextForm.management_form }}
 <h2>Texts</h2>
 
-<!--Hidden template that includes form-->
 <script type="text/html" id="text-template">
 <div id="text-__prefix__" class="container-fluid border bg-light"  >
     <p></p>
@@ -11,23 +10,19 @@
 </div>
 </script>
 
-<!--Include text forms sent by server-->
 
-<div id="text-server-items">
-    <div class="container-fluid border bg-light">
+<div id="text-form-container">
+    <div id="text-server-items">
         {% for text_form in TextForm %}
-        <div id="text-{{ forloop.counter0 }}">
+        <div class="container-fluid border bg-light" id="text-{{ forloop.counter0 }}">
             <h3>Text {{forloop.counter}}</h3>
             {{ text_form.as_p }}
         </div>
         {% endfor %}
-     </div>
+    </div>
 </div>
-
-<div id="text-form-container">
-</div>
-
 <p></p>
+
 <!--Add new text button-->
 <a href="#" id="add-text-button" class="btn btn-info add-text">Add Text</a>
 

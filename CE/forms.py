@@ -102,13 +102,9 @@ class CE_EditForm(forms.Form):
 #todo participations need to become formsets like texts and questions as multiple are expected.
 
 def prepopulated_CE_form(ce):
-    participation_info = CE.models.ParticipationModel.objects.get(ce=ce)
     form = CE_EditForm(initial={
     'title': ce.title,
     'tags': ce.tags.all(),
-    'date': participation_info.date,
-    'team_participants': participation_info.team_participants,
-    'national_participants': participation_info.national_participants,
     'description_plain_text': ce.description_plain_text,
     'differences': ce.differences,
     'interpretation': ce.interpretation
@@ -279,5 +275,17 @@ class ParticipationForm(forms.Form):
             participants.national_participants = self.cleaned_data['national_participants']
             participants.date = self.cleaned_data['date']
             participants.save()
+
+def prepopulated_participants_formset(ce):
+    participant_data = CE.models.ParticipationModel.objects.filter(ce=ce)
+    participant_forms = []
+    for data in participant_data:
+        participant_form = participant_formset(initial=[{
+            'team_participants': data.team_participants,
+            'national_participants': data.national_participants,
+            'date': data.date
+        }])
+        participant_forms.append(participant_form)
+    return participant_forms
 
 participant_formset = forms.formset_factory(ParticipationForm, extra=1)

@@ -66,6 +66,18 @@ class CEModelTest(TestCase):
         self.assertIn('{reference}', ce.description_plain_text)
         self.assertNotIn('{reference}', ce.description)
 
+    def test_no_auto_cross_reference_if_setting_disabled(self):
+        settings.auto_cross_reference = False
+        # create 1st CE
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+        # create 2nd CE that shouldn't hyperlink
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text='example ce1 should pass silently')
+        ce.save()
+        self.assertNotIn('href', ce.description, 'Html anchor auto added  despite settings')
+
     def test_invalid_HTML_removed(self):
         settings.auto_cross_reference = True
         # create 1st CE

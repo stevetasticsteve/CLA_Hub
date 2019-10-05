@@ -500,6 +500,46 @@ class NewCEPageTest(TestCase):
         response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'here'}))
         self.assertEqual(response.status_code, 200, 'Tag view page not showing')
 
+    def test_multiple_participations(self):
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'participants-0-date': '2019-03-20',
+                                                        'participants-0-national_participants': 'Ulumo',
+                                                        'participants-0-team_participants': 'Philip',
+                                                        'participants-1-date': '2019-03-21',
+                                                        'participants-1-national_participants': 'Kavaluku',
+                                                        'participants-1-team_participants': 'Steve',
+                                                        'text-TOTAL_FORMS': 0,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 0,
+                                                        'question-INITIAL_FORMS': 0,
+                                                        'participants-TOTAL_FORMS': 2,
+                                                        'participants-INITIAL_FORMS': 2
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        ce = models.CultureEvent.objects.get(pk=2)
+        part = models.ParticipationModel.objects.filter(ce=ce)
+        self.assertEqual(len(part), 2)
+        self.assertEqual(part[0].team_participants, 'Philip')
+        self.assertEqual(part[1].team_participants, 'Steve')
+
+    def test_blank_participants(self):
+        # shouldn't create a Participants db row
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'participants-0-date': '',
+                                                        'participants-0-national_participants': '',
+                                                        'participants-0-team_participants': '',
+                                                        'text-TOTAL_FORMS': 0,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 0,
+                                                        'question-INITIAL_FORMS': 0,
+                                                        'participants-TOTAL_FORMS': 1,
+                                                        'participants-INITIAL_FORMS': 1
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        ce = models.CultureEvent.objects.get(pk=2)
+        part = models.ParticipationModel.objects.filter(ce=ce)
+        self.assertEqual(len(part), 0)
+
 
 class UnloggedUserRedirect(TestCase):
     def test_redirected_from_edit_CE_page(self):
@@ -517,6 +557,8 @@ class UnloggedUserRedirect(TestCase):
         self.assertEqual(response.status_code, 200,
                          'Unlogged User not redirected from edit CE page')
         self.assertRedirects(response, '/accounts/login/?next=/CE/new')
+
+
 
 
 class QuestionPageTest(TestCase):

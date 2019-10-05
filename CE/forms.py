@@ -270,7 +270,7 @@ class ParticipationForm(forms.Form):
 
     def save(self, ce, **kwargs):
         if 'instance' in kwargs:
-            participants = CE.models.ParticipationModel.objects.get(ce=kwargs['instance'])
+            participants = CE.models.ParticipationModel.objects.filter(ce=kwargs['instance'])
         else:
             participants = CE.models.ParticipationModel()
         participants.ce = ce
@@ -279,10 +279,5 @@ class ParticipationForm(forms.Form):
         participants.date = self.cleaned_data['date']
         participants.save()
 
-class RequiredFormset(forms.BaseFormSet):
-    def __init__(self, *args, **kwargs):
-        super(RequiredFormset, self).__init__(*args, **kwargs)
-        self.forms[0].empty_permitted = False
 
-
-participant_formset = forms.formset_factory(ParticipationForm, formset=RequiredFormset, extra=1)
+participant_formset = forms.formset_factory(ParticipationForm, extra=1)

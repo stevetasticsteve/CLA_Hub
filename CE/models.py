@@ -85,7 +85,7 @@ class ParticipationModel(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     team_participants = models.CharField(blank=True, max_length=60)
     national_participants = models.CharField(blank=True, max_length=60)
-    date = models.DateField(blank=False)
+    date = models.DateField(blank=True)
 
     def __str__(self):
         return str('Participants for ' + str(self.ce))

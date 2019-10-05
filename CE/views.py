@@ -101,10 +101,6 @@ def new(request):
             ce = form.save(request)
             for p_form in participation_form:
                 if p_form.is_valid():
-# todo current behaviour is that first date is required, you have to submit a date to the first entry
-#todo to get the form to pass, but afterwards that error passes silently.
-#todo a failed form returns a blank new form - will be annoying if lots of data is entered in by user
-#todo should I consider making the date field non required?
                     p_form.save(ce)
             for t_form in text_form:
                 if t_form.is_valid():

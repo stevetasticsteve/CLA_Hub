@@ -94,7 +94,7 @@ def edit(request, pk):
     return render(request, template, context)
 
 
-@ login_required
+@login_required
 def new(request):
     template = 'CE/new_CE.html'
     errors = None

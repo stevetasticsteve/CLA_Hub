@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
 from CE import models
 
 
@@ -17,7 +18,9 @@ class TestEditPage(TestCase):
         'phonetic_text': 'foᵘnɛtɪks',
         'orthographic_text': 'orthographic',
         'valid_for_DA': False,
-        'tags': 'taggie'
+        'tags': 'taggie',
+        'question': 'Does this test work?',
+        'answer': 'Yes, it does!'
     }
 
     @classmethod
@@ -34,21 +37,27 @@ class TestEditPage(TestCase):
                                  differences=self.test_data['differences'],
                                  interpretation=self.test_data['interpretation'],)
         ce.save()
+        ce2 = models.CultureEvent(title='CE2')
+        ce2.save()
         ce.tags.add(self.test_data['tags'])
         part = models.ParticipationModel(national_participants=self.test_data['national_participants'],
                                          team_participants=self.test_data['team_participants'],
                                          date=self.test_data['date'],
                                          ce=ce)
         part.save()
-        text = models.TextModel(ce=models.CultureEvent.objects.get(pk=1),
+        text = models.TextModel(ce=ce,
                                 phonetic_text=self.test_data['phonetic_text'],
                                 orthographic_text=self.test_data['orthographic_text'],
                                 valid_for_DA=self.test_data['valid_for_DA'])
         text.save()
+        q = models.QuestionModel(ce=ce,
+                                 question=self.test_data['question'],
+                                 answer=self.test_data['answer'])
+        q.save()
 
     def test_setup(self):
         self.assertEqual(models.CultureEvent.objects.get(pk=1).title, self.test_data['title'])
-        self.assertEqual(len(models.CultureEvent.objects.all()), 1)
+        self.assertEqual(len(models.CultureEvent.objects.all()), 2)
 
     def test_edit_page_GET_response(self):
         response = self.client.get(reverse('CE:edit', args='1'))
@@ -64,6 +73,50 @@ class TestEditPage(TestCase):
             if data == False:
                 continue
             self.assertContains(response, data)
+
+    def test_redirect_after_post(self):
+        response = self.client.post(reverse('CE:edit', args='1'),
+                                    {'title': self.test_data['title'],
+                                     'description_plain_text': 'A new description'},
+                                    follow=True)
+        self.assertTemplateUsed(response, 'CE/view_CE.html')
+        self.assertRedirects(response, '/CE/1')
+
+    def test_number_of_CEs_the_same(self):
+        self.client.post(reverse('CE:edit', args='1'),
+                         {'title': self.test_data['title'],
+                         'description_plain_text': 'A new description'},
+                         follow=True)
+        self.assertEqual(len(models.CultureEvent.objects.all()), 2)
+
+    def test_CE_model_updated_correctly_after_POST(self):
+        self.client.post(reverse('CE:edit', args='1'),
+                         {'title': self.test_data['title'],
+                          'description_plain_text': 'A new description'},
+                         follow=True)
+        ce = models.CultureEvent.objects.get(pk=1)
+        self.assertEqual('A new description', ce.description_plain_text)
+        self.assertEqual(self.test_data['title'], ce.title)
+        self.assertEqual(ce.pk, 1)
+
+    def test_changing_CE_title(self):
+        self.client.post(reverse('CE:edit', args='1'),
+                         {'title': 'A new title',
+                          'description_plain_text': 'A new description'},
+                         follow=True)
+        ce = models.CultureEvent.objects.get(pk=1)
+        self.assertEqual('A new description', ce.description_plain_text)
+        self.assertEqual('A new title', ce.title)
+        self.assertEqual(ce.pk, 1)
+
+    def test_edit_title_to_existing_rejected(self):
+        with self.assertRaises(IntegrityError):
+            response = self.client.post(reverse('CE:edit', args='1'),
+                                        {'title': 'CE2',
+                                        'description_plain_text': 'A new description'},
+                                        follow=False)
+    # todo I've caught the error, but user will only see an error screen
+
 
     # def test_valid_edit_page_POST_response_change_everything(self):
     #     # CE model should be updated, a new one shouldn't be created

@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
-import CE.settings
+import CLAHub.base_settings
 
 
 def conditional_login(func):
-    if CE.settings.login_everywhere:
+    if CLAHub.base_settings.LOGIN_EVERYWHERE:
         return login_required(func)
     else:
         return func

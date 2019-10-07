@@ -64,11 +64,18 @@ def edit(request, pk):
     current_pics = PictureModel.objects.filter(ce_id=pk)
 
     if request.method == 'POST':
-        # CE.forms.update_CE(request, ce)
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
+        text_form = CE.forms.text_formset_prepopulated(ce)
+        questions = CE.forms.question_formset_prepopulated(ce)
+        participants = CE.forms.prepopulated_participants_formset(ce)
         if form.is_valid():
             try:
                 form.save(request, instance=ce)
+                texts = CE.models.TextModel.objects.filter(ce=ce)
+                for i, t_form in enumerate(text_form):
+                    if t_form.is_valid():
+                        print('valid')
+                        t_form.save(instance=texts[i])
                 return redirect('CE:view', pk=ce.pk)
             except exceptions.ValidationError as e:
                 errors = e
@@ -77,14 +84,14 @@ def edit(request, pk):
         # if form.is_valid():
         #     form.save(request)
 
-    form = CE.forms.prepopulated_CE_form(ce)
-    texts = CE.forms.text_formset_prepopulated(ce)
-    questions = CE.forms.question_formset_prepopulated(ce)
-    participants = CE.forms.prepopulated_participants_formset(ce)
+    if not errors:  # don't overwrite the user's failed form
+        form = CE.forms.prepopulated_CE_form(ce)
+        text_form = CE.forms.text_formset_prepopulated(ce)
+        questions = CE.forms.question_formset_prepopulated(ce)
+        participants = CE.forms.prepopulated_participants_formset(ce)
 
     context = {
-        'CE': ce,
-        'TextForm': texts,
+        'TextForm': text_form,
         'Form': form,
         'ParticipationForm': participants,
         'CurrentPics': current_pics,
@@ -95,9 +102,6 @@ def edit(request, pk):
 # todo upload multiple files at once
 # todo changing pictures
 # todo rotating pictures
-
-
-
 
 
 @login_required
@@ -125,16 +129,18 @@ def new(request):
                 return redirect('CE:view', pk=ce.pk)
 
             except exceptions.ValidationError as e:
+
                 errors = e
 
         else:
             errors = form.errors
 
     # GET request
-    form = CE.forms.CE_EditForm()
-    text_form = CE.forms.text_form_set(prefix='text')
-    question_form = CE.forms.question_form_set(prefix='question')
-    participation_form = CE.forms.participant_formset(prefix='participants')
+    if not errors: # don't overwrite the user's failed form
+        form = CE.forms.CE_EditForm()
+        text_form = CE.forms.text_form_set(prefix='text')
+        question_form = CE.forms.question_form_set(prefix='question')
+        participation_form = CE.forms.participant_formset(prefix='participants')
 
     context = {
             'Form': form,

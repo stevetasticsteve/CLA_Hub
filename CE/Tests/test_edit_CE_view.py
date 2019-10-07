@@ -118,6 +118,22 @@ class TestEditPage(TestCase):
         self.assertEqual(models.CultureEvent.objects.get(pk=1).title,
                          self.test_data['title'])
 
+    def test_edit_single_text(self):
+        response = self.client.post(reverse('CE:edit', args='1'),
+                                    {'text-TOTAL_FORMS': 1,
+                                     'text-INITIAL_FORMS': 1,
+                                     'question-TOTAL_FORMS': 0,
+                                     'question-INITIAL_FORMS': 0,
+                                     'participants-TOTAL_FORMS': 1,
+                                     'participants-INITIAL_FORMS': 1,
+                                     'title': 'Example CE1',
+                                     'text-0-phonetic_text': 'Changed'
+                                    },
+                                    follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text, 'Changed',
+                         'Text 1 not updated on POST')
 
     # def test_valid_edit_page_POST_response_change_everything(self):
     #     # CE model should be updated, a new one shouldn't be created

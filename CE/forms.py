@@ -158,9 +158,12 @@ class TextForm(forms.Form):
         required=False
     )
     
-    def save(self, ce):
+    def save(self, ce, **kwargs):
         if self.cleaned_data:
-            new_text = CE.models.TextModel()
+            if 'instance' in kwargs:
+                new_text = CE.models.TextModel.objects.get(pk=kwargs['instance'].pk)
+            else:
+                new_text = CE.models.TextModel()
             new_text.ce = ce
             new_text.orthographic_text = self.cleaned_data['orthographic_text']
             new_text.phonetic_text = self.cleaned_data['phonetic_text']
@@ -177,7 +180,9 @@ class TextForm(forms.Form):
             new_text.audio = self.cleaned_data['audio']
             new_text.save()
 
+
 text_form_set = forms.formset_factory(TextForm, extra=0)
+
 
 def text_formset_prepopulated(ce):
     text_data = CE.models.TextModel.objects.filter(ce=ce)
@@ -190,7 +195,7 @@ def text_formset_prepopulated(ce):
             'phonetic_standard': data.phonetic_standard,
             'valid_for_DA': data.valid_for_DA,
             'discourse_type': data.discourse_type
-    }])
+    }], prefix='text')
         text_forms.append(text_form)
     return text_forms
 
@@ -235,7 +240,7 @@ def question_formset_prepopulated(ce):
             'question': data.question,
             'answer': data.answer,
 
-        }])
+        }], prefix='question')
         question_forms.append(question_form)
     return question_forms
 
@@ -284,7 +289,7 @@ def prepopulated_participants_formset(ce):
             'team_participants': data.team_participants,
             'national_participants': data.national_participants,
             'date': data.date
-        }])
+        }], prefix='participants')
         participant_forms.append(participant_form)
     return participant_forms
 

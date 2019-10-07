@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import messages
+from django.core import exceptions
 
 import taggit.forms
 import CE.models
@@ -99,7 +100,6 @@ class CE_EditForm(forms.Form):
             messages.success(request, 'New CE created')
         return ce
 
-#todo participations need to become formsets like texts and questions as multiple are expected.
 
 def prepopulated_CE_form(ce):
     form = CE_EditForm(initial={

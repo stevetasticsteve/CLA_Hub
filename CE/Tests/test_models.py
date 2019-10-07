@@ -1,5 +1,5 @@
 from django.test import TestCase
-from django.db.utils import IntegrityError
+from django.core import exceptions
 from CE import models, settings, OCM_categories
 
 
@@ -17,7 +17,7 @@ class CEModelTest(TestCase):
         ce = models.CultureEvent(title='Example CE1',
                                  description_plain_text='A second CE')
 
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(exceptions.ValidationError):
             ce.save()
 
     def test_auto_hyperlink(self):

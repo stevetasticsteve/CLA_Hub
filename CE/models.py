@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core import exceptions
 from taggit.managers import TaggableManager
 from PIL import Image
 from io import BytesIO
@@ -27,6 +28,7 @@ class CultureEvent(models.Model):
     tags = TaggableManager()
 
     def save(self, *args, **kwargs):
+        self.check_unique_title()
         # copy the user's input from plain text to description to be processed
         # uses bleach to remove potentially harmful HTML code
         self.description = bleach.clean(str(self.description_plain_text),
@@ -38,6 +40,12 @@ class CultureEvent(models.Model):
             self.find_tag()
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+    def check_unique_title(self):
+        ces = CultureEvent.objects.all()
+        titles = [ce.title for ce in ces if self.pk is not ce.pk]
+        if self.title in titles:
+            raise exceptions.ValidationError('CE already exists', code='invalid')
 
     def find_tag(self):
         # todo case sensitive, shouldn't be

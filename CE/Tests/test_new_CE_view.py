@@ -85,7 +85,7 @@ class NewCEPageTest(TestCase):
     def test_new_CE_page_invalid_POST_repeated_title_response(self):
         # Form should be show again with error message
         response = self.client.post(reverse('CE:new'), {
-            'Title': 'Example CE1',
+            'title': 'Example CE1',
             'description_plain_text': 'I\'m testing this CE',
             'text-TOTAL_FORMS': 0,
             'text-INITIAL_FORMS': 0,
@@ -94,15 +94,13 @@ class NewCEPageTest(TestCase):
             'participants-TOTAL_FORMS': 1,
             'participants-INITIAL_FORMS': 1
         }, follow=True)
-        #todo form error messages
-        # self.assertContains(response, 'Culture event with this Title already exists')
+        self.assertContains(response, 'CE already exists')
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 
     def test_new_CE_page_invalid_POST_no_title_response(self):
         # Form should be shown again with error message
         # No extra CE should be added to .db
-        # todo no form error message shown
         response = self.client.post(reverse('CE:new'), {
             'description_plain_text': 'I\'m testing this CE',
             'text-TOTAL_FORMS': 0,
@@ -112,8 +110,7 @@ class NewCEPageTest(TestCase):
             'participants-TOTAL_FORMS': 1,
             'participants-INITIAL_FORMS': 1
         }, follow=True)
-        self.assertTemplateUsed('CE/new_CE.html')
-        # self.assertContains(response, 'This field is required')
+        self.assertEqual(response.status_code, 200)
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=2)
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.core import exceptions
 from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
 from taggit.models import Tag
 from CE.settings import culture_events_shown_on_home_page
@@ -58,30 +59,28 @@ def view_slug(request, slug):
 @login_required
 def edit(request, pk):
     template = 'CE/edit_CE.html'
+    errors = None
     ce = get_object_or_404(CultureEvent, pk=pk)
     current_pics = PictureModel.objects.filter(ce_id=pk)
 
-    if request.method == 'GET':
-        form = CE.forms.prepopulated_CE_form(ce)
-        texts = CE.forms.text_formset_prepopulated(ce)
-        questions = CE.forms.question_formset_prepopulated(ce)
-        participants = CE.forms.prepopulated_participants_formset(ce)
-
-
-    elif request.method == 'POST':
+    if request.method == 'POST':
         # CE.forms.update_CE(request, ce)
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(request, instance=ce)
+            try:
+                form.save(request, instance=ce)
+                return redirect('CE:view', pk=ce.pk)
+            except exceptions.ValidationError as e:
+                errors = e
         # texts = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
         # questions = CE.forms.question_form_set(prefix='question')
         # if form.is_valid():
         #     form.save(request)
-        return redirect('CE:view', pk=ce.pk)
-    #     # todo upload multiple files at once
-    #     # todo changing pictures
-    #     # todo rotating pictures
 
+    form = CE.forms.prepopulated_CE_form(ce)
+    texts = CE.forms.text_formset_prepopulated(ce)
+    questions = CE.forms.question_formset_prepopulated(ce)
+    participants = CE.forms.prepopulated_participants_formset(ce)
 
     context = {
         'CE': ce,
@@ -89,9 +88,16 @@ def edit(request, pk):
         'Form': form,
         'ParticipationForm': participants,
         'CurrentPics': current_pics,
-        'QuestionForm': questions
+        'QuestionForm': questions,
+        'Errors': errors
     }
     return render(request, template, context)
+# todo upload multiple files at once
+# todo changing pictures
+# todo rotating pictures
+
+
+
 
 
 @login_required
@@ -105,19 +111,24 @@ def new(request):
         question_form = CE.forms.question_form_set(request.POST, prefix='question')
         participation_form = CE.forms.participant_formset(request.POST, prefix='participants')
         if form.is_valid():
-            ce = form.save(request)
-            for p_form in participation_form:
-                if p_form.is_valid():
-                    p_form.save(ce)
-            for t_form in text_form:
-                if t_form.is_valid():
-                    t_form.save(ce)
-            for question in question_form:
-                if question.is_valid():
-                    question.save(ce, request)
-            return redirect('CE:view', pk=ce.pk)
+            try:
+                ce = form.save(request)
+                for p_form in participation_form:
+                    if p_form.is_valid():
+                        p_form.save(ce)
+                for t_form in text_form:
+                    if t_form.is_valid():
+                        t_form.save(ce)
+                for question in question_form:
+                    if question.is_valid():
+                        question.save(ce, request)
+                return redirect('CE:view', pk=ce.pk)
+
+            except exceptions.ValidationError as e:
+                errors = e
+
         else:
-            errors = participation_form.errors
+            errors = form.errors
 
     # GET request
     form = CE.forms.CE_EditForm()

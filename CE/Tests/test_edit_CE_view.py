@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.db.utils import IntegrityError
+from django.core import exceptions
 from CE import models
 
 
@@ -110,12 +110,13 @@ class TestEditPage(TestCase):
         self.assertEqual(ce.pk, 1)
 
     def test_edit_title_to_existing_rejected(self):
-        with self.assertRaises(IntegrityError):
-            response = self.client.post(reverse('CE:edit', args='1'),
-                                        {'title': 'CE2',
-                                        'description_plain_text': 'A new description'},
-                                        follow=False)
-    # todo I've caught the error, but user will only see an error screen
+        response = self.client.post(reverse('CE:edit', args='1'),
+                                    {'title': 'CE2',
+                                    'description_plain_text': 'A new description'},
+                                    follow=False)
+        self.assertContains(response, 'CE already exists')
+        self.assertEqual(models.CultureEvent.objects.get(pk=1).title,
+                         self.test_data['title'])
 
 
     # def test_valid_edit_page_POST_response_change_everything(self):

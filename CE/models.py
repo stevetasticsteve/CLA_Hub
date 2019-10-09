@@ -133,7 +133,7 @@ class PictureModel(models.Model):
 
 class TextModel(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
-    audio = models.FileField(upload_to=audio_folder, blank=False)
+    audio = models.FileField(upload_to=audio_folder, blank=True)
     phonetic_text = models.TextField(blank=True)
     phonetic_standard = models.CharField(choices=[('1', 'Unchecked'),
                                                   ('2', 'Double checked by author'),
@@ -141,9 +141,10 @@ class TextModel(models.Model):
                                                   ('4', 'Approved by whole team'),
                                                   ('5', 'Valid for linguistic analysis')],
                                          max_length=30,
+                                         default='1',
                                          blank=True)
     orthographic_text = models.TextField(blank=True)
-    valid_for_DA = models.BooleanField()
+    valid_for_DA = models.BooleanField(default=False)
     discourse_type = models.CharField(choices=[('1', 'Narrative'),
                                                ('2', 'Hortatory'),
                                                ('3', 'Procedural'),

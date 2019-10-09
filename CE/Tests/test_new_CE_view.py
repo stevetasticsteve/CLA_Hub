@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core import exceptions
 from CE import models
 
 import os
@@ -26,6 +27,10 @@ class NewCEPageTest(TestCase):
                                                  national_participants='Ulumo',
                                                  ce=ce)
         participants.save()
+        texts = models.TextModel(ce=ce,
+                                 phonetic_text='Phonetics written here',
+                                 valid_for_DA=False)
+        texts.save()
 
     def full_valid_POST(self, follow):
         posted_data = {
@@ -57,6 +62,10 @@ class NewCEPageTest(TestCase):
         self.assertContains(response, '<form')
         self.assertContains(response, '<label for="id_title">CE title:</label>')
 
+    def test_text_form_is_blank(self):
+        response = self.client.get(reverse('CE:new'))
+        self.assertNotContains(response, 'Phonetics written here')
+
     def test_redirect_after_POST(self):
         response, _ = self.full_valid_POST(follow=False)
         self.assertTemplateUsed('CE/new_CE.html')
@@ -80,7 +89,7 @@ class NewCEPageTest(TestCase):
                          'new CE description not correct')
         self.assertEqual(ce.last_modified_by, 'Tester',
                          'Last modified by not updated')
-        self.assertEqual(len(models.TextModel.objects.all()), 0, 'A blank Text was added')
+        self.assertEqual(len(models.TextModel.objects.all()), 1, 'A blank Text was added')
 
     def test_new_CE_page_invalid_POST_repeated_title_response(self):
         # Form should be show again with error message
@@ -219,6 +228,57 @@ class NewCEPageTest(TestCase):
             # users have uploaded pictures themselves
             os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
 
+    def test_can_add_single_text_if_phonetic_standard_missing(self):
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'participants-0-date': '2019-03-20',
+                                                        'participants-0-national_participants': 'Ulumo',
+                                                        'participants-0-team_participants': 'Philip',
+                                                        'text-0-phonetic_text': 'Wam',
+                                                        'text-0-orthographic_text': 'Bam',
+                                                        'text-0-phonetic_standard': '1',
+                                                        'text-TOTAL_FORMS': 1,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 0,
+                                                        'question-INITIAL_FORMS': 0,
+                                                        'participants-TOTAL_FORMS': 1,
+                                                        'participants-INITIAL_FORMS': 1
+                                                        })
+
+        self.assertRedirects(response, '/CE/2')
+        new_ce = models.CultureEvent.objects.get(pk=2)
+        self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+
+        texts = models.TextModel.objects.filter(ce=new_ce)
+        self.assertEqual(len(texts), 1, 'New text not added')
+        self.assertEqual(texts[0].orthographic_text, 'Bam')
+        self.assertEqual(texts[0].phonetic_standard, '1')
+
+    def test_can_add_single_text(self):
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'participants-0-date': '2019-03-20',
+                                                        'participants-0-national_participants': 'Ulumo',
+                                                        'participants-0-team_participants': 'Philip',
+                                                        'text-0-phonetic_text': 'Wam',
+                                                        'text-0-orthographic_text': 'Bam',
+                                                        'text-0-phonetic_standard': '1',
+                                                        'text-0-valid_for_DA': False,
+                                                        'text-0-discourse_type': '',
+                                                        'text-TOTAL_FORMS': 1,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 0,
+                                                        'question-INITIAL_FORMS': 0,
+                                                        'participants-TOTAL_FORMS': 1,
+                                                        'participants-INITIAL_FORMS': 1
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        new_ce = models.CultureEvent.objects.get(pk=2)
+        self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+
+        texts = models.TextModel.objects.filter(ce=new_ce)
+        self.assertEqual(len(texts), 1, 'New text not added')
+        self.assertEqual(texts[0].orthographic_text, 'Bam')
+        self.assertEqual(texts[0].phonetic_standard, '1')
+
     def test_can_add_multiple_texts(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
                                                         'participants-0-date': '2019-03-20',
@@ -250,6 +310,30 @@ class NewCEPageTest(TestCase):
         self.assertEqual(texts[1].phonetic_text, 'number 2')
         self.assertEqual(texts[0].orthographic_text, 'Bam')
         self.assertEqual(texts[0].phonetic_standard, '1')
+
+    def test_blank_text_not_saved(self):
+        response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                        'participants-0-date': '2019-03-20',
+                                                        'participants-0-national_participants': 'Ulumo',
+                                                        'participants-0-team_participants': 'Philip',
+                                                        'text-0-phonetic_text': '',
+                                                        'text-0-orthographic_text': '',
+                                                        'text-0-phonetic_standard': '',
+                                                        'text-0-valid_for_DA': False,
+                                                        'text-0-discourse_type': '',
+                                                        'text-TOTAL_FORMS': 1,
+                                                        'text-INITIAL_FORMS': 0,
+                                                        'question-TOTAL_FORMS': 0,
+                                                        'question-INITIAL_FORMS': 0,
+                                                        'participants-TOTAL_FORMS': 1,
+                                                        'participants-INITIAL_FORMS': 1
+                                                        })
+        self.assertRedirects(response, '/CE/2')
+        new_ce = models.CultureEvent.objects.get(pk=2)
+        self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+
+        texts = models.TextModel.objects.filter(ce=new_ce)
+        self.assertEqual(len(texts), 0, 'Blank text has been added')
 
     def test_single_question_submit(self):
         question = 'Does this work?'

@@ -88,7 +88,7 @@ sudo rm /var/www/html/index.html
 
 12. Updated system services
 sudo systemctl daemon-reload
-sudo systsemctl enable CLAHub
+sudo systemctl enable CLAHub
 sudo systemctl start CLAHub
 sudo service apache2 restart
 

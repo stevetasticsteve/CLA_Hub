@@ -112,76 +112,91 @@ def prepopulated_CE_form(ce):
 
     return form
 
-class TextForm(forms.Form):
-    audio = forms.FileField(
-        label='Upload audio',
-        required=False
-    )
-    phonetic_text = forms.CharField(
-        required=False,
-        label='Phonetic transcription',
-        widget=forms.Textarea(attrs={
-        'class': 'form-control',
-        'placeholder': 'type phonetics here',
-        'rows': 5
-    })
-    )
-    phonetic_standard = forms.ChoiceField(
-        choices=[('', ''),
-                 ('1', 'Unchecked'),
-                 ('2', 'Double checked by author'),
-                 ('3', 'Checked by team mate'),
-                 ('4', 'Approved by whole team'),
-                 ('5', 'Valid for linguistic analysis')],
-        label='Phonetic accuracy',
-        required=False
-    )
-    orthographic_text = forms.CharField(
-        required=False,
-        label='Orthographic transcription',
-        widget = forms.Textarea(attrs={
-        'class': 'form-control',
-        'rows': 5,
-        'placeholder': 'type orthographic text here'
-    })
-    )
-    valid_for_DA = forms.BooleanField(label='Valid for Discourse Analysis',
-                                      required=False)
-    discourse_type = forms.ChoiceField(
-        choices=[('', ''),
-                ('1', 'Narrative'),
-                ('2', 'Hortatory'),
-                ('3', 'Procedural'),
-                ('4', 'Expository'),
-                ('5', 'Descriptive')],
-        label='Discourse type',
-        required=False
-    )
-    
-    def save(self, ce, **kwargs):
-        if self.cleaned_data:
-            if 'instance' in kwargs:
-                new_text = CE.models.TextModel.objects.get(pk=kwargs['instance'].pk)
-            else:
-                new_text = CE.models.TextModel()
-            new_text.ce = ce
-            new_text.orthographic_text = self.cleaned_data['orthographic_text']
-            new_text.phonetic_text = self.cleaned_data['phonetic_text']
-            if self.cleaned_data['phonetic_text']:
-                if self.cleaned_data['phonetic_standard'] == '':
-                    new_text.phonetic_standard = 1
-                else:
-                    new_text.phonetic_standard = self.cleaned_data['phonetic_standard']
-            if self.cleaned_data['valid_for_DA']:
-                new_text.valid_for_DA = True
-                new_text.discourse_type = self.cleaned_data['discourse_type']
-            else:
-                new_text.valid_for_DA = False
-            new_text.audio = self.cleaned_data['audio']
-            new_text.save()
+# class TextForm(forms.Form):
+#     audio = forms.FileField(
+#         label='Upload audio',
+#         required=False
+#     )
+#     phonetic_text = forms.CharField(
+#         required=False,
+#         label='Phonetic transcription',
+#         widget=forms.Textarea(attrs={
+#         'class': 'form-control',
+#         'placeholder': 'type phonetics here',
+#         'rows': 5
+#     })
+#     )
+#     phonetic_standard = forms.ChoiceField(
+#         choices=[('', ''),
+#                  ('1', 'Unchecked'),
+#                  ('2', 'Double checked by author'),
+#                  ('3', 'Checked by team mate'),
+#                  ('4', 'Approved by whole team'),
+#                  ('5', 'Valid for linguistic analysis')],
+#         label='Phonetic accuracy',
+#         required=False
+#     )
+#     orthographic_text = forms.CharField(
+#         required=False,
+#         label='Orthographic transcription',
+#         widget = forms.Textarea(attrs={
+#         'class': 'form-control',
+#         'rows': 5,
+#         'placeholder': 'type orthographic text here'
+#     })
+#     )
+#     valid_for_DA = forms.BooleanField(label='Valid for Discourse Analysis',
+#                                       required=False)
+#     discourse_type = forms.ChoiceField(
+#         choices=[('', ''),
+#                 ('1', 'Narrative'),
+#                 ('2', 'Hortatory'),
+#                 ('3', 'Procedural'),
+#                 ('4', 'Expository'),
+#                 ('5', 'Descriptive')],
+#         label='Discourse type',
+#         required=False
+#     )
+#
+#     def save(self, ce, **kwargs):
+#         if self.cleaned_data:
+#             if 'instance' in kwargs:
+#                 new_text = CE.models.TextModel.objects.get(pk=kwargs['instance'].pk)
+#             else:
+#                 new_text = CE.models.TextModel()
+#             new_text.ce = ce
+#             new_text.orthographic_text = self.cleaned_data['orthographic_text']
+#             new_text.phonetic_text = self.cleaned_data['phonetic_text']
+#             if self.cleaned_data['phonetic_text']:
+#                 if self.cleaned_data['phonetic_standard'] == '':
+#                     new_text.phonetic_standard = 1
+#                 else:
+#                     new_text.phonetic_standard = self.cleaned_data['phonetic_standard']
+#             if self.cleaned_data['valid_for_DA']:
+#                 new_text.valid_for_DA = True
+#                 new_text.discourse_type = self.cleaned_data['discourse_type']
+#             else:
+#                 new_text.valid_for_DA = False
+#             new_text.audio = self.cleaned_data['audio']
+#             new_text.save()
+
+class TextForm(forms.ModelForm):
+    class Meta:
+        model = CE.models.TextModel
+        exclude = ('ce', 'DELETE')
+
+    def save(self, **kwargs):
+        # only save the form if user has entered data. Otherwise default fields will be filled in
+        # and an entry made despite no user input
+        try:
+            if self.cleaned_data['phonetic_text'] or self.cleaned_data['orthographic_text']\
+            or self.cleaned_data['audio']:
+                super(TextForm, self).save()
+        except KeyError:
+            pass
 
 
-text_form_set = forms.formset_factory(TextForm, extra=0)
+text_form_set = forms.modelformset_factory(CE.models.TextModel, form=TextForm, extra=0)
 
 
 def text_formset_prepopulated(ce):
@@ -294,3 +309,5 @@ def prepopulated_participants_formset(ce):
     return participant_forms
 
 participant_formset = forms.formset_factory(ParticipationForm, extra=1)
+
+

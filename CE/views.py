@@ -6,6 +6,7 @@ from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel,
 from taggit.models import Tag
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
+from django import forms
 
 import CE.forms
 import CE.utilities
@@ -109,36 +110,42 @@ def new(request):
     template = 'CE/new_CE.html'
     errors = None
 
+    text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.TextModel,
+                                                    form=CE.forms.TextForm, extra=0)
+    text_form = text_form_factory(prefix='text', instance=None)
+
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
-        text_form = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
         question_form = CE.forms.question_form_set(request.POST, prefix='question')
         participation_form = CE.forms.participant_formset(request.POST, prefix='participants')
         if form.is_valid():
             try:
                 ce = form.save(request)
+                text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
                 for p_form in participation_form:
                     if p_form.is_valid():
                         p_form.save(ce)
                 for t_form in text_form:
                     if t_form.is_valid():
-                        t_form.save(ce)
+                        t_form.save()
+
                 for question in question_form:
                     if question.is_valid():
                         question.save(ce, request)
+                # success, send user to new CE
                 return redirect('CE:view', pk=ce.pk)
-
             except exceptions.ValidationError as e:
-
+                # return a validation error, show form to user again
                 errors = e
 
         else:
+            # return form for user to try again showing incorrect fields
             errors = form.errors
 
     # GET request
     if not errors: # don't overwrite the user's failed form
         form = CE.forms.CE_EditForm()
-        text_form = CE.forms.text_form_set(prefix='text')
+        # text_form = CE.forms.text_form_set(prefix='text', queryset=TextModel.objects.none())
         question_form = CE.forms.question_form_set(prefix='question')
         participation_form = CE.forms.participant_formset(prefix='participants')
 

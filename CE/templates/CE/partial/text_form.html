@@ -16,6 +16,7 @@
         {% for text_form in TextForm %}
         <div class="container-fluid border bg-light" id="text-{{ forloop.counter0 }}">
             <h3>Text {{forloop.counter}}</h3>
+            {{ text_form.id }}
             {{ text_form.as_p }}
         </div>
         {% endfor %}

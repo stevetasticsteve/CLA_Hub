@@ -79,22 +79,23 @@ def edit(request, pk):
 
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
-        questions = CE.forms.question_formset_prepopulated(ce)
         text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
+        question_form = question_form_factory(request.POST, request.FILES, prefix='question', instance=ce)
+        participants_form = participation_form_factory(request.POST, prefix='participants', instance=ce)
         if form.is_valid():
             try:
                 form.save(request, instance=ce)
-                for t_form in text_form:
-                    if t_form.is_valid():
-                        t_form.save()
+                if text_form.is_valid():
+                    text_form.save()
+                if participants_form.is_valid():
+                    participants_form.save()
+                for question in question_form:
+                    if question.is_valid():
+                        question.save(request=request)
+                # raise Exception
                 return redirect('CE:view', pk=ce.pk)
             except exceptions.ValidationError as e:
                 errors = e
-
-        # texts = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
-        # questions = CE.forms.question_form_set(prefix='question')
-        # if form.is_valid():
-        #     form.save(request)
 
     if not errors:  # don't overwrite the user's failed form
         form = CE.forms.prepopulated_CE_form(ce)
@@ -104,7 +105,7 @@ def edit(request, pk):
         'Form': form,
         'ParticipationForm': participants_form,
         'CurrentPics': current_pics,
-        'QuestionForm': questions,
+        'QuestionForm': question_form,
         'Errors': errors
     }
     return render(request, template, context)
@@ -117,6 +118,7 @@ def edit(request, pk):
 def new(request):
     template = 'CE/new_CE.html'
     errors = None
+
     text_form = text_form_factory(prefix='text', instance=None)
     question_form = question_form_factory(prefix='question', instance=None)
     participation_form = participation_form_factory(prefix='participants', instance=None)
@@ -134,7 +136,7 @@ def new(request):
                     participation_form.save()
                 if text_form.is_valid():
                     text_form.save()
-                for question in question_form:
+                for question in question_form: #todo might be able to refactor out this loop
                     if question.is_valid():
                         question.save(request=request)
 
@@ -143,7 +145,8 @@ def new(request):
             except exceptions.ValidationError as e:
                 # return a validation error in event of valid form,
                 # but CE already existing, show form to user again
-                errors = e
+                errors = e # todo any user added text info will disappear on form resubmission
+
         else:
             # return form for user to try again showing incorrect fields
             errors = form.errors
@@ -151,6 +154,7 @@ def new(request):
     # GET request
     if not errors: # don't overwrite the user's failed form
         form = CE.forms.CE_EditForm()
+
 
     context = {
             'Form': form,

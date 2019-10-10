@@ -34,6 +34,8 @@ class TestEditPage(TestCase):
                      'tags': test_data['tags'],
                      'differences': test_data['differences'],
                      'interpretation': test_data['interpretation'],
+                     'text-0-ce': 1,
+                     'text-0-id': 1,
                      'text-0-phonetic_text': test_data['phonetic_text'],
                      'text-0-orthographic_text': test_data['orthographic_text'],
                      'text-0-valid_for_DA': test_data['valid_for_DA'],
@@ -41,7 +43,7 @@ class TestEditPage(TestCase):
                      'participation-0-national_participants': test_data['national_participants'],
                      'participation-0-date': test_data['date'],
                      'question-0-question': test_data['question'],
-                     'question-0-answer': test_data['answer'],
+                     'question-0-answer': test_data['answer']
                      }
 
     @classmethod
@@ -97,7 +99,6 @@ class TestEditPage(TestCase):
 
     def test_redirect_after_post(self):
         response = self.client.post(reverse('CE:edit', args='1'), data=self.standard_post, follow=True)
-        self.assertTemplateUsed(response, 'CE/view_CE.html')
         self.assertRedirects(response, '/CE/1')
 
     def test_number_of_CEs_the_same(self):
@@ -137,70 +138,13 @@ class TestEditPage(TestCase):
     def test_edit_single_text(self):
         post_data = self.standard_post
         post_data['text-0-phonetic_text'] = 'Changed'
-
+        post_data['text-TOTAL_FORMS'] = 2
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/CE/1')
         self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text, 'Changed',
                          'Text 1 not updated on POST')
 
-    # def test_valid_edit_page_POST_response_change_everything(self):
-    #     # CE model should be updated, a new one shouldn't be created
-    #     response = self.client.post(reverse('CE:edit', args='1'), {'title' : 'BAM',
-    #                                                                'participation' : 'minimal',
-    #                                                                'description' : 'pretty easy'},
-    #                                 follow=True)
-    #     self.assertTemplateUsed('CE/edit_CE.html')
-    #     self.assertEqual(response.redirect_chain[0][1], 302, 'No redirect following POST')
-    #     ce = models.CultureEvent.objects.get(pk=1)
-    #     self.assertEqual(ce.title, 'BAM', 'edit not saved to db')
-    #     self.assertFalse(ce.title == 'Example CE1', 'edit not saved to db')
-    #     self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
-    #     self.assertEqual(response.status_code, 200, 'New page not shown')
-    #     self.assertContains(response, 'BAM')
-    #
-    # def test_valid_edit_page_POST_response_change_description_not_title(self):
-    #     # CE model should be updated, a new one shouldn't be created
-    #     response = self.client.post(reverse('CE:edit', args='1'), {'title' : 'Example CE1',
-    #                                                                'participation': 'minimal',
-    #                                                                'description': 'pretty easy'},
-    #                                 follow=True)
-    #     self.assertTemplateUsed('CE/edit_CE.html')
-    #     self.assertEqual(response.redirect_chain[0][1], 302, 'No redirect following POST')
-    #     ce = models.CultureEvent.objects.get(pk=1)
-    #     self.assertEqual(ce.title, 'Example CE1', 'edit not saved to db')
-    #     self.assertEqual(ce.description, 'pretty easy', 'edit not saved to db')
-    #     self.assertEqual(response.status_code, 200, 'New page not shown')
-    #     self.assertContains(response, 'Example CE1')
-    #     self.assertEqual(ce.last_modified_by, 'Tester', 'Last modified by not updated')
-    #
-    # def test_edit_page_no_changes(self):
-    #     # no changes should go through, but .db unchanged
-    #     ce = models.CultureEvent.objects.get(pk=1)
-    #     response = self.client.post(reverse('CE:edit', args='1'), {'title': 'Example CE1',
-    #                                                                'participation': 'Rhett did it',
-    #                                                                'description': 'A culture event happened',
-    #                                                                'differences' : 'Last time it was different'},
-    #                                 follow=True)
-    #     new_ce = models.CultureEvent.objects.get(pk=1)
-    #     self.assertEqual(response.redirect_chain[0][1], 302, 'No redirect following POST')
-    #     self.assertEqual(ce, new_ce)
-    #     self.assertEqual(ce.title, new_ce.title)
-    #
-    # def test_edit_page_changing_to_existing_CE_title(self):
-    #     # should reject changing to an existing title
-    #     ce = models.CultureEvent(title='Example CE2',
-    #                              description='A culture event happened',
-    #                              participation='Rhett did it',
-    #                              differences='Last time it was different')
-    #     ce.save()
-    #     response = self.client.post(reverse('CE:edit', args='2'), {'title': 'Example CE1',
-    #                                                                'participation': 'Rhett did it',
-    #                                                                'description': 'A culture event happened',
-    #                                                                'differences': 'Last time it was different'},
-    #                                 follow=True)
-    #     self.assertContains(response, 'Culture event with this Title already exists')
-    #     self.assertEqual(models.CultureEvent.objects.get(pk=2).title, 'Example CE2')
-    #     self.assertEqual(models.CultureEvent.objects.get(pk=1).title, 'Example CE1')
+
 
 

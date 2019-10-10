@@ -73,6 +73,8 @@ def edit(request, pk):
 
     ce = get_object_or_404(CultureEvent, pk=pk)
     text_form = text_form_factory(prefix='text', instance=ce)
+    question_form = question_form_factory(prefix='question', instance=ce)
+    participants_form = participation_form_factory(prefix='participants', instance=ce)
     current_pics = PictureModel.objects.filter(ce_id=pk)
 
     if request.method == 'POST':
@@ -96,13 +98,11 @@ def edit(request, pk):
 
     if not errors:  # don't overwrite the user's failed form
         form = CE.forms.prepopulated_CE_form(ce)
-        # questions = CE.forms.question_formset_prepopulated(ce)
-        participants = CE.forms.prepopulated_participants_formset(ce)
 
     context = {
         'TextForm': text_form,
         'Form': form,
-        'ParticipationForm': participants,
+        'ParticipationForm': participants_form,
         'CurrentPics': current_pics,
         'QuestionForm': questions,
         'Errors': errors
@@ -129,16 +129,15 @@ def new(request):
                 text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
                 question_form = question_form_factory(request.POST, prefix='question', instance=ce)
                 participation_form = participation_form_factory(request.POST, prefix='participants', instance=ce)
-                for p_form in participation_form:
-                    if p_form.is_valid():
-                        p_form.save()
 
-                for t_form in text_form:
-                    if t_form.is_valid():
-                        t_form.save()
+                if participation_form.is_valid():
+                    participation_form.save()
+                if text_form.is_valid():
+                    text_form.save()
                 for question in question_form:
                     if question.is_valid():
                         question.save(request=request)
+
                 # success, send user to new CE
                 return redirect('CE:view', pk=ce.pk)
             except exceptions.ValidationError as e:

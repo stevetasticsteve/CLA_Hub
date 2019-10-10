@@ -23,6 +23,27 @@ class TestEditPage(TestCase):
         'answer': 'Yes, it does!'
     }
 
+    standard_post = {'text-TOTAL_FORMS': 1,
+                     'text-INITIAL_FORMS': 1,
+                     'question-TOTAL_FORMS': 1,
+                     'question-INITIAL_FORMS': 1,
+                     'participants-TOTAL_FORMS': 1,
+                     'participants-INITIAL_FORMS': 1,
+                     'title': test_data['title'],
+                     'description_plain_text': test_data['description_plain_text'],
+                     'tags': test_data['tags'],
+                     'differences': test_data['differences'],
+                     'interpretation': test_data['interpretation'],
+                     'text-0-phonetic_text': test_data['phonetic_text'],
+                     'text-0-orthographic_text': test_data['orthographic_text'],
+                     'text-0-valid_for_DA': test_data['valid_for_DA'],
+                     'participation-0-team_participants': test_data['team_participants'],
+                     'participation-0-national_participants': test_data['national_participants'],
+                     'participation-0-date': test_data['date'],
+                     'question-0-question': test_data['question'],
+                     'question-0-answer': test_data['answer'],
+                     }
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -75,61 +96,49 @@ class TestEditPage(TestCase):
             self.assertContains(response, data)
 
     def test_redirect_after_post(self):
-        response = self.client.post(reverse('CE:edit', args='1'),
-                                    {'title': self.test_data['title'],
-                                     'description_plain_text': 'A new description'},
-                                    follow=True)
+        response = self.client.post(reverse('CE:edit', args='1'), data=self.standard_post, follow=True)
         self.assertTemplateUsed(response, 'CE/view_CE.html')
         self.assertRedirects(response, '/CE/1')
 
     def test_number_of_CEs_the_same(self):
-        self.client.post(reverse('CE:edit', args='1'),
-                         {'title': self.test_data['title'],
-                         'description_plain_text': 'A new description'},
-                         follow=True)
+        self.client.post(reverse('CE:edit', args='1'), data=self.standard_post, follow=True)
         self.assertEqual(len(models.CultureEvent.objects.all()), 2)
 
     def test_CE_model_updated_correctly_after_POST(self):
-        self.client.post(reverse('CE:edit', args='1'),
-                         {'title': self.test_data['title'],
-                          'description_plain_text': 'A new description'},
-                         follow=True)
+        post_data = self.standard_post
+        post_data['description_plain_text'] = 'A new description'
+
+        self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
         ce = models.CultureEvent.objects.get(pk=1)
         self.assertEqual('A new description', ce.description_plain_text)
         self.assertEqual(self.test_data['title'], ce.title)
         self.assertEqual(ce.pk, 1)
 
     def test_changing_CE_title(self):
-        self.client.post(reverse('CE:edit', args='1'),
-                         {'title': 'A new title',
-                          'description_plain_text': 'A new description'},
-                         follow=True)
+        post_data = self.standard_post
+        post_data['title'] = 'A new title'
+
+        self.client.post(reverse('CE:edit', args='1'),data=post_data, follow=True)
         ce = models.CultureEvent.objects.get(pk=1)
-        self.assertEqual('A new description', ce.description_plain_text)
+        # self.assertEqual('A new description', ce.description_plain_text)
         self.assertEqual('A new title', ce.title)
         self.assertEqual(ce.pk, 1)
 
     def test_edit_title_to_existing_rejected(self):
-        response = self.client.post(reverse('CE:edit', args='1'),
-                                    {'title': 'CE2',
-                                    'description_plain_text': 'A new description'},
-                                    follow=False)
-        self.assertContains(response, 'CE already exists')
+        post_data = self.standard_post
+        post_data['title'] = 'CE2'
+
+        response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
         self.assertEqual(models.CultureEvent.objects.get(pk=1).title,
                          self.test_data['title'])
-    @unittest.skip
+        self.assertContains(response, 'CE already exists')
+
+
     def test_edit_single_text(self):
-        response = self.client.post(reverse('CE:edit', args='1'),
-                                    {'text-TOTAL_FORMS': 1,
-                                     'text-INITIAL_FORMS': 1,
-                                     'question-TOTAL_FORMS': 0,
-                                     'question-INITIAL_FORMS': 0,
-                                     'participants-TOTAL_FORMS': 1,
-                                     'participants-INITIAL_FORMS': 1,
-                                     'title': 'Example CE1',
-                                     'text-0-phonetic_text': 'Changed'
-                                    },
-                                    follow=True)
+        post_data = self.standard_post
+        post_data['text-0-phonetic_text'] = 'Changed'
+
+        response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text, 'Changed',

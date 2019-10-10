@@ -14,6 +14,7 @@
     <div id="participant-server-items">
         {% for p_form in ParticipationForm %}
         <div class="container-fluid border bg-light" id="participants-{{ forloop.counter0 }}">
+            {{ p_form.id }}
             {{ p_form.as_p }}
         </div>
         {% endfor %}

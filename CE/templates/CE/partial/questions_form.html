@@ -12,7 +12,8 @@
 <div id="questions-form-container">
     <div id="question-server-items">
         {% for question in QuestionForm %}
-        <div class="container container-fluid" id="item-{{ forloop.counter0 }}">
+        {{ question.id }}
+        <div class="container container-fluid" id="question-{{ forloop.counter0 }}">
             {{ question.as_table }}
         </div>
         {% endfor %}

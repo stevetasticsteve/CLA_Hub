@@ -11,6 +11,15 @@ from django import forms
 import CE.forms
 import CE.utilities
 
+text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.TextModel,
+                                                form=CE.forms.TextForm, extra=0)
+
+question_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.QuestionModel,
+                                                    form=CE.forms.QuestionForm, extra=0)
+
+participation_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.ParticipationModel,
+                                                         form=CE.forms.ParticipationForm, extra=1)
+
 
 @CE.utilities.conditional_login
 def home_page(request):
@@ -61,25 +70,25 @@ def view_slug(request, slug):
 def edit(request, pk):
     template = 'CE/edit_CE.html'
     errors = None
+
     ce = get_object_or_404(CultureEvent, pk=pk)
+    text_form = text_form_factory(prefix='text', instance=ce)
     current_pics = PictureModel.objects.filter(ce_id=pk)
 
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
-        text_form = CE.forms.text_formset_prepopulated(ce)
         questions = CE.forms.question_formset_prepopulated(ce)
-        participants = CE.forms.prepopulated_participants_formset(ce)
+        text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
         if form.is_valid():
             try:
                 form.save(request, instance=ce)
-                texts = CE.models.TextModel.objects.filter(ce=ce)
-                for i, t_form in enumerate(text_form):
+                for t_form in text_form:
                     if t_form.is_valid():
-                        print('valid')
-                        t_form.save(instance=texts[i])
+                        t_form.save()
                 return redirect('CE:view', pk=ce.pk)
             except exceptions.ValidationError as e:
                 errors = e
+
         # texts = CE.forms.text_form_set(request.POST, request.FILES, prefix='text')
         # questions = CE.forms.question_form_set(prefix='question')
         # if form.is_valid():
@@ -87,8 +96,7 @@ def edit(request, pk):
 
     if not errors:  # don't overwrite the user's failed form
         form = CE.forms.prepopulated_CE_form(ce)
-        text_form = CE.forms.text_formset_prepopulated(ce)
-        questions = CE.forms.question_formset_prepopulated(ce)
+        # questions = CE.forms.question_formset_prepopulated(ce)
         participants = CE.forms.prepopulated_participants_formset(ce)
 
     context = {
@@ -109,35 +117,34 @@ def edit(request, pk):
 def new(request):
     template = 'CE/new_CE.html'
     errors = None
-
-    text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.TextModel,
-                                                    form=CE.forms.TextForm, extra=0)
     text_form = text_form_factory(prefix='text', instance=None)
+    question_form = question_form_factory(prefix='question', instance=None)
+    participation_form = participation_form_factory(prefix='participants', instance=None)
 
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
-        question_form = CE.forms.question_form_set(request.POST, prefix='question')
-        participation_form = CE.forms.participant_formset(request.POST, prefix='participants')
         if form.is_valid():
             try:
                 ce = form.save(request)
                 text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
+                question_form = question_form_factory(request.POST, prefix='question', instance=ce)
+                participation_form = participation_form_factory(request.POST, prefix='participants', instance=ce)
                 for p_form in participation_form:
                     if p_form.is_valid():
-                        p_form.save(ce)
+                        p_form.save()
+
                 for t_form in text_form:
                     if t_form.is_valid():
                         t_form.save()
-
                 for question in question_form:
                     if question.is_valid():
-                        question.save(ce, request)
+                        question.save(request=request)
                 # success, send user to new CE
                 return redirect('CE:view', pk=ce.pk)
             except exceptions.ValidationError as e:
-                # return a validation error, show form to user again
+                # return a validation error in event of valid form,
+                # but CE already existing, show form to user again
                 errors = e
-
         else:
             # return form for user to try again showing incorrect fields
             errors = form.errors
@@ -145,9 +152,6 @@ def new(request):
     # GET request
     if not errors: # don't overwrite the user's failed form
         form = CE.forms.CE_EditForm()
-        # text_form = CE.forms.text_form_set(prefix='text', queryset=TextModel.objects.none())
-        question_form = CE.forms.question_form_set(prefix='question')
-        participation_form = CE.forms.participant_formset(prefix='participants')
 
     context = {
             'Form': form,

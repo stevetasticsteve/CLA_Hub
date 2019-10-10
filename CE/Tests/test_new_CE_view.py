@@ -447,7 +447,7 @@ class NewCEPageTest(TestCase):
                                                         'question-TOTAL_FORMS': 0,
                                                         'question-INITIAL_FORMS': 0,
                                                         'participants-TOTAL_FORMS': 2,
-                                                        'participants-INITIAL_FORMS': 2
+                                                        'participants-INITIAL_FORMS': 0
                                                         })
         self.assertRedirects(response, '/CE/2')
         ce = models.CultureEvent.objects.get(pk=2)

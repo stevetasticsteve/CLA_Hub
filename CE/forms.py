@@ -5,6 +5,7 @@ from django.core import exceptions
 import taggit.forms
 import CE.models
 import CE.settings
+import datetime
 
 if CE.settings.auto_cross_reference:
     description_placeholder = 'Auto cross reference is on. If you type the (lowercase) title of an existing CE' \
@@ -214,100 +215,131 @@ def text_formset_prepopulated(ce):
         text_forms.append(text_form)
     return text_forms
 
-class QuestionForm(forms.Form):
-    question = forms.CharField(
-        required=True,
-        label='Question about CE',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Write a question here',
-        })
-    )
-    answer = forms.CharField(
-        required=False,
-        label='Answer',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'If you know the answer provide it here',
-        })
-    )
-
-    def save(self, ce,request):
-        if self.cleaned_data:
-            new_question = CE.models.QuestionModel()
-            new_question.ce = ce
-            new_question.asked_by = str(request.user)
-            new_question.last_modified_by = str(request.user)
-            new_question.question = self.cleaned_data['question']
-            new_question.answer = self.cleaned_data['answer']
-            if self.cleaned_data['answer']:
-                new_question.answered_by = str(request.user)
-            new_question.save()
-
-question_form_set = forms.formset_factory(QuestionForm, extra=0)
-
-
-def question_formset_prepopulated(ce):
-    question_data = CE.models.QuestionModel.objects.filter(ce=ce)
-    question_forms = []
-    for data in question_data:
-        question_form = question_form_set(initial=[{
-            'question': data.question,
-            'answer': data.answer,
-
-        }], prefix='question')
-        question_forms.append(question_form)
-    return question_forms
+# class QuestionForm(forms.Form):
+#     question = forms.CharField(
+#         required=True,
+#         label='Question about CE',
+#         widget=forms.TextInput(attrs={
+#             'class': 'form-control',
+#             'placeholder': 'Write a question here',
+#         })
+#     )
+#     answer = forms.CharField(
+#         required=False,
+#         label='Answer',
+#         widget=forms.TextInput(attrs={
+#             'class': 'form-control',
+#             'placeholder': 'If you know the answer provide it here',
+#         })
+#     )
+#
+#     def save(self, ce,request):
+#         if self.cleaned_data:
+#             new_question = CE.models.QuestionModel()
+#             new_question.ce = ce
+#             new_question.asked_by = str(request.user)
+#             new_question.last_modified_by = str(request.user)
+#             new_question.question = self.cleaned_data['question']
+#             new_question.answer = self.cleaned_data['answer']
+#             if self.cleaned_data['answer']:
+#                 new_question.answered_by = str(request.user)
+#             new_question.save()
+#
+# question_form_set = forms.formset_factory(QuestionForm, extra=0)
 
 
-class ParticipationForm(forms.Form):
-    date = forms.DateField(
-        required=True,
-        label='Date (Required)',
-        widget=DateInput()
-    )
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = CE.models.QuestionModel
+        fields = ('question', 'answer')
 
-    team_participants = forms.CharField(
-        required=False,
-        label='Team members present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who was there?',
-        })
-    )
-    national_participants = forms.CharField(
-        required=False,
-        label='Nationals present',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Who else was there?',
-        })
-    )
+    def save(self, **kwargs):
+        # only save the form if user has entered data. Otherwise default fields will be filled in
+        # and an entry made despite no user input
+        try:
+            if self.cleaned_data['question']:
+                self.instance.last_modified_by= str(kwargs['request'].user)
+                self.instance.asked_by = str(kwargs['request'].user)
+                super(QuestionForm, self).save()
+        except KeyError:
+            pass
 
-    def save(self, ce, **kwargs):
-        if 'instance' in kwargs:
-            participants = CE.models.ParticipationModel.objects.filter(ce=kwargs['instance'])
-        else:
-            participants = CE.models.ParticipationModel()
-        if self.cleaned_data:
-            participants.ce = ce
-            participants.team_participants = self.cleaned_data['team_participants']
-            participants.national_participants = self.cleaned_data['national_participants']
-            participants.date = self.cleaned_data['date']
-            participants.save()
 
-def prepopulated_participants_formset(ce):
-    participant_data = CE.models.ParticipationModel.objects.filter(ce=ce)
-    participant_forms = []
-    for data in participant_data:
-        participant_form = participant_formset(initial=[{
-            'team_participants': data.team_participants,
-            'national_participants': data.national_participants,
-            'date': data.date
-        }], prefix='participants')
-        participant_forms.append(participant_form)
-    return participant_forms
+# def question_formset_prepopulated(ce):
+#     question_data = CE.models.QuestionModel.objects.filter(ce=ce)
+#     question_forms = []
+#     for data in question_data:
+#         question_form = question_form_set(initial=[{
+#             'question': data.question,
+#             'answer': data.answer,
+#
+#         }], prefix='question')
+#         question_forms.append(question_form)
+#     return question_forms
 
-participant_formset = forms.formset_factory(ParticipationForm, extra=1)
+
+# class ParticipationForm(forms.Form):
+#     date = forms.DateField(
+#         required=True,
+#         label='Date (Required)',
+#         widget=DateInput()
+#     )
+#
+#     team_participants = forms.CharField(
+#         required=False,
+#         label='Team members present',
+#         widget=forms.TextInput(attrs={
+#             'class': 'form-control',
+#             'placeholder': 'Who was there?',
+#         })
+#     )
+#     national_participants = forms.CharField(
+#         required=False,
+#         label='Nationals present',
+#         widget=forms.TextInput(attrs={
+#             'class': 'form-control',
+#             'placeholder': 'Who else was there?',
+#         })
+#     )
+#
+#     def save(self, ce, **kwargs):
+#         if 'instance' in kwargs:
+#             participants = CE.models.ParticipationModel.objects.filter(ce=kwargs['instance'])
+#         else:
+#             participants = CE.models.ParticipationModel()
+#         if self.cleaned_data:
+#             participants.ce = ce
+#             participants.team_participants = self.cleaned_data['team_participants']
+#             participants.national_participants = self.cleaned_data['national_participants']
+#             participants.date = self.cleaned_data['date']
+#             participants.save()
+#
+class ParticipationForm(forms.ModelForm):
+    class Meta:
+        model = CE.models.ParticipationModel
+        fields = ('national_participants', 'team_participants', 'date')
+
+    def save(self, **kwargs):
+        # only save the form if user has entered data. Otherwise default fields will be filled in
+        # and an entry made despite no user input
+        try:
+            if self.cleaned_data:
+                super(ParticipationForm, self).save()
+        except KeyError:
+            pass
+
+# def prepopulated_participants_formset(ce):
+#     participant_data = CE.models.ParticipationModel.objects.filter(ce=ce)
+#     participant_forms = []
+#     for data in participant_data:
+#         participant_form = participant_formset(initial=[{
+#             'team_participants': data.team_participants,
+#             'national_participants': data.national_participants,
+#             'date': data.date
+#         }], prefix='participants')
+#         participant_forms.append(participant_form)
+#     return participant_forms
+#
+# participant_formset = forms.formset_factory(ParticipationForm, extra=1)
 
 

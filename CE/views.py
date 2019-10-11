@@ -92,7 +92,6 @@ def edit(request, pk):
                 for question in question_form:
                     if question.is_valid():
                         question.save(request=request)
-                # raise Exception
                 return redirect('CE:view', pk=ce.pk)
             except exceptions.ValidationError as e:
                 errors = e

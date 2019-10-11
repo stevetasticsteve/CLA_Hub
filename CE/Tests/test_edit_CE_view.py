@@ -1,6 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+import os
 import unittest
 from CE import models
 
@@ -179,10 +182,10 @@ class TestEditPage(TestCase):
         self.assertEqual(models.TextModel.objects.get(pk=2).phonetic_text, 'Changed2',
                          'Text 2 not updated on POST')
 
-
     def test_user_adds_empty_text(self):
+        # ensure blank formsets are rejected
         post_data = self.standard_post
-        post_data['text-TOTAL_FORMS'] = 3,
+        post_data['text-TOTAL_FORMS'] = 3
         post_data['text-2-ce'] = 1
         post_data['text-2-id'] = 3
         post_data['text-2-phonetic_text'] = ''
@@ -190,5 +193,65 @@ class TestEditPage(TestCase):
         post_data['text-2-valid_for_DA'] = False
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
+        # test there is no extra text in DB
         self.assertRedirects(response, '/CE/1')
-        self.assertEqual(models.TextModel.objects.get(pk=3).phonetic_text, '')
+        with self.assertRaises(models.TextModel.DoesNotExist):
+            models.TextModel.objects.get(pk=3)
+
+        # test remaining texts are unchanged
+        self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text,
+                         self.test_data['phonetic_text'])
+        self.assertEqual(models.TextModel.objects.get(pk=2).phonetic_text,
+                         'phonetic_text2')
+
+    @unittest.skip
+    def test_user_adds_new_text(self):
+        #todo works manually, fails testing
+        post_data = self.standard_post
+        post_data['text-TOTAL_FORMS'] = 3
+        post_data['text-2-ce'] = 1
+        post_data['text-2-id'] = 3
+        post_data['text-2-phonetic_text'] = 'phonetic_text3'
+        post_data['text-2-orthographic_text'] = 'orthographic_text3'
+        post_data['text-2-valid_for_DA'] = False
+        response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
+
+        self.assertRedirects(response, '/CE/1')
+        self.assertEqual(len(models.TextModel.objects.all()), 3)
+        self.assertEqual(models.TextModel.objects.get(pk=3).phonetic_text, 'phonetic_text3')
+
+    def test_user_can_add_audio(self):
+        # clean up if previous test failed and left a file there
+        if os.path.exists('uploads/CultureEventFiles/1/audio/test_audio1.mp3'):
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
+        with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
+            file = file.read()
+            test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
+        post_data = self.standard_post
+        post_data['text-0-audio'] = test_audio
+        response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
+
+        # test audio in db
+        self.assertRedirects(response, '/CE/1')
+        self.assertEqual(len(models.TextModel.objects.all()), 2)
+        self.assertEqual(models.TextModel.objects.get(pk=1).audio,
+                         'CultureEventFiles/1/audio/test_audio1.mp3')
+
+        # test mp3 in uploads
+        self.assertTrue(os.path.exists('uploads/CultureEventFiles/1/audio'), 'upload folder doesn\'t exist')
+        folder_contents = os.listdir('uploads/CultureEventFiles/1/audio')
+        self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
+
+        # test displayed on view page
+        response = self.client.get(reverse('CE:view', args='1'))
+        self.assertContains(response,
+                            '<audio controls> <source src="/uploads/CultureEventFiles/1/audio/test_audio1.mp3"></audio>')
+
+        # clean up after test - test uploads go onto actual file system program uses
+        if len(folder_contents) == 1:
+            # no user audio, folder was created for test
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
+            os.removedirs('uploads/CultureEventFiles/1/audio')
+        elif len(folder_contents) > 1:
+            # users have uploaded pictures themselves
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')

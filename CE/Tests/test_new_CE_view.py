@@ -165,13 +165,14 @@ class NewCEPageTest(TestCase):
         self.assertContains(response, '<img src="/uploads/CultureEventFiles/2/images/test_pic1.jpg')
 
         # clean up after test - test uploads go onto actual file system program uses
-        if len(folder_contents) == 1:
-            # no user pictures, folder was created for test
+        try:
             os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
+        except FileNotFoundError:
+            pass
+        try:
             os.removedirs('uploads/CultureEventFiles/2/images')
-        elif len(folder_contents) > 1:
-            # users have uploaded pictures themselves
-            os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
+        except OSError:
+            pass
 
     def test_new_CE_page_can_save_text_and_audio(self):
         # clean up if existing test failed and left a file there
@@ -220,13 +221,14 @@ class NewCEPageTest(TestCase):
         self.assertContains(response,
                             '<audio controls> <source src="/uploads/CultureEventFiles/2/audio/test_audio1.mp3"></audio>')
         # clean up after test - test uploads go onto actual file system program uses
-        if len(folder_contents) == 1:
-            # no user audio, folder was created for test
+        try:
             os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
+        except FileNotFoundError:
+            pass
+        try:
             os.removedirs('uploads/CultureEventFiles/2/audio')
-        elif len(folder_contents) > 1:
-            # users have uploaded pictures themselves
-            os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
+        except OSError:
+            pass
 
     def test_can_add_single_text_if_phonetic_standard_missing(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',

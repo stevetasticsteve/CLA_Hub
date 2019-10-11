@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 import os
 import unittest
+import shutil
 from CE import models
 
 
@@ -255,3 +256,22 @@ class TestEditPage(TestCase):
         elif len(folder_contents) > 1:
             # users have uploaded pictures themselves
             os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
+
+    def test_user_can_change_audio(self):
+        # clean up if previous test failed and left a file there
+        if os.path.exists('uploads/CultureEventFiles/1/audio/test_audio1.mp3'):
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
+        test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/1/audio')
+        os.makedirs(test_folder)
+        shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
+
+        # clean up after test
+        try:
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio2.mp3')
+        except FileNotFoundError:
+            pass
+        try:
+            os.removedirs(test_folder)
+        except OSError:
+            pass

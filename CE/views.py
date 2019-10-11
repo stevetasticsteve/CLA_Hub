@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.core import exceptions
-from CE.models import CultureEvent, TextModel, PictureModel, ParticipationModel, QuestionModel
+from CE.models import CultureEvent, TextModel, PictureModel, VisitsModel, QuestionModel
 from taggit.models import Tag
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
@@ -17,8 +17,8 @@ text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.model
 question_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.QuestionModel,
                                                     form=CE.forms.QuestionForm, extra=0)
 
-participation_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.ParticipationModel,
-                                                         form=CE.forms.ParticipationForm, extra=1)
+visits_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.VisitsModel,
+                                                  form=CE.forms.VisitsForm, extra=1)
 
 
 @CE.utilities.conditional_login
@@ -36,14 +36,14 @@ def view(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     texts = TextModel.objects.filter(ce=pk)
     pictures = PictureModel.objects.filter(ce=pk)
-    participants = ParticipationModel.objects.filter(ce=ce)
+    visits = VisitsModel.objects.filter(ce=ce)
     questions = QuestionModel.objects.filter(ce=ce)
     tags = ce.tags.all()
     context = {
         'CE' : ce,
         'Texts' : texts,
         'Pics' : pictures,
-        'Participants' : participants,
+        'Visits' : visits,
         'Questions': questions,
         'Tags': tags,
     }
@@ -56,12 +56,12 @@ def view_slug(request, slug):
     pk = ce.pk
     texts = TextModel.objects.filter(ce=pk)
     pictures = PictureModel.objects.filter(ce=pk)
-    participants = ParticipationModel.objects.filter(ce=ce)
+    visits = VisitsModel.objects.filter(ce=ce)
     context = {
         'CE' : ce,
         'Texts' : texts,
         'Pics' : pictures,
-        'Participants' : participants
+        'Visits' : visits
     }
     return render(request, 'CE/view_CE.html', context)
 
@@ -74,21 +74,21 @@ def edit(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     text_form = text_form_factory(prefix='text', instance=ce)
     question_form = question_form_factory(prefix='question', instance=ce)
-    participants_form = participation_form_factory(prefix='participants', instance=ce)
+    vist_form = visits_form_factory(prefix='visit', instance=ce)
     current_pics = PictureModel.objects.filter(ce_id=pk)
 
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
         text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
         question_form = question_form_factory(request.POST, request.FILES, prefix='question', instance=ce)
-        participants_form = participation_form_factory(request.POST, prefix='participants', instance=ce)
+        vist_form = visits_form_factory(request.POST, prefix='visit', instance=ce)
         if form.is_valid():
             try:
                 form.save(request, instance=ce)
                 if text_form.is_valid():
                     text_form.save()
-                if participants_form.is_valid():
-                    participants_form.save()
+                if vist_form.is_valid():
+                    vist_form.save()
                 for question in question_form:
                     if question.is_valid():
                         question.save(request=request)
@@ -102,7 +102,7 @@ def edit(request, pk):
     context = {
         'TextForm': text_form,
         'Form': form,
-        'ParticipationForm': participants_form,
+        'VisitForm': vist_form,
         'CurrentPics': current_pics,
         'QuestionForm': question_form,
         'Errors': errors
@@ -120,7 +120,7 @@ def new(request):
 
     text_form = text_form_factory(prefix='text', instance=None)
     question_form = question_form_factory(prefix='question', instance=None)
-    participation_form = participation_form_factory(prefix='participants', instance=None)
+    visit_form = visits_form_factory(prefix='visit', instance=None)
 
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
@@ -129,10 +129,10 @@ def new(request):
                 ce = form.save(request)
                 text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
                 question_form = question_form_factory(request.POST, prefix='question', instance=ce)
-                participation_form = participation_form_factory(request.POST, prefix='participants', instance=ce)
+                visit_form = visits_form_factory(request.POST, prefix='visit', instance=ce)
 
-                if participation_form.is_valid():
-                    participation_form.save()
+                if visit_form.is_valid():
+                    visit_form.save()
                 if text_form.is_valid():
                     text_form.save()
                 for question in question_form: #todo might be able to refactor out this loop
@@ -159,7 +159,7 @@ def new(request):
             'Form': form,
             'TextForm': text_form,
             'QuestionForm': question_form,
-            'ParticipationForm': participation_form,
+            'VisitForm': visit_form,
             'Errors': errors
         }
 

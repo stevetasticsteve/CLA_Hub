@@ -1,0 +1,43 @@
+{{ VisitForm.management_form }}
+
+
+<script type="text/html" id="visit-template">
+<div id="visit-__prefix__" class="container-fluid border bg-light">
+    <p></p>
+    {{ VisitForm.empty_form.as_p }}
+    <p></p>
+</div>
+</script>
+
+<h3>visit</h3>
+<div id="visit-form-container">
+    <div id="visit-server-items">
+        {% for p_form in VisitForm %}
+        <div class="container-fluid border bg-light" id="visit-{{ forloop.counter0 }}">
+            {{ p_form.id }}
+            {{ p_form.as_p }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<p></p>
+
+<!--Add new visit button-->
+<a href="#" id="add-visit-button" class="btn btn-success add-visit">+</a>
+
+<!--Script to make new form appear-->
+<script>
+$(document).ready(function() {
+    $('.add-visit').click(function(ev) {
+        ev.preventDefault();
+        var count = $('#visit-form-container').children().length;
+        var tmplMarkup = $('#visit-template').html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $('div#visit-form-container').append(compiledTmpl);
+
+        // update form count
+        $('#id_visit-TOTAL_FORMS').attr('value', count+1);
+
+    });
+});
+</script>

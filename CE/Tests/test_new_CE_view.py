@@ -22,11 +22,11 @@ class NewCEPageTest(TestCase):
                                  description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
-        participants = models.ParticipationModel(date='2019-08-05',
-                                                 team_participants='Steve',
-                                                 national_participants='Ulumo',
-                                                 ce=ce)
-        participants.save()
+        visit = models.VisitsModel(date='2019-08-05',
+                                          team_present='Steve',
+                                          nationals_present='Ulumo',
+                                          ce=ce)
+        visit.save()
         texts = models.TextModel(ce=ce,
                                  phonetic_text='Phonetics written here',
                                  valid_for_DA=False)
@@ -68,15 +68,15 @@ class NewCEPageTest(TestCase):
             'tags': 'Some tags written here 1-1',
             'interpretation': 'I feel good about this',
             'variation': 'last time it was different',
-            'participants-0-date': '2019-04-20',
-            'participants-0-national_participants': 'Ulumo',
-            'participants-0-team_participants': 'Rhett',
+            'visit-0-date': '2019-04-20',
+            'visit-0-nationals_present': 'Ulumo',
+            'visit-0-team_present': 'Rhett',
             'text-TOTAL_FORMS': 0,
             'text-INITIAL_FORMS': 0,
             'question-TOTAL_FORMS': 0,
             'question-INITIAL_FORMS': 0,
-            'participants-TOTAL_FORMS': 1,
-            'participants-INITIAL_FORMS': 1
+            'visit-TOTAL_FORMS': 1,
+            'visit-INITIAL_FORMS': 1
         }
         response = self.client.post(reverse('CE:new'), posted_data , follow=follow)
 
@@ -129,8 +129,8 @@ class NewCEPageTest(TestCase):
             'text-INITIAL_FORMS': 0,
             'question-TOTAL_FORMS': 0,
             'question-INITIAL_FORMS': 0,
-            'participants-TOTAL_FORMS': 1,
-            'participants-INITIAL_FORMS': 1
+            'visit-TOTAL_FORMS': 1,
+            'visit-INITIAL_FORMS': 1
         }, follow=True)
         self.assertContains(response, 'CE already exists')
         with self.assertRaises(models.CultureEvent.DoesNotExist):
@@ -145,8 +145,8 @@ class NewCEPageTest(TestCase):
             'text-INITIAL_FORMS': 0,
             'question-TOTAL_FORMS': 0,
             'question-INITIAL_FORMS': 0,
-            'participants-TOTAL_FORMS': 1,
-            'participants-INITIAL_FORMS': 1
+            'visit-TOTAL_FORMS': 1,
+            'visit-INITIAL_FORMS': 1
         }, follow=True)
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(models.CultureEvent.DoesNotExist):
@@ -158,16 +158,16 @@ class NewCEPageTest(TestCase):
                 file = file.read()
                 test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
                 response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                                'participants-0-date': '2019-03-20',
-                                                                'participants-0-national_participants': 'Ulumo',
-                                                                'participants-0-team_participants': 'Philip',
+                                                                'visit-0-date': '2019-03-20',
+                                                                'visit-0-nationals_present': 'Ulumo',
+                                                                'visit-0-team_present': 'Philip',
                                                                 'picture': test_image,
                                                                 'text-TOTAL_FORMS': 0,
                                                                 'text-INITIAL_FORMS': 0,
                                                                 'question-TOTAL_FORMS': 0,
                                                                 'question-INITIAL_FORMS': 0,
-                                                                'participants-TOTAL_FORMS': 1,
-                                                                'participants-INITIAL_FORMS': 1
+                                                                'visit-TOTAL_FORMS': 1,
+                                                                'visit-INITIAL_FORMS': 1
                                                                 })
             self.assertRedirects(response, '/CE/2')
             new_ce = models.CultureEvent.objects.get(pk=2)
@@ -201,9 +201,9 @@ class NewCEPageTest(TestCase):
                 file = file.read()
                 test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
                 response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                                'participants-0-date': '2019-03-20',
-                                                                'participants-0-national_participants': 'Ulumo',
-                                                                'participants-0-team_participants': 'Philip',
+                                                                'visit-0-date': '2019-03-20',
+                                                                'visit-0-nationals_present': 'Ulumo',
+                                                                'visit-0-team_present': 'Philip',
                                                                 'text-0-phonetic_text': test_phonetics,
                                                                 'text-0-orthographic_text': test_orthography,
                                                                 'text-0-phonetic_standard': '1',
@@ -214,8 +214,8 @@ class NewCEPageTest(TestCase):
                                                                 'text-INITIAL_FORMS': 0,
                                                                 'question-TOTAL_FORMS': 0,
                                                                 'question-INITIAL_FORMS': 0,
-                                                                'participants-TOTAL_FORMS': 1,
-                                                                'participants-INITIAL_FORMS': 1
+                                                                'visit-TOTAL_FORMS': 1,
+                                                                'visit-INITIAL_FORMS': 1
                                                                 })
             self.assertRedirects(response, '/CE/2')
             new_ce = models.CultureEvent.objects.get(pk=2)
@@ -242,9 +242,9 @@ class NewCEPageTest(TestCase):
 
     def test_can_add_single_text_if_phonetic_standard_missing(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
                                                         'text-0-phonetic_text': 'Wam',
                                                         'text-0-orthographic_text': 'Bam',
                                                         'text-0-phonetic_standard': '1',
@@ -252,8 +252,8 @@ class NewCEPageTest(TestCase):
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 0,
                                                         'question-INITIAL_FORMS': 0,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
 
         self.assertRedirects(response, '/CE/2')
@@ -267,9 +267,9 @@ class NewCEPageTest(TestCase):
 
     def test_can_add_single_text(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
                                                         'text-0-phonetic_text': 'Wam',
                                                         'text-0-orthographic_text': 'Bam',
                                                         'text-0-phonetic_standard': '1',
@@ -279,8 +279,8 @@ class NewCEPageTest(TestCase):
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 0,
                                                         'question-INITIAL_FORMS': 0,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
@@ -293,9 +293,9 @@ class NewCEPageTest(TestCase):
 
     def test_can_add_multiple_texts(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
                                                         'text-0-phonetic_text': 'Wam',
                                                         'text-0-orthographic_text': 'Bam',
                                                         'text-0-phonetic_standard': '1',
@@ -310,8 +310,8 @@ class NewCEPageTest(TestCase):
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 0,
                                                         'question-INITIAL_FORMS': 0,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
@@ -325,9 +325,9 @@ class NewCEPageTest(TestCase):
 
     def test_blank_text_not_saved(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
                                                         'text-0-phonetic_text': '',
                                                         'text-0-orthographic_text': '',
                                                         'text-0-phonetic_standard': '',
@@ -337,8 +337,8 @@ class NewCEPageTest(TestCase):
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 0,
                                                         'question-INITIAL_FORMS': 0,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
         self.assertRedirects(response, '/CE/2')
         new_ce = models.CultureEvent.objects.get(pk=2)
@@ -351,17 +351,17 @@ class NewCEPageTest(TestCase):
         question = 'Does this work?'
         answer = 'I hope so!'
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                            'participants-0-date': '2019-03-20',
-                                                            'participants-0-national_participants': 'Ulumo',
-                                                            'participants-0-team_participants': 'Philip',
+                                                            'visit-0-date': '2019-03-20',
+                                                            'visit-0-nationals_present': 'Ulumo',
+                                                            'visit-0-team_present': 'Philip',
                                                             'text-TOTAL_FORMS': 0,
                                                             'text-INITIAL_FORMS': 0,
                                                             'question-TOTAL_FORMS': 1,
                                                             'question-INITIAL_FORMS': 0,
                                                             'question-0-question': question,
                                                             'question-0-answer': answer,
-                                                            'participants-TOTAL_FORMS': 1,
-                                                            'participants-INITIAL_FORMS': 1
+                                                            'visit-TOTAL_FORMS': 1,
+                                                            'visit-INITIAL_FORMS': 1
                                                             })
         self.assertRedirects(response, '/CE/2')
         q = models.QuestionModel.objects.all()
@@ -374,16 +374,16 @@ class NewCEPageTest(TestCase):
     def test_incomplete_question_sumbit(self):
         question = 'Does this work?'
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
                                                         'text-TOTAL_FORMS': 0,
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 1,
                                                         'question-INITIAL_FORMS': 0,
                                                         'question-0-question': question,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
         self.assertRedirects(response, '/CE/2')
         q = models.QuestionModel.objects.all()
@@ -397,9 +397,9 @@ class NewCEPageTest(TestCase):
         question = 'Does this work?'
         answer = 'I hope so!'
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
                                                         'text-TOTAL_FORMS': 0,
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 3,
@@ -410,8 +410,8 @@ class NewCEPageTest(TestCase):
                                                         'question-1-answer': answer,
                                                         'question-2-question': question,
                                                         'question-2-answer': answer,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
         self.assertRedirects(response, '/CE/2')
         q = models.QuestionModel.objects.all()
@@ -424,15 +424,15 @@ class NewCEPageTest(TestCase):
 
     def test_blank_questions_submitted(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
                                                         'text-TOTAL_FORMS': 0,
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 2,
                                                         'question-INITIAL_FORMS': 0,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
         self.assertRedirects(response, '/CE/2')
         q = models.QuestionModel.objects.all()
@@ -446,42 +446,42 @@ class NewCEPageTest(TestCase):
         response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'here'}))
         self.assertEqual(response.status_code, 200, 'Tag view page not showing')
 
-    def test_multiple_participations(self):
+    def test_multiple_visits(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '2019-03-20',
-                                                        'participants-0-national_participants': 'Ulumo',
-                                                        'participants-0-team_participants': 'Philip',
-                                                        'participants-1-date': '2019-03-21',
-                                                        'participants-1-national_participants': 'Kavaluku',
-                                                        'participants-1-team_participants': 'Steve',
+                                                        'visit-0-date': '2019-03-20',
+                                                        'visit-0-nationals_present': 'Ulumo',
+                                                        'visit-0-team_present': 'Philip',
+                                                        'visit-1-date': '2019-03-21',
+                                                        'visit-1-nationals_present': 'Kavaluku',
+                                                        'visit-1-team_present': 'Steve',
                                                         'text-TOTAL_FORMS': 0,
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 0,
                                                         'question-INITIAL_FORMS': 0,
-                                                        'participants-TOTAL_FORMS': 2,
-                                                        'participants-INITIAL_FORMS': 0
+                                                        'visit-TOTAL_FORMS': 2,
+                                                        'visit-INITIAL_FORMS': 0
                                                         })
         self.assertRedirects(response, '/CE/2')
         ce = models.CultureEvent.objects.get(pk=2)
-        part = models.ParticipationModel.objects.filter(ce=ce)
-        self.assertEqual(len(part), 2)
-        self.assertEqual(part[0].team_participants, 'Philip')
-        self.assertEqual(part[1].team_participants, 'Steve')
+        visit = models.VisitsModel.objects.filter(ce=ce)
+        self.assertEqual(len(visit), 2)
+        self.assertEqual(visit[0].team_present, 'Philip')
+        self.assertEqual(visit[1].team_present, 'Steve')
 
-    def test_blank_participants(self):
-        # shouldn't create a Participants db row
+    def test_blank_visit(self):
+        # shouldn't create a visit db row
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                        'participants-0-date': '',
-                                                        'participants-0-national_participants': '',
-                                                        'participants-0-team_participants': '',
+                                                        'visit-0-date': '',
+                                                        'visit-0-nationals_present': '',
+                                                        'visit-0-team_present': '',
                                                         'text-TOTAL_FORMS': 0,
                                                         'text-INITIAL_FORMS': 0,
                                                         'question-TOTAL_FORMS': 0,
                                                         'question-INITIAL_FORMS': 0,
-                                                        'participants-TOTAL_FORMS': 1,
-                                                        'participants-INITIAL_FORMS': 1
+                                                        'visit-TOTAL_FORMS': 1,
+                                                        'visit-INITIAL_FORMS': 1
                                                         })
         self.assertRedirects(response, '/CE/2')
         ce = models.CultureEvent.objects.get(pk=2)
-        part = models.ParticipationModel.objects.filter(ce=ce)
-        self.assertEqual(len(part), 0)
+        visit = models.VisitsModel.objects.filter(ce=ce)
+        self.assertEqual(len(visit), 0)

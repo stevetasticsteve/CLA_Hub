@@ -313,17 +313,17 @@ class QuestionForm(forms.ModelForm):
 #             participants.date = self.cleaned_data['date']
 #             participants.save()
 #
-class ParticipationForm(forms.ModelForm):
+class VisitsForm(forms.ModelForm):
     class Meta:
-        model = CE.models.ParticipationModel
-        fields = ('national_participants', 'team_participants', 'date')
+        model = CE.models.VisitsModel
+        fields = ('nationals_present', 'team_present', 'date')
 
     def save(self, **kwargs):
         # only save the form if user has entered data. Otherwise default fields will be filled in
         # and an entry made despite no user input
         try:
             if self.cleaned_data:
-                super(ParticipationForm, self).save()
+                super(VisitsForm, self).save()
         except KeyError:
             pass
 

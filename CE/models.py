@@ -89,10 +89,10 @@ class CultureEvent(models.Model):
         return str(self.title)
 
 
-class ParticipationModel(models.Model):
+class VisitsModel(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
-    team_participants = models.CharField(blank=True, max_length=60)
-    national_participants = models.CharField(blank=True, max_length=60)
+    team_present = models.CharField(blank=True, max_length=60)
+    nationals_present = models.CharField(blank=True, max_length=60)
     date = models.DateField(blank=True, null=True)
 
     def __str__(self):

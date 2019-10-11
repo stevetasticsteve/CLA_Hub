@@ -19,8 +19,8 @@ class CETestBaseClass(TestCase):
             'description_plain_text': 'A culture event happened',
             'differences': 'Last time it was different',
             'interpretation': 'It probably has meaning',
-            'national_participants': 'Ulumo',
-            'team_participants': 'Steve',
+            'nationals_present': 'Ulumo',
+            'team_present': 'Steve',
             'date': '2019-02-20',
             'phonetic_text': 'foᵘnɛtɪks',
             'orthographic_text': 'orthographic',
@@ -33,8 +33,8 @@ class CETestBaseClass(TestCase):
                               'text-INITIAL_FORMS': 2,
                               'question-TOTAL_FORMS': 1,
                               'question-INITIAL_FORMS': 1,
-                              'participants-TOTAL_FORMS': 1,
-                              'participants-INITIAL_FORMS': 1,
+                              'visit-TOTAL_FORMS': 1,
+                              'visit-INITIAL_FORMS': 1,
                               'title': self.test_data['title'],
                               'description_plain_text': self.test_data['description_plain_text'],
                               'tags': self.test_data['tags'],
@@ -50,11 +50,11 @@ class CETestBaseClass(TestCase):
                               'text-1-phonetic_text': self.test_data['phonetic_text'],
                               'text-1-orthographic_text': self.test_data['orthographic_text'],
                               'text-1-valid_for_DA': self.test_data['valid_for_DA'],
-                              'participants-0-ce': 1,
-                              'participants-0-id': 1,
-                              'participants-0-team_participants': self.test_data['team_participants'],
-                              'participants-0-national_participants': self.test_data['national_participants'],
-                              'participants-0-date': self.test_data['date'],
+                              'visit-0-ce': 1,
+                              'visit-0-id': 1,
+                              'visit-0-team_present': self.test_data['team_present'],
+                              'visit-0-nationals_present': self.test_data['nationals_present'],
+                              'visit-0-date': self.test_data['date'],
                               'question-0-ce': 1,
                               'question-0-id': 1,
                               'question-0-question': self.test_data['question'],
@@ -70,11 +70,11 @@ class CETestBaseClass(TestCase):
         ce2 = models.CultureEvent(title='CE2')
         ce2.save()
         ce.tags.add(self.test_data['tags'])
-        part = models.ParticipationModel(national_participants=self.test_data['national_participants'],
-                                         team_participants=self.test_data['team_participants'],
-                                         date=self.test_data['date'],
-                                         ce=ce)
-        part.save()
+        visit = models.VisitsModel(nationals_present=self.test_data['nationals_present'],
+                                  team_present=self.test_data['team_present'],
+                                  date=self.test_data['date'],
+                                  ce=ce)
+        visit.save()
         text = models.TextModel(ce=ce,
                                 phonetic_text=self.test_data['phonetic_text'],
                                 orthographic_text=self.test_data['orthographic_text'],

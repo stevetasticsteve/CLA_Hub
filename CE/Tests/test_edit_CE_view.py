@@ -13,7 +13,7 @@ class TestEditPage(CETestBaseClass):
         self.assertEqual(models.CultureEvent.objects.get(pk=1).title, self.test_data['title'])
         self.assertEqual(len(models.CultureEvent.objects.all()), 2)
         self.assertEqual(len(models.TextModel.objects.all()), 2)
-        self.assertEqual(len(models.ParticipationModel.objects.all()), 1)
+        self.assertEqual(len(models.VisitsModel.objects.all()), 1)
 
     def test_edit_page_GET_response(self):
         response = self.client.get(reverse('CE:edit', args='1'))
@@ -199,21 +199,21 @@ class TestEditPage(CETestBaseClass):
         finally:
             self.cleanup_test_files(1)
 
-    def test_can_edit_first_participants_form(self):
+    def test_can_edit_first_visit_form(self):
         post_data = self.standard_post
-        post_data['participants-0-team_participants'] = 'Changed'
-        post_data['participants-0-national_participants'] = 'Changed'
-        post_data['participants-0-date'] = '2019-10-11'
-        post_data['participants-TOTAL_FORMS'] = 2
+        post_data['visit-0-team_present'] = 'Changed'
+        post_data['visit-0-nationals_present'] = 'Changed'
+        post_data['visit-0-date'] = '2019-10-11'
+        post_data['visit-TOTAL_FORMS'] = 2
         # import pprint
         # pprint.pprint(post_data)
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertRedirects(response, '/CE/1')
-        self.assertEqual(len(models.ParticipationModel.objects.all()), 1)
-        self.assertEqual(models.ParticipationModel.objects.get(pk=1).national_participants, 'Changed',
-                         'Participation 1 not updated on POST')
-        self.assertEqual(models.ParticipationModel.objects.get(pk=1).team_participants, 'Changed',
-                         'Participation 1 not updated on POST')
-        self.assertEqual(models.ParticipationModel.objects.get(pk=1).date, datetime.date(2019, 10, 11),
-                         'Participation 1 not updated on POST')
+        self.assertEqual(len(models.VisitsModel.objects.all()), 1)
+        self.assertEqual(models.VisitsModel.objects.get(pk=1).nationals_present, 'Changed',
+                         'Visit 1 not updated on POST')
+        self.assertEqual(models.VisitsModel.objects.get(pk=1).team_present, 'Changed',
+                         'visit 1 not updated on POST')
+        self.assertEqual(models.VisitsModel.objects.get(pk=1).date, datetime.date(2019, 10, 11),
+                         'visit 1 not updated on POST')

@@ -75,11 +75,11 @@ class QuestionPageTest(TestCase):
                                  description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
-        participants = models.ParticipationModel(date='2019-08-05',
-                                                 team_participants='Steve',
-                                                 national_participants='Ulumo',
-                                                 ce=ce)
-        participants.save()
+        visits = models.VisitsModel(date='2019-08-05',
+                                          team_present='Steve',
+                                          nationals_present='Ulumo',
+                                          ce=ce)
+        visits.save()
         questions = models.QuestionModel(question='First question',
                                          answer='First answer',
                                          asked_by='Tester',
@@ -94,11 +94,11 @@ class QuestionPageTest(TestCase):
                                          asked_by='Tester',
                                          ce=ce)
         questions.save()
-        participants = models.ParticipationModel(date='2019-08-06',
-                                                 team_participants='Rhett',
-                                                 national_participants='Ulumo',
-                                                 ce=ce)
-        participants.save()
+        visits = models.VisitsModel(date='2019-08-06',
+                                          team_present='Rhett',
+                                          nationals_present='Ulumo',
+                                          ce=ce)
+        visits.save()
         time.sleep(0.1)
 
         ce = models.CultureEvent(title='because I can Example CE3',
@@ -114,11 +114,11 @@ class QuestionPageTest(TestCase):
                                          asked_by='Tester',
                                          ce=ce)
         questions.save()
-        participants = models.ParticipationModel(date='2019-08-07',
-                                                 team_participants='Philip',
-                                                 national_participants='Ulumo',
-                                                 ce=ce)
-        participants.save()
+        visits = models.VisitsModel(date='2019-08-07',
+                                          team_present='Philip',
+                                          nationals_present='Ulumo',
+                                          ce=ce)
+        visits.save()
 
 
     def test_chron_question_page(self):

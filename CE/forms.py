@@ -5,7 +5,6 @@ from django.core import exceptions
 import taggit.forms
 import CE.models
 import CE.settings
-import datetime
 
 if CE.settings.auto_cross_reference:
     description_placeholder = 'Auto cross reference is on. If you type the (lowercase) title of an existing CE' \

@@ -6,55 +6,6 @@ from CE import models
 
 
 class TestEditPage(TestCase):
-    test_data = {
-        'username': 'Tester',
-        'title': 'Example CE1',
-        'description_plain_text': 'A culture event happened',
-        'differences': 'Last time it was different',
-        'interpretation': 'It probably has meaning',
-        'national_participants': 'Ulumo',
-        'team_participants': 'Steve',
-        'date': '2019-02-20',
-        'phonetic_text': 'foᵘnɛtɪks',
-        'orthographic_text': 'orthographic',
-        'valid_for_DA': False,
-        'tags': 'taggie',
-        'question': 'Does this test work?',
-        'answer': 'Yes, it does!'
-    }
-
-    standard_post = {'text-TOTAL_FORMS': 2,
-                     'text-INITIAL_FORMS': 2,
-                     'question-TOTAL_FORMS': 1,
-                     'question-INITIAL_FORMS': 1,
-                     'participants-TOTAL_FORMS': 1,
-                     'participants-INITIAL_FORMS': 1,
-                     'title': test_data['title'],
-                     'description_plain_text': test_data['description_plain_text'],
-                     'tags': test_data['tags'],
-                     'differences': test_data['differences'],
-                     'interpretation': test_data['interpretation'],
-                     'text-0-ce': 1,
-                     'text-0-id': 1,
-                     'text-0-phonetic_text': test_data['phonetic_text'],
-                     'text-0-orthographic_text': test_data['orthographic_text'],
-                     'text-0-valid_for_DA': test_data['valid_for_DA'],
-                     'text-1-ce': 1,
-                     'text-1-id': 2,
-                     'text-1-phonetic_text': test_data['phonetic_text'],
-                     'text-1-orthographic_text': test_data['orthographic_text'],
-                     'text-1-valid_for_DA': test_data['valid_for_DA'],
-                     'participation-0-ce': 1,
-                     'participation-0-id': 1,
-                     'participation-0-team_participants': test_data['team_participants'],
-                     'participation-0-national_participants': test_data['national_participants'],
-                     'participation-0-date': test_data['date'],
-                     'question-0-ce': 1,
-                     'question-0-id': 1,
-                     'question-0-question': test_data['question'],
-                     'question-0-answer': test_data['answer']
-                     }
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -63,11 +14,59 @@ class TestEditPage(TestCase):
         credentials.save()
 
     def setUp(self):
+        self.test_data = {
+            'username': 'Tester',
+            'title': 'Example CE1',
+            'description_plain_text': 'A culture event happened',
+            'differences': 'Last time it was different',
+            'interpretation': 'It probably has meaning',
+            'national_participants': 'Ulumo',
+            'team_participants': 'Steve',
+            'date': '2019-02-20',
+            'phonetic_text': 'foᵘnɛtɪks',
+            'orthographic_text': 'orthographic',
+            'valid_for_DA': False,
+            'tags': 'taggie',
+            'question': 'Does this test work?',
+            'answer': 'Yes, it does!'
+        }
+        self.standard_post = {'text-TOTAL_FORMS': 2,
+                              'text-INITIAL_FORMS': 2,
+                              'question-TOTAL_FORMS': 1,
+                              'question-INITIAL_FORMS': 1,
+                              'participants-TOTAL_FORMS': 1,
+                              'participants-INITIAL_FORMS': 1,
+                              'title': self.test_data['title'],
+                              'description_plain_text': self.test_data['description_plain_text'],
+                              'tags': self.test_data['tags'],
+                              'differences': self.test_data['differences'],
+                              'interpretation': self.test_data['interpretation'],
+                              'text-0-ce': 1,
+                              'text-0-id': 1,
+                              'text-0-phonetic_text': self.test_data['phonetic_text'],
+                              'text-0-orthographic_text': self.test_data['orthographic_text'],
+                              'text-0-valid_for_DA': self.test_data['valid_for_DA'],
+                              'text-1-ce': 1,
+                              'text-1-id': 2,
+                              'text-1-phonetic_text': self.test_data['phonetic_text'],
+                              'text-1-orthographic_text': self.test_data['orthographic_text'],
+                              'text-1-valid_for_DA': self.test_data['valid_for_DA'],
+                              'participation-0-ce': 1,
+                              'participation-0-id': 1,
+                              'participation-0-team_participants': self.test_data['team_participants'],
+                              'participation-0-national_participants': self.test_data['national_participants'],
+                              'participation-0-date': self.test_data['date'],
+                              'question-0-ce': 1,
+                              'question-0-id': 1,
+                              'question-0-question': self.test_data['question'],
+                              'question-0-answer': self.test_data['answer']
+                              }
+
         self.client.login(username='Tester', password='secure_password')
         ce = models.CultureEvent(title=self.test_data['title'],
                                  description_plain_text=self.test_data['description_plain_text'],
                                  differences=self.test_data['differences'],
-                                 interpretation=self.test_data['interpretation'],)
+                                 interpretation=self.test_data['interpretation'], )
         ce.save()
         ce2 = models.CultureEvent(title='CE2')
         ce2.save()
@@ -97,7 +96,6 @@ class TestEditPage(TestCase):
         self.assertEqual(len(models.CultureEvent.objects.all()), 2)
         self.assertEqual(len(models.TextModel.objects.all()), 2)
 
-
     def test_edit_page_GET_response(self):
         response = self.client.get(reverse('CE:edit', args='1'))
         self.assertEqual(response.status_code, 200)
@@ -113,7 +111,6 @@ class TestEditPage(TestCase):
                 continue
             self.assertContains(response, data)
 
-    @unittest.skip  #don't know why this fails
     def test_redirect_after_post(self):
         response = self.client.post(reverse('CE:edit', args='1'), data=self.standard_post, follow=True)
         self.assertRedirects(response, '/CE/1')
@@ -125,8 +122,8 @@ class TestEditPage(TestCase):
     def test_CE_model_updated_correctly_after_POST(self):
         post_data = self.standard_post
         post_data['description_plain_text'] = 'A new description'
-
         self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
+
         ce = models.CultureEvent.objects.get(pk=1)
         self.assertEqual('A new description', ce.description_plain_text)
         self.assertEqual(self.test_data['title'], ce.title)
@@ -154,7 +151,6 @@ class TestEditPage(TestCase):
     def test_edit_single_text(self):
         post_data = self.standard_post
         post_data['text-0-phonetic_text'] = 'Changed'
-        post_data['text-TOTAL_FORMS'] = 2
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertRedirects(response, '/CE/1')
@@ -171,6 +167,28 @@ class TestEditPage(TestCase):
         self.assertEqual(models.TextModel.objects.get(pk=2).phonetic_text, 'Changed',
                          'Text 2 not updated on POST')
 
+    def test_edit_both_texts(self):
+        post_data = self.standard_post
+        post_data['text-0-phonetic_text'] = 'Changed1'
+        post_data['text-1-phonetic_text'] = 'Changed2'
+        response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
+
+        self.assertRedirects(response, '/CE/1')
+        self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text, 'Changed1',
+                         'Text 1 not updated on POST')
+        self.assertEqual(models.TextModel.objects.get(pk=2).phonetic_text, 'Changed2',
+                         'Text 2 not updated on POST')
 
 
+    def test_user_adds_empty_text(self):
+        post_data = self.standard_post
+        post_data['text-TOTAL_FORMS'] = 3,
+        post_data['text-2-ce'] = 1
+        post_data['text-2-id'] = 3
+        post_data['text-2-phonetic_text'] = ''
+        post_data['text-2-orthographic_text'] = ''
+        post_data['text-2-valid_for_DA'] = False
+        response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
+        self.assertRedirects(response, '/CE/1')
+        self.assertEqual(models.TextModel.objects.get(pk=3).phonetic_text, '')

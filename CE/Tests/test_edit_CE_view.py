@@ -95,6 +95,21 @@ class TestEditPage(TestCase):
                                  answer=self.test_data['answer'])
         q.save()
 
+    def cleanup_audio_files(self):
+        test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/1/audio')
+        try:
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
+        except FileNotFoundError:
+            pass
+        try:
+            os.remove('uploads/CultureEventFiles/1/audio/test_audio2.mp3')
+        except FileNotFoundError:
+            pass
+        try:
+            os.removedirs(test_folder)
+        except OSError:
+            pass
+
     def test_setup(self):
         self.assertEqual(models.CultureEvent.objects.get(pk=1).title, self.test_data['title'])
         self.assertEqual(len(models.CultureEvent.objects.all()), 2)
@@ -222,56 +237,64 @@ class TestEditPage(TestCase):
         self.assertEqual(models.TextModel.objects.get(pk=3).phonetic_text, 'phonetic_text3')
 
     def test_user_can_add_audio(self):
-        # clean up if previous test failed and left a file there
-        if os.path.exists('uploads/CultureEventFiles/1/audio/test_audio1.mp3'):
-            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
-        with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
-            file = file.read()
-            test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
-        post_data = self.standard_post
-        post_data['text-0-audio'] = test_audio
-        response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
+        try:
+            with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
+                file = file.read()
+                test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
+            post_data = self.standard_post
+            post_data['text-0-audio'] = test_audio
+            response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
-        # test audio in db
-        self.assertRedirects(response, '/CE/1')
-        self.assertEqual(len(models.TextModel.objects.all()), 2)
-        self.assertEqual(models.TextModel.objects.get(pk=1).audio,
-                         'CultureEventFiles/1/audio/test_audio1.mp3')
+            # test audio in db
+            self.assertRedirects(response, '/CE/1')
+            self.assertEqual(len(models.TextModel.objects.all()), 2)
+            self.assertEqual(models.TextModel.objects.get(pk=1).audio,
+                             'CultureEventFiles/1/audio/test_audio1.mp3')
 
-        # test mp3 in uploads
-        self.assertTrue(os.path.exists('uploads/CultureEventFiles/1/audio'), 'upload folder doesn\'t exist')
-        folder_contents = os.listdir('uploads/CultureEventFiles/1/audio')
-        self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
+            # test mp3 in uploads
+            self.assertTrue(os.path.exists('uploads/CultureEventFiles/1/audio'), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir('uploads/CultureEventFiles/1/audio')
+            self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
 
-        # test displayed on view page
-        response = self.client.get(reverse('CE:view', args='1'))
-        self.assertContains(response,
-                            '<audio controls> <source src="/uploads/CultureEventFiles/1/audio/test_audio1.mp3"></audio>')
+            # test displayed on view page
+            response = self.client.get(reverse('CE:view', args='1'))
+            self.assertContains(response,
+                                '<audio controls> <source src="/uploads/CultureEventFiles/1/audio/test_audio1.mp3"></audio>')
 
-        # clean up after test - test uploads go onto actual file system program uses
-        if len(folder_contents) == 1:
-            # no user audio, folder was created for test
-            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
-            os.removedirs('uploads/CultureEventFiles/1/audio')
-        elif len(folder_contents) > 1:
-            # users have uploaded pictures themselves
-            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
+        finally:
+            self.cleanup_audio_files()
 
     def test_user_can_change_audio(self):
-        # clean up if previous test failed and left a file there
-        if os.path.exists('uploads/CultureEventFiles/1/audio/test_audio1.mp3'):
-            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
-        test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/1/audio')
-        os.makedirs(test_folder)
-        shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
+        try:
+            test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/1/audio')
+            os.makedirs(test_folder)
+            shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
+            # add audio to test text
+            text = models.TextModel.objects.get(pk=1)
+            text.audio = 'CultureEventFiles/1/audio/test_audio1.mp3'
+            text.save()
+            with open('CLAHub/assets/test_data/test_audio2.mp3', 'rb') as file:
+                file = file.read()
+                test_audio = SimpleUploadedFile('test_data/test_audio2.mp3', file, content_type='audio')
+            post_data = self.standard_post
+            post_data['text-0-audio'] = test_audio
+            response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
-        # clean up after test
-        try:
-            os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
-            os.remove('uploads/CultureEventFiles/1/audio/test_audio2.mp3')
-        except FileNotFoundError:
-            pass
-        try:
-            os.removedirs(test_folder)
-        except OSError:
-            pass
+            # test audio in db
+            self.assertRedirects(response, '/CE/1')
+            self.assertEqual(len(models.TextModel.objects.all()), 2)
+            self.assertEqual(models.TextModel.objects.get(pk=1).audio,
+                             'CultureEventFiles/1/audio/test_audio2.mp3')
+
+            # test mp3 in uploads
+            self.assertTrue(os.path.exists('uploads/CultureEventFiles/1/audio'), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir('uploads/CultureEventFiles/1/audio')
+            self.assertIn('test_audio2.mp3', folder_contents, 'Uploaded audio not in upload folder')
+
+            # test displayed on view page
+            response = self.client.get(reverse('CE:view', args='1'))
+            self.assertContains(response,
+                                '<audio controls> <source src="/uploads/CultureEventFiles/1/audio/test_audio2.mp3"></audio>')
+
+        finally:
+            self.cleanup_audio_files()

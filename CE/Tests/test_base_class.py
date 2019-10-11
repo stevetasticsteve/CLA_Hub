@@ -95,16 +95,11 @@ class CETestBaseClass(TestCase):
         test_folder_audio = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/' + ce + '/audio/')
         test_folder_images = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/' + ce + '/images/')
         folders = [test_folder_audio, test_folder_images]
-        test_audio = ['test_audio1.mp3', 'test_audio2.mp3']
-        test_images = ['test_pic1.jpg', 'test_pic2.jpg']
-        for audio in test_audio:
+        test_data = ['test_audio1.mp3', 'test_audio2.mp3', 'test_pic1.jpg', 'test_pic2.jpg']
+        for data in test_data:
             try:
-                os.remove(test_folder_audio + audio)
-            except FileNotFoundError:
-                pass
-        for image in test_images:
-            try:
-                os.remove(test_folder_images + image)
+                os.remove(test_folder_audio + data)
+                os.remove(test_folder_images + data)
             except FileNotFoundError:
                 pass
         for folder in folders:

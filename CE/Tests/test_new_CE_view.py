@@ -32,6 +32,35 @@ class NewCEPageTest(TestCase):
                                  valid_for_DA=False)
         texts.save()
 
+    def cleanup_test_files(self): #todo tidy up and combine with edit CE cleanup helper
+        test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/2/audio')
+        try:
+            os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
+        except FileNotFoundError:
+            pass
+        try:
+            os.remove('uploads/CultureEventFiles/2/audio/test_audio2.mp3')
+        except FileNotFoundError:
+            pass
+        try:
+            os.removedirs(test_folder)
+        except OSError:
+            pass
+
+        test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/2/images')
+        try:
+            os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
+        except FileNotFoundError:
+            pass
+        try:
+            os.remove('uploads/CultureEventFiles/2/images/test_pic2.jpg')
+        except FileNotFoundError:
+            pass
+        try:
+            os.removedirs(test_folder)
+        except OSError:
+            pass
+
     def full_valid_POST(self, follow):
         posted_data = {
             'title': 'A test CE',
@@ -124,111 +153,92 @@ class NewCEPageTest(TestCase):
             models.CultureEvent.objects.get(pk=2)
 
     def test_new_CE_page_saves_single_picture(self):
-        # todo refactor - probably as new class. Extensive set up and tear down neccesarry as uploads go into project dir
-        # clean up if existing test failed and left a file there
-        if os.path.exists('uploads/CultureEventFiles/2/images/test_pic1.jpg'):
-            os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
-        with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
-            file = file.read()
-            test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
-            response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                            'participants-0-date': '2019-03-20',
-                                                            'participants-0-national_participants': 'Ulumo',
-                                                            'participants-0-team_participants': 'Philip',
-                                                            'picture': test_image,
-                                                            'text-TOTAL_FORMS': 0,
-                                                            'text-INITIAL_FORMS': 0,
-                                                            'question-TOTAL_FORMS': 0,
-                                                            'question-INITIAL_FORMS': 0,
-                                                            'participants-TOTAL_FORMS': 1,
-                                                            'participants-INITIAL_FORMS': 1
-                                                            })
-        self.assertRedirects(response, '/CE/2')
-        new_ce = models.CultureEvent.objects.get(pk=2)
-        self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
-        new_pic = models.PictureModel.objects.get(ce=new_ce)
-        self.assertEqual('CultureEventFiles/2/images/test_pic1.jpg',
-                         str(new_pic.picture), 'New CE not saved to db')
-
-        self.assertTrue(os.path.exists('uploads/CultureEventFiles/2/images'), 'upload folder doesn\'t exist')
-        folder_contents = os.listdir('uploads/CultureEventFiles/2/images')
-        self.assertIn('test_pic1.jpg', folder_contents, 'Uploaded picture not in upload folder')
-        # check smaller than 1Mb
-        self.assertTrue(os.path.getsize('uploads/CultureEventFiles/2/images/test_pic1.jpg') < 1000000, 'picture too big')
-        # check Foreign key is correct
-        self.assertEqual(new_ce, new_pic.ce, 'Foreign key not correct')
-
-        # check image displayed on view page
-        response = self.client.get(reverse('CE:view', args='2'))
-        self.assertContains(response, 'Test CE')
-        self.assertContains(response, '<div id="carouselExampleIndicators"')
-        self.assertContains(response, '<img src="/uploads/CultureEventFiles/2/images/test_pic1.jpg')
-
-        # clean up after test - test uploads go onto actual file system program uses
         try:
-            os.remove('uploads/CultureEventFiles/2/images/test_pic1.jpg')
-        except FileNotFoundError:
-            pass
-        try:
-            os.removedirs('uploads/CultureEventFiles/2/images')
-        except OSError:
-            pass
+            with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
+                file = file.read()
+                test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
+                response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                                'participants-0-date': '2019-03-20',
+                                                                'participants-0-national_participants': 'Ulumo',
+                                                                'participants-0-team_participants': 'Philip',
+                                                                'picture': test_image,
+                                                                'text-TOTAL_FORMS': 0,
+                                                                'text-INITIAL_FORMS': 0,
+                                                                'question-TOTAL_FORMS': 0,
+                                                                'question-INITIAL_FORMS': 0,
+                                                                'participants-TOTAL_FORMS': 1,
+                                                                'participants-INITIAL_FORMS': 1
+                                                                })
+            self.assertRedirects(response, '/CE/2')
+            new_ce = models.CultureEvent.objects.get(pk=2)
+            self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+            new_pic = models.PictureModel.objects.get(ce=new_ce)
+            self.assertEqual('CultureEventFiles/2/images/test_pic1.jpg',
+                             str(new_pic.picture), 'New CE not saved to db')
+
+            self.assertTrue(os.path.exists('uploads/CultureEventFiles/2/images'), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir('uploads/CultureEventFiles/2/images')
+            self.assertIn('test_pic1.jpg', folder_contents, 'Uploaded picture not in upload folder')
+            # check smaller than 1Mb
+            self.assertTrue(os.path.getsize('uploads/CultureEventFiles/2/images/test_pic1.jpg') < 1000000, 'picture too big')
+            # check Foreign key is correct
+            self.assertEqual(new_ce, new_pic.ce, 'Foreign key not correct')
+
+            # check image displayed on view page
+            response = self.client.get(reverse('CE:view', args='2'))
+            self.assertContains(response, 'Test CE')
+            self.assertContains(response, '<div id="carouselExampleIndicators"')
+            self.assertContains(response, '<img src="/uploads/CultureEventFiles/2/images/test_pic1.jpg')
+        finally:
+            self.cleanup_test_files()
+
 
     def test_new_CE_page_can_save_text_and_audio(self):
-        # clean up if existing test failed and left a file there
-        if os.path.exists('uploads/CultureEventFiles/2/audio/test_audio1.mp3'):
-            os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
-        test_phonetics = 'fʌni foᵘnɛtɪk sɪmbɔlz ŋ tʃ ʒ'
-        test_orthography = 'orthography'
-        with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
-            file = file.read()
-            test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
-            response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
-                                                            'participants-0-date': '2019-03-20',
-                                                            'participants-0-national_participants': 'Ulumo',
-                                                            'participants-0-team_participants': 'Philip',
-                                                            'text-0-phonetic_text': test_phonetics,
-                                                            'text-0-orthographic_text': test_orthography,
-                                                            'text-0-phonetic_standard': '1',
-                                                            'text-0-audio': test_audio,
-                                                            'text-0-valid_for_DA': False,
-                                                            'text-0-discourse_type': '',
-                                                            'text-TOTAL_FORMS': 1,
-                                                            'text-INITIAL_FORMS': 0,
-                                                            'question-TOTAL_FORMS': 0,
-                                                            'question-INITIAL_FORMS': 0,
-                                                            'participants-TOTAL_FORMS': 1,
-                                                            'participants-INITIAL_FORMS': 1
-                                                            })
-        self.assertRedirects(response, '/CE/2')
-        new_ce = models.CultureEvent.objects.get(pk=2)
-        self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
-        new_text = models.TextModel.objects.get(ce=new_ce)
-        self.assertEqual('CultureEventFiles/2/audio/test_audio1.mp3',
-                         str(new_text.audio), 'New text not saved to db')
-
-        self.assertTrue(os.path.exists('uploads/CultureEventFiles/2/audio'), 'upload folder doesn\'t exist')
-        folder_contents = os.listdir('uploads/CultureEventFiles/2/audio')
-        self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
-        # check Foreign key is correct
-        self.assertEqual(new_ce, new_text.ce, 'Foreign key not correct')
-        self.assertEqual(test_phonetics, new_text.phonetic_text, 'Phonetics not correct')
-        self.assertEqual(test_orthography, new_text.orthographic_text, 'Orthography not correct')
-
-        # check audio displayed on view page
-        response = self.client.get(reverse('CE:view', args='2'))
-        self.assertContains(response, 'Test CE')
-        self.assertContains(response,
-                            '<audio controls> <source src="/uploads/CultureEventFiles/2/audio/test_audio1.mp3"></audio>')
-        # clean up after test - test uploads go onto actual file system program uses
         try:
-            os.remove('uploads/CultureEventFiles/2/audio/test_audio1.mp3')
-        except FileNotFoundError:
-            pass
-        try:
-            os.removedirs('uploads/CultureEventFiles/2/audio')
-        except OSError:
-            pass
+            test_phonetics = 'fʌni foᵘnɛtɪk sɪmbɔlz ŋ tʃ ʒ'
+            test_orthography = 'orthography'
+            with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
+                file = file.read()
+                test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
+                response = self.client.post(reverse('CE:new'), {'title': 'Test CE',
+                                                                'participants-0-date': '2019-03-20',
+                                                                'participants-0-national_participants': 'Ulumo',
+                                                                'participants-0-team_participants': 'Philip',
+                                                                'text-0-phonetic_text': test_phonetics,
+                                                                'text-0-orthographic_text': test_orthography,
+                                                                'text-0-phonetic_standard': '1',
+                                                                'text-0-audio': test_audio,
+                                                                'text-0-valid_for_DA': False,
+                                                                'text-0-discourse_type': '',
+                                                                'text-TOTAL_FORMS': 1,
+                                                                'text-INITIAL_FORMS': 0,
+                                                                'question-TOTAL_FORMS': 0,
+                                                                'question-INITIAL_FORMS': 0,
+                                                                'participants-TOTAL_FORMS': 1,
+                                                                'participants-INITIAL_FORMS': 1
+                                                                })
+            self.assertRedirects(response, '/CE/2')
+            new_ce = models.CultureEvent.objects.get(pk=2)
+            self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
+            new_text = models.TextModel.objects.get(ce=new_ce)
+            self.assertEqual('CultureEventFiles/2/audio/test_audio1.mp3',
+                             str(new_text.audio), 'New text not saved to db')
+
+            self.assertTrue(os.path.exists('uploads/CultureEventFiles/2/audio'), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir('uploads/CultureEventFiles/2/audio')
+            self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
+            # check Foreign key is correct
+            self.assertEqual(new_ce, new_text.ce, 'Foreign key not correct')
+            self.assertEqual(test_phonetics, new_text.phonetic_text, 'Phonetics not correct')
+            self.assertEqual(test_orthography, new_text.orthographic_text, 'Orthography not correct')
+
+            # check audio displayed on view page
+            response = self.client.get(reverse('CE:view', args='2'))
+            self.assertContains(response, 'Test CE')
+            self.assertContains(response,
+                                '<audio controls> <source src="/uploads/CultureEventFiles/2/audio/test_audio1.mp3"></audio>')
+        finally:
+            self.cleanup_test_files()
 
     def test_can_add_single_text_if_phonetic_standard_missing(self):
         response = self.client.post(reverse('CE:new'), {'title': 'Test CE',

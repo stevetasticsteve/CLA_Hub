@@ -95,7 +95,7 @@ class TestEditPage(TestCase):
                                  answer=self.test_data['answer'])
         q.save()
 
-    def cleanup_audio_files(self):
+    def cleanup_test_files(self):
         test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/1/audio')
         try:
             os.remove('uploads/CultureEventFiles/1/audio/test_audio1.mp3')
@@ -262,7 +262,7 @@ class TestEditPage(TestCase):
                                 '<audio controls> <source src="/uploads/CultureEventFiles/1/audio/test_audio1.mp3"></audio>')
 
         finally:
-            self.cleanup_audio_files()
+            self.cleanup_test_files()
 
     def test_user_can_change_audio(self):
         try:
@@ -297,4 +297,4 @@ class TestEditPage(TestCase):
                                 '<audio controls> <source src="/uploads/CultureEventFiles/1/audio/test_audio2.mp3"></audio>')
 
         finally:
-            self.cleanup_audio_files()
+            self.cleanup_test_files()

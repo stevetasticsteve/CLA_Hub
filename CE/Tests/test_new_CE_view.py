@@ -8,6 +8,7 @@ import os
 
 class NewCEPageTest(CETestBaseClass):
 
+    # Basic functionality
     def test_new_CE_page_GET_response(self):
         # blank form should be returned
         response = self.client.get(reverse('CE:new'))
@@ -63,6 +64,7 @@ class NewCEPageTest(CETestBaseClass):
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=3)
 
+    # Images
     def test_new_CE_page_saves_single_picture(self):
         try:
             post_data = self.new_post
@@ -97,7 +99,8 @@ class NewCEPageTest(CETestBaseClass):
         finally:
             self.cleanup_test_files(3)
 
-    def test_new_CE_page_can_save_text_and_audio(self):
+    # Texts
+    def test_new_CE_page_can_save_text_with_audio(self):
         try:
             post_data = self.new_post
             post_data['text-0-phonetic_text'] = 'fʌni foᵘnɛtɪk sɪmbɔlz ŋ tʃ ʒ'
@@ -210,6 +213,7 @@ class NewCEPageTest(CETestBaseClass):
         texts = models.TextModel.objects.filter(ce=new_ce)
         self.assertEqual(len(texts), 0, 'Blank text has been added')
 
+    # Questions
     def test_single_question_submit(self):
         post_data = self.new_post
         post_data['question-0-question'] = 'Does this work?'
@@ -275,6 +279,7 @@ class NewCEPageTest(CETestBaseClass):
         q = models.QuestionModel.objects.all()
         self.assertEqual(len(q), 1)
 
+    # Tags
     def test_tags_added_to_db(self):
         post_data = self.new_post
         post_data['tags'] = 'taggie, 1-1'
@@ -288,6 +293,7 @@ class NewCEPageTest(CETestBaseClass):
         response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'taggie'}))
         self.assertEqual(response.status_code, 200, 'Tag view page not showing')
 
+    # Visits
     def test_can_add_multiple_visits(self):
         post_data = self.new_post
         post_data['visit-TOTAL_FORMS'] = 2

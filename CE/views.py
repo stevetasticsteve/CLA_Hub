@@ -245,3 +245,11 @@ def tag_list_page(request):
     }
     return render(request, template, context)
 
+
+def search_CE(request):
+    template = 'CE/search.html'
+    search = request.GET.get('search')
+    context = {
+        'search': search
+    }
+    return render(request, template, context)

@@ -5,15 +5,29 @@
     <title>CE Home</title>
 </head>
 
-<div>
-<h1>CE Home</h1>
-    <div>
-        <a href="{% url 'CE:new' %}" class="btn btn-primary btn-lg active" role="button" id="create_CE"
-           aria-pressed="true">Create CE</a>
+<div class = container-fluid>
+    <h1>CE Home</h1>
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'CE:new' %}" class="btn btn-primary btn-lg active" role="button" id="create_CE" aria-pressed="true">Create CE</a>
+            </div>
+            <div class="col">
+                <form method="get" action="/CE/search/"}>
+                    <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
+                    <div class="input-group">
+                    <input class="form-control border-0 bg-light" id="search" type="text" name="search" placeholder="Search CEs">
+                    <button class="btn btn-link text-primary" id="search_submit" type="submit">Search</button>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-<h2>Most recently edited Culture events:</h2>
 
-{% include 'CE/partial/CE_list.html' %}
+<div class="container-fluid">
+    <h2>Most recently edited Culture events:</h2>
+    {% include 'CE/partial/CE_list.html' %}
+</div>
 
 {% endblock %}

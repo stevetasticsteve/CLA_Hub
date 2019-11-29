@@ -13,6 +13,7 @@ import bleach
 
 
 class CultureEvent(models.Model):
+    '''Docstring here'''
     title = models.CharField(max_length=60, blank=False, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -133,6 +134,7 @@ class PictureModel(models.Model):
 
 class TextModel(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
+    text_title = models.CharField(max_length=50, blank=True)
     audio = models.FileField(upload_to=audio_folder, blank=True)
     phonetic_text = models.TextField(blank=True)
     phonetic_standard = models.CharField(choices=[('1', 'Unchecked'),
@@ -154,7 +156,7 @@ class TextModel(models.Model):
                                       blank=True)
 
     def __str__(self):
-        return 'Text for ' + str(self.ce)
+        return str(self.text_title)
 
 
 class QuestionModel(models.Model):

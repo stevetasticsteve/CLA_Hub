@@ -168,7 +168,7 @@ class QuestionForm(forms.ModelForm):
 class VisitsForm(forms.ModelForm):
     class Meta:
         model = CE.models.Visit
-        fields = ('nationals_present', 'team_present', 'date')
+        fields = ('team_present', 'nationals_present', 'date')
 
     def save(self, **kwargs):
         # only save the form if user has entered data. Otherwise default fields will be filled in

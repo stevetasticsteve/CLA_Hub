@@ -112,73 +112,6 @@ def prepopulated_CE_form(ce):
 
     return form
 
-# class TextForm(forms.Form):
-#     audio = forms.FileField(
-#         label='Upload audio',
-#         required=False
-#     )
-#     phonetic_text = forms.CharField(
-#         required=False,
-#         label='Phonetic transcription',
-#         widget=forms.Textarea(attrs={
-#         'class': 'form-control',
-#         'placeholder': 'type phonetics here',
-#         'rows': 5
-#     })
-#     )
-#     phonetic_standard = forms.ChoiceField(
-#         choices=[('', ''),
-#                  ('1', 'Unchecked'),
-#                  ('2', 'Double checked by author'),
-#                  ('3', 'Checked by team mate'),
-#                  ('4', 'Approved by whole team'),
-#                  ('5', 'Valid for linguistic analysis')],
-#         label='Phonetic accuracy',
-#         required=False
-#     )
-#     orthographic_text = forms.CharField(
-#         required=False,
-#         label='Orthographic transcription',
-#         widget = forms.Textarea(attrs={
-#         'class': 'form-control',
-#         'rows': 5,
-#         'placeholder': 'type orthographic text here'
-#     })
-#     )
-#     valid_for_DA = forms.BooleanField(label='Valid for Discourse Analysis',
-#                                       required=False)
-#     discourse_type = forms.ChoiceField(
-#         choices=[('', ''),
-#                 ('1', 'Narrative'),
-#                 ('2', 'Hortatory'),
-#                 ('3', 'Procedural'),
-#                 ('4', 'Expository'),
-#                 ('5', 'Descriptive')],
-#         label='Discourse type',
-#         required=False
-#     )
-#
-#     def save(self, ce, **kwargs):
-#         if self.cleaned_data:
-#             if 'instance' in kwargs:
-#                 new_text = CE.models.TextModel.objects.get(pk=kwargs['instance'].pk)
-#             else:
-#                 new_text = CE.models.TextModel()
-#             new_text.ce = ce
-#             new_text.orthographic_text = self.cleaned_data['orthographic_text']
-#             new_text.phonetic_text = self.cleaned_data['phonetic_text']
-#             if self.cleaned_data['phonetic_text']:
-#                 if self.cleaned_data['phonetic_standard'] == '':
-#                     new_text.phonetic_standard = 1
-#                 else:
-#                     new_text.phonetic_standard = self.cleaned_data['phonetic_standard']
-#             if self.cleaned_data['valid_for_DA']:
-#                 new_text.valid_for_DA = True
-#                 new_text.discourse_type = self.cleaned_data['discourse_type']
-#             else:
-#                 new_text.valid_for_DA = False
-#             new_text.audio = self.cleaned_data['audio']
-#             new_text.save()
 
 class TextForm(forms.ModelForm):
     class Meta:
@@ -214,38 +147,6 @@ def text_formset_prepopulated(ce):
         text_forms.append(text_form)
     return text_forms
 
-# class QuestionForm(forms.Form):
-#     question = forms.CharField(
-#         required=True,
-#         label='Question about CE',
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': 'Write a question here',
-#         })
-#     )
-#     answer = forms.CharField(
-#         required=False,
-#         label='Answer',
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': 'If you know the answer provide it here',
-#         })
-#     )
-#
-#     def save(self, ce,request):
-#         if self.cleaned_data:
-#             new_question = CE.models.QuestionModel()
-#             new_question.ce = ce
-#             new_question.asked_by = str(request.user)
-#             new_question.last_modified_by = str(request.user)
-#             new_question.question = self.cleaned_data['question']
-#             new_question.answer = self.cleaned_data['answer']
-#             if self.cleaned_data['answer']:
-#                 new_question.answered_by = str(request.user)
-#             new_question.save()
-#
-# question_form_set = forms.formset_factory(QuestionForm, extra=0)
-
 
 class QuestionForm(forms.ModelForm):
     class Meta:
@@ -264,55 +165,6 @@ class QuestionForm(forms.ModelForm):
             pass
 
 
-# def question_formset_prepopulated(ce):
-#     question_data = CE.models.QuestionModel.objects.filter(ce=ce)
-#     question_forms = []
-#     for data in question_data:
-#         question_form = question_form_set(initial=[{
-#             'question': data.question,
-#             'answer': data.answer,
-#
-#         }], prefix='question')
-#         question_forms.append(question_form)
-#     return question_forms
-
-
-# class ParticipationForm(forms.Form):
-#     date = forms.DateField(
-#         required=True,
-#         label='Date (Required)',
-#         widget=DateInput()
-#     )
-#
-#     team_participants = forms.CharField(
-#         required=False,
-#         label='Team members present',
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': 'Who was there?',
-#         })
-#     )
-#     national_participants = forms.CharField(
-#         required=False,
-#         label='Nationals present',
-#         widget=forms.TextInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': 'Who else was there?',
-#         })
-#     )
-#
-#     def save(self, ce, **kwargs):
-#         if 'instance' in kwargs:
-#             participants = CE.models.ParticipationModel.objects.filter(ce=kwargs['instance'])
-#         else:
-#             participants = CE.models.ParticipationModel()
-#         if self.cleaned_data:
-#             participants.ce = ce
-#             participants.team_participants = self.cleaned_data['team_participants']
-#             participants.national_participants = self.cleaned_data['national_participants']
-#             participants.date = self.cleaned_data['date']
-#             participants.save()
-#
 class VisitsForm(forms.ModelForm):
     class Meta:
         model = CE.models.VisitsModel
@@ -327,18 +179,6 @@ class VisitsForm(forms.ModelForm):
         except KeyError:
             pass
 
-# def prepopulated_participants_formset(ce):
-#     participant_data = CE.models.ParticipationModel.objects.filter(ce=ce)
-#     participant_forms = []
-#     for data in participant_data:
-#         participant_form = participant_formset(initial=[{
-#             'team_participants': data.team_participants,
-#             'national_participants': data.national_participants,
-#             'date': data.date
-#         }], prefix='participants')
-#         participant_forms.append(participant_form)
-#     return participant_forms
-#
-# participant_formset = forms.formset_factory(ParticipationForm, extra=1)
+
 
 

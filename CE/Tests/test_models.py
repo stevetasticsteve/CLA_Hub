@@ -103,8 +103,8 @@ class CEModelTest(TestCase):
 class TextsModelTest(TestCase):
     def test_string_method(self):
         ce = models.CultureEvent(title='Example CE1')
-        text = models.TextModel(ce=ce, phonetic_text='djaŋɡo')
-        self.assertEqual(str(text), 'Text for Example CE1')
+        text = models.TextModel(ce=ce, phonetic_text='djaŋɡo', text_title='example text')
+        self.assertEqual(str(text), 'example text')
 
 
 # class PictureModelTest(TestCase):

@@ -14,6 +14,7 @@ class TestEditPage(CETestBaseClass):
         self.assertEqual(len(models.CultureEvent.objects.all()), 2)
         self.assertEqual(len(models.TextModel.objects.all()), 2)
         self.assertEqual(len(models.VisitsModel.objects.all()), 1)
+        self.assertEqual(len(models.QuestionModel.objects.all()), 1)
 
     def test_edit_page_GET_response(self):
         response = self.client.get(reverse('CE:edit', args='1'))

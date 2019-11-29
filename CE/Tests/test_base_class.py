@@ -27,8 +27,8 @@ class CETestBaseClass(TestCase):
             'valid_for_DA': False,
             'tags': 'taggie',
             'question': 'Does this test work?',
-            'answer': 'Yes, it does!'
-        }
+            'answer': 'Yes, it does!'}
+
         self.standard_post = {'text-TOTAL_FORMS': 2,
                               'text-INITIAL_FORMS': 2,
                               'question-TOTAL_FORMS': 1,
@@ -61,6 +61,19 @@ class CETestBaseClass(TestCase):
                               'question-0-answer': self.test_data['answer']
                               }
 
+        self.new_post = {'title': 'Test CE',
+                         'description_plain_text': self.test_data['description_plain_text'],
+                         'visit-0-date': self.test_data['date'],
+                         'visit-0-nationals_present': self.test_data['nationals_present'],
+                         'visit-0-team_present': self.test_data['team_present'],
+                         'text-TOTAL_FORMS': 0,
+                         'text-INITIAL_FORMS': 0,
+                         'question-TOTAL_FORMS': 0,
+                         'question-INITIAL_FORMS': 0,
+                         'visit-TOTAL_FORMS': 1,
+                         'visit-INITIAL_FORMS': 0
+                         }
+
         self.client.login(username='Tester', password='secure_password')
         ce = models.CultureEvent(title=self.test_data['title'],
                                  description_plain_text=self.test_data['description_plain_text'],
@@ -90,7 +103,8 @@ class CETestBaseClass(TestCase):
                                  answer=self.test_data['answer'])
         q.save()
 
-    def cleanup_test_files(self, ce):
+    @staticmethod
+    def cleanup_test_files(ce):
         ce = str(ce)
         test_folder_audio = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/' + ce + '/audio/')
         test_folder_images = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/' + ce + '/images/')
@@ -99,6 +113,9 @@ class CETestBaseClass(TestCase):
         for data in test_data:
             try:
                 os.remove(test_folder_audio + data)
+            except FileNotFoundError:
+                pass
+            try:
                 os.remove(test_folder_images + data)
             except FileNotFoundError:
                 pass

@@ -8,7 +8,6 @@ class CEModelTest(TestCase):
         ce = models.CultureEvent(title='Example CE1')
         self.assertEqual(str(ce), 'Example CE1')
 
-
     def test_repeated_title_not_allowed(self):
         # CE titles should be unique
         ce = models.CultureEvent(title='Example CE1',

@@ -57,18 +57,20 @@
     <h3>Texts</h3>
     {% for text in Texts %}
     <div class="container-fluid border">
-    <h4>Text {{forloop.counter}}</h4>
+    <h4>{{text.text_title}}</h4>
     {% if text.audio %}
     <audio controls> <source src="{{text.audio.url}}"></audio>
     {% endif %}
     {% if text.phonetic_text %}
-    <h4>Phonetic text</h4>
-    <p> {{ text.phonetic_text }}</p>
-    {% endif %}
-    {% if text.orthographic_text %}
-    <h4>Orthographic text</h4>
-    <p> {{ text.orthographic_text }}</p>
-    {% endif %}
+        <div class="container-fluid">
+            <h4>Phonetic text</h4>
+            <p> {{ text.phonetic_text }}</p>
+            {% endif %}
+            {% if text.orthographic_text %}
+            <h4>Orthographic text</h4>
+            <p> {{ text.orthographic_text }}</p>
+            {% endif %}
+            </div>
     </div>
     <p></p>
     {% endfor %}

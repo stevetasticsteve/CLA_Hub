@@ -9,7 +9,7 @@ class CEAdmin(admin.ModelAdmin):
 
 
 class TextsAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('text_title', 'ce')
 
 
 class PicturesAdmin(admin.ModelAdmin):

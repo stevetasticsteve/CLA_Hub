@@ -123,7 +123,7 @@ class TextForm(forms.ModelForm):
         # and an entry made despite no user input
         try:
             if self.cleaned_data['phonetic_text'] or self.cleaned_data['orthographic_text']\
-            or self.cleaned_data['audio']:
+            or self.cleaned_data['audio'] or self.cleaned_data['text_title']:
                 super(TextForm, self).save()
         except KeyError:
             pass

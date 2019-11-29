@@ -38,11 +38,11 @@ class TestViewPage(TestCase):
                                  description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
-        text = models.TextModel(ce=models.CultureEvent.objects.get(pk=1),
-                            audio='musicFile.ogg',
-                            phonetic_text='foᵘnɛtɪks',
-                            orthographic_text='orthographic',
-                            valid_for_DA=False)
+        text = models.Text(ce=models.CultureEvent.objects.get(pk=1),
+                           audio='musicFile.ogg',
+                           phonetic_text='foᵘnɛtɪks',
+                           orthographic_text='orthographic',
+                           valid_for_DA=False)
         text.save()
 
     def test_view_page(self):
@@ -75,29 +75,29 @@ class QuestionPageTest(TestCase):
                                  description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
-        visits = models.VisitsModel(date='2019-08-05',
-                                          team_present='Steve',
-                                          nationals_present='Ulumo',
-                                          ce=ce)
+        visits = models.Visit(date='2019-08-05',
+                              team_present='Steve',
+                              nationals_present='Ulumo',
+                              ce=ce)
         visits.save()
-        questions = models.QuestionModel(question='First question',
-                                         answer='First answer',
-                                         asked_by='Tester',
-                                         ce=ce)
+        questions = models.Question(question='First question',
+                                    answer='First answer',
+                                    asked_by='Tester',
+                                    ce=ce)
         questions.save()
         time.sleep(0.1)
         ce = models.CultureEvent(title='Cats like Example CE2',
                                  description_plain_text='A culture event happened again',
                                  differences='Last time it was different')
         ce.save()
-        questions = models.QuestionModel(question='Second question',
-                                         asked_by='Tester',
-                                         ce=ce)
+        questions = models.Question(question='Second question',
+                                    asked_by='Tester',
+                                    ce=ce)
         questions.save()
-        visits = models.VisitsModel(date='2019-08-06',
-                                          team_present='Rhett',
-                                          nationals_present='Ulumo',
-                                          ce=ce)
+        visits = models.Visit(date='2019-08-06',
+                              team_present='Rhett',
+                              nationals_present='Ulumo',
+                              ce=ce)
         visits.save()
         time.sleep(0.1)
 
@@ -105,19 +105,19 @@ class QuestionPageTest(TestCase):
                                  description_plain_text='A culture event happened a third time',
                                  differences='Last time it was different')
         ce.save()
-        questions = models.QuestionModel(question='Third question',
-                                         asked_by='Tester',
-                                         ce=ce)
+        questions = models.Question(question='Third question',
+                                    asked_by='Tester',
+                                    ce=ce)
         questions.save()
         time.sleep(0.1)
-        questions = models.QuestionModel(question='Fourth question',
-                                         asked_by='Tester',
-                                         ce=ce)
+        questions = models.Question(question='Fourth question',
+                                    asked_by='Tester',
+                                    ce=ce)
         questions.save()
-        visits = models.VisitsModel(date='2019-08-07',
-                                          team_present='Philip',
-                                          nationals_present='Ulumo',
-                                          ce=ce)
+        visits = models.Visit(date='2019-08-07',
+                              team_present='Philip',
+                              nationals_present='Ulumo',
+                              ce=ce)
         visits.save()
 
 
@@ -127,7 +127,7 @@ class QuestionPageTest(TestCase):
         self.assertTemplateUsed('CE/questions_chron.html')
         self.assertContains(response, 'First question')
         # get a ordered list from .db and then check slice position of each question
-        q = models.QuestionModel.objects.all().order_by('-date_created')
+        q = models.Question.objects.all().order_by('-date_created')
         # check that questions were uploaded in the right order on class initialisation
         self.assertEqual(q[0].question, 'Fourth question', 'Test data not in correct order')
         self.assertEqual(q[1].question, 'Third question', 'Test data not in correct order')
@@ -149,7 +149,7 @@ class QuestionPageTest(TestCase):
         self.assertContains(response, 'An Example CE1')
         self.assertContains(response, 'because I can Example CE3')
         # get a ordered list from .db and then check slice position of each question
-        q = models.QuestionModel.objects.all()
+        q = models.Question.objects.all()
         self.assertEqual(len(q), 4, 'Wrong number of questions')
         set_ces = set([i.ce for i in q])
         set_ces = sorted(set_ces, key=lambda x: x.title.lower())

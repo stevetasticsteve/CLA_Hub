@@ -102,7 +102,7 @@ class CEModelTest(TestCase):
 class TextsModelTest(TestCase):
     def test_string_method(self):
         ce = models.CultureEvent(title='Example CE1')
-        text = models.TextModel(ce=ce, phonetic_text='djaŋɡo', text_title='example text')
+        text = models.Text(ce=ce, phonetic_text='djaŋɡo', text_title='example text')
         self.assertEqual(str(text), 'example text')
 
 

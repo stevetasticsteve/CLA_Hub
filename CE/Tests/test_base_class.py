@@ -83,24 +83,24 @@ class CETestBaseClass(TestCase):
         ce2 = models.CultureEvent(title='CE2')
         ce2.save()
         ce.tags.add(self.test_data['tags'])
-        visit = models.VisitsModel(nationals_present=self.test_data['nationals_present'],
-                                  team_present=self.test_data['team_present'],
-                                  date=self.test_data['date'],
-                                  ce=ce)
+        visit = models.Visit(nationals_present=self.test_data['nationals_present'],
+                             team_present=self.test_data['team_present'],
+                             date=self.test_data['date'],
+                             ce=ce)
         visit.save()
-        text = models.TextModel(ce=ce,
-                                phonetic_text=self.test_data['phonetic_text'],
-                                orthographic_text=self.test_data['orthographic_text'],
-                                valid_for_DA=self.test_data['valid_for_DA'])
+        text = models.Text(ce=ce,
+                           phonetic_text=self.test_data['phonetic_text'],
+                           orthographic_text=self.test_data['orthographic_text'],
+                           valid_for_DA=self.test_data['valid_for_DA'])
         text.save()
-        text = models.TextModel(ce=ce,
-                                phonetic_text='phonetic_text2',
-                                orthographic_text=self.test_data['orthographic_text'],
-                                valid_for_DA=self.test_data['valid_for_DA'])
+        text = models.Text(ce=ce,
+                           phonetic_text='phonetic_text2',
+                           orthographic_text=self.test_data['orthographic_text'],
+                           valid_for_DA=self.test_data['valid_for_DA'])
         text.save()
-        q = models.QuestionModel(ce=ce,
-                                 question=self.test_data['question'],
-                                 answer=self.test_data['answer'])
+        q = models.Question(ce=ce,
+                            question=self.test_data['question'],
+                            answer=self.test_data['answer'])
         q.save()
 
     @staticmethod

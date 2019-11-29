@@ -78,7 +78,7 @@ class NewCEPageTest(CETestBaseClass):
             self.assertRedirects(response, '/CE/3')
             new_ce = models.CultureEvent.objects.get(pk=3)
             self.assertEqual(self.new_post['title'], new_ce.title, 'New CE title not correct')
-            new_pic = models.PictureModel.objects.get(ce=new_ce)
+            new_pic = models.Picture.objects.get(ce=new_ce)
             self.assertEqual('CultureEventFiles/3/images/test_pic1.jpg',
                              str(new_pic.picture), 'New CE not saved to db')
 
@@ -120,7 +120,7 @@ class NewCEPageTest(CETestBaseClass):
             new_ce = models.CultureEvent.objects.get(pk=3)
             self.assertEqual(self.new_post['title'], new_ce.title, 'New CE data incorrect')
             # Test text model updated
-            new_text = models.TextModel.objects.get(ce=new_ce)
+            new_text = models.Text.objects.get(ce=new_ce)
             self.assertEqual('CultureEventFiles/3/audio/test_audio1.mp3',
                              str(new_text.audio), 'New text not saved to db')
             # Test uploaded files in directory
@@ -153,7 +153,7 @@ class NewCEPageTest(CETestBaseClass):
         self.assertEqual(post_data['title'], new_ce.title, 'New CE not saved to db')
 
         # test new text in .db
-        texts = models.TextModel.objects.filter(ce=new_ce)
+        texts = models.Text.objects.filter(ce=new_ce)
         self.assertEqual(len(texts), 1, 'New text not added')
         self.assertEqual(texts[0].orthographic_text, post_data['text-0-orthographic_text'])
         self.assertEqual(texts[0].phonetic_standard, '1', 'Text not marked as unchecked')
@@ -171,7 +171,7 @@ class NewCEPageTest(CETestBaseClass):
         self.assertEqual(post_data['title'], new_ce.title, 'New CE not saved to db')
 
         # check text in .db
-        texts = models.TextModel.objects.filter(ce=new_ce)
+        texts = models.Text.objects.filter(ce=new_ce)
         self.assertEqual(len(texts), 1, 'New text not added')
         self.assertEqual(texts[0].orthographic_text, post_data['text-0-orthographic_text'])
         self.assertEqual(texts[0].phonetic_standard, '1')
@@ -191,7 +191,7 @@ class NewCEPageTest(CETestBaseClass):
         new_ce = models.CultureEvent.objects.get(pk=3)
         self.assertEqual(post_data['title'], new_ce.title, 'New CE not saved to db')
 
-        texts = models.TextModel.objects.filter(ce=new_ce)
+        texts = models.Text.objects.filter(ce=new_ce)
         self.assertEqual(len(texts), 2, 'There aren\'t two texts in the db')
         self.assertEqual(texts[1].phonetic_text, post_data['text-1-phonetic_text'])
         self.assertEqual(texts[0].orthographic_text, post_data['text-0-orthographic_text'])
@@ -210,7 +210,7 @@ class NewCEPageTest(CETestBaseClass):
         self.assertEqual('Test CE', new_ce.title, 'New CE not saved to db')
 
         # test no new text
-        texts = models.TextModel.objects.filter(ce=new_ce)
+        texts = models.Text.objects.filter(ce=new_ce)
         self.assertEqual(len(texts), 0, 'Blank text has been added')
 
     # Questions
@@ -221,7 +221,7 @@ class NewCEPageTest(CETestBaseClass):
         post_data['question-TOTAL_FORMS'] = 1
         response = self.client.post(reverse('CE:new'), post_data)
         self.assertRedirects(response, '/CE/3')
-        q = models.QuestionModel.objects.all()
+        q = models.Question.objects.all()
         self.assertEqual(len(q), 2)
         self.assertEqual(q[1].question, post_data['question-0-question'])
         self.assertEqual(q[1].answer, post_data['question-0-answer'])
@@ -237,7 +237,7 @@ class NewCEPageTest(CETestBaseClass):
 
         # check contents of question in .db
         ce = models.CultureEvent.objects.get(pk=3)
-        q = models.QuestionModel.objects.get(ce=ce)
+        q = models.Question.objects.get(ce=ce)
         self.assertEqual(q.question, post_data['question-0-question'])
         self.assertEqual(q.answer, '')
         self.assertEqual(q.asked_by, 'Tester')
@@ -256,12 +256,12 @@ class NewCEPageTest(CETestBaseClass):
 
         self.assertRedirects(response, '/CE/3')
         # test questions in .db
-        q = models.QuestionModel.objects.all()
+        q = models.Question.objects.all()
         self.assertEqual(len(q), 4)
 
         # test content of questions
         ce = models.CultureEvent.objects.get(pk=3)
-        q = models.QuestionModel.objects.filter(ce=ce)
+        q = models.Question.objects.filter(ce=ce)
         self.assertEqual(len(q), 3)
         for thing in q:
             self.assertTrue(thing.question.startswith('Q'))
@@ -276,7 +276,7 @@ class NewCEPageTest(CETestBaseClass):
         response = self.client.post(reverse('CE:new'), post_data)
 
         self.assertRedirects(response, '/CE/3')
-        q = models.QuestionModel.objects.all()
+        q = models.Question.objects.all()
         self.assertEqual(len(q), 1)
 
     # Tags
@@ -310,7 +310,7 @@ class NewCEPageTest(CETestBaseClass):
         ce = models.CultureEvent.objects.get(pk=3)
 
         # test visits in .db
-        visit = models.VisitsModel.objects.filter(ce=ce)
+        visit = models.Visit.objects.filter(ce=ce)
         self.assertEqual(len(visit), 2)
         self.assertEqual(visit[0].team_present, 'Steve')
         self.assertEqual(visit[1].team_present, 'Rhett')
@@ -325,5 +325,5 @@ class NewCEPageTest(CETestBaseClass):
 
         self.assertRedirects(response, '/CE/3')
         ce = models.CultureEvent.objects.get(pk=3)
-        visit = models.VisitsModel.objects.filter(ce=ce)
+        visit = models.Visit.objects.filter(ce=ce)
         self.assertEqual(len(visit), 0)

@@ -13,7 +13,6 @@ import bleach
 
 
 class CultureEvent(models.Model):
-    '''Docstring here'''
     title = models.CharField(max_length=60, blank=False, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
@@ -90,14 +89,14 @@ class CultureEvent(models.Model):
         return str(self.title)
 
 
-class VisitsModel(models.Model):
+class Visit(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     team_present = models.CharField(blank=True, max_length=60)
     nationals_present = models.CharField(blank=True, max_length=60)
     date = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return str('Participants for ' + str(self.ce))
+        return str(self.ce)
 
 
 # provide file folders to save audio and pictures in using foreign keys
@@ -109,7 +108,7 @@ def audio_folder(instance, filename):
     return '/'.join(['CultureEventFiles', str(instance.ce.id), 'audio', filename])
 
 
-class PictureModel(models.Model):
+class Picture(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     picture = models.ImageField(upload_to=picture_folder, blank=True)
     # blank=True is a fudge. Trying to display multiple models in a single form and it wont'
@@ -129,10 +128,10 @@ class PictureModel(models.Model):
                                             'image/jpeg',
                                              sys.getsizeof(output), None)
 
-        super(PictureModel, self).save()
+        super(Picture, self).save()
 
 
-class TextModel(models.Model):
+class Text(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
     text_title = models.CharField(max_length=50, blank=True)
     audio = models.FileField(upload_to=audio_folder, blank=True)
@@ -159,7 +158,7 @@ class TextModel(models.Model):
         return str(self.text_title)
 
 
-class QuestionModel(models.Model):
+class Question(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     question = models.CharField(max_length=200)
     answer = models.CharField(max_length=200,

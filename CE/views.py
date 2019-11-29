@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.core import exceptions
-from CE.models import CultureEvent, TextModel, PictureModel, VisitsModel, QuestionModel
+from CE.models import CultureEvent, Text, Picture, Visit, Question
 from taggit.models import Tag
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
@@ -11,13 +11,13 @@ from django import forms
 import CE.forms
 import CE.utilities
 
-text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.TextModel,
+text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Text,
                                                 form=CE.forms.TextForm, extra=0)
 
-question_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.QuestionModel,
+question_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Question,
                                                     form=CE.forms.QuestionForm, extra=0)
 
-visits_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.VisitsModel,
+visits_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Visit,
                                                   form=CE.forms.VisitsForm, extra=1)
 
 
@@ -34,10 +34,10 @@ def home_page(request):
 @CE.utilities.conditional_login
 def view(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
-    texts = TextModel.objects.filter(ce=pk)
-    pictures = PictureModel.objects.filter(ce=pk)
-    visits = VisitsModel.objects.filter(ce=ce)
-    questions = QuestionModel.objects.filter(ce=ce)
+    texts = Text.objects.filter(ce=pk)
+    pictures = Picture.objects.filter(ce=pk)
+    visits = Visit.objects.filter(ce=ce)
+    questions = Question.objects.filter(ce=ce)
     tags = ce.tags.all()
     context = {
         'CE' : ce,
@@ -54,9 +54,9 @@ def view(request, pk):
 def view_slug(request, slug):
     ce = get_object_or_404(CultureEvent, slug=slug)
     pk = ce.pk
-    texts = TextModel.objects.filter(ce=pk)
-    pictures = PictureModel.objects.filter(ce=pk)
-    visits = VisitsModel.objects.filter(ce=ce)
+    texts = Text.objects.filter(ce=pk)
+    pictures = Picture.objects.filter(ce=pk)
+    visits = Visit.objects.filter(ce=ce)
     context = {
         'CE' : ce,
         'Texts' : texts,
@@ -75,7 +75,7 @@ def edit(request, pk):
     text_form = text_form_factory(prefix='text', instance=ce)
     question_form = question_form_factory(prefix='question', instance=ce)
     vist_form = visits_form_factory(prefix='visit', instance=ce)
-    current_pics = PictureModel.objects.filter(ce_id=pk)
+    current_pics = Picture.objects.filter(ce_id=pk)
 
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
@@ -168,7 +168,7 @@ def new(request):
 
 @CE.utilities.conditional_login
 def questions_chron(request):
-    questions = QuestionModel.objects.order_by('-date_created')
+    questions = Question.objects.order_by('-date_created')
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,
@@ -179,7 +179,7 @@ def questions_chron(request):
 
 @CE.utilities.conditional_login
 def questions_alph(request):
-    q = QuestionModel.objects.all()
+    q = Question.objects.all()
     set_ces = set([i.ce for i in q])
     set_ces = sorted(set_ces, key=lambda x: x.title.lower())
     context = {
@@ -191,7 +191,7 @@ def questions_alph(request):
 
 @CE.utilities.conditional_login
 def questions_unanswered(request):
-    questions = QuestionModel.objects.filter(answer='').order_by('ce', '-last_modified')
+    questions = Question.objects.filter(answer='').order_by('ce', '-last_modified')
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,
@@ -202,7 +202,7 @@ def questions_unanswered(request):
 
 @CE.utilities.conditional_login
 def questions_recent(request):
-    questions = QuestionModel.objects.all().exclude(answer='').order_by('ce', '-last_modified')
+    questions = Question.objects.all().exclude(answer='').order_by('ce', '-last_modified')
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,

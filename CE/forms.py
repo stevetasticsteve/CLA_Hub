@@ -89,7 +89,7 @@ class CE_EditForm(forms.Form):
                 ce.tags.add(tag)
 
         if self.cleaned_data['picture']:
-            new_pic = CE.models.PictureModel()
+            new_pic = CE.models.Picture()
             new_pic.ce = ce
             new_pic.picture = self.cleaned_data['picture']
             new_pic.save()
@@ -115,7 +115,7 @@ def prepopulated_CE_form(ce):
 
 class TextForm(forms.ModelForm):
     class Meta:
-        model = CE.models.TextModel
+        model = CE.models.Text
         exclude = ('ce', 'DELETE')
 
     def save(self, **kwargs):
@@ -129,11 +129,11 @@ class TextForm(forms.ModelForm):
             pass
 
 
-text_form_set = forms.modelformset_factory(CE.models.TextModel, form=TextForm, extra=0)
+text_form_set = forms.modelformset_factory(CE.models.Text, form=TextForm, extra=0)
 
 
 def text_formset_prepopulated(ce):
-    text_data = CE.models.TextModel.objects.filter(ce=ce)
+    text_data = CE.models.Text.objects.filter(ce=ce)
     text_forms = []
     for data in text_data:
         text_form = text_form_set(initial=[{
@@ -150,7 +150,7 @@ def text_formset_prepopulated(ce):
 
 class QuestionForm(forms.ModelForm):
     class Meta:
-        model = CE.models.QuestionModel
+        model = CE.models.Question
         fields = ('question', 'answer')
 
     def save(self, **kwargs):
@@ -167,7 +167,7 @@ class QuestionForm(forms.ModelForm):
 
 class VisitsForm(forms.ModelForm):
     class Meta:
-        model = CE.models.VisitsModel
+        model = CE.models.Visit
         fields = ('nationals_present', 'team_present', 'date')
 
     def save(self, **kwargs):

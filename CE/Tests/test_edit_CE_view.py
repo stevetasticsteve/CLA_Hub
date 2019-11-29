@@ -12,9 +12,9 @@ class TestEditPage(CETestBaseClass):
     def test_setup(self):
         self.assertEqual(models.CultureEvent.objects.get(pk=1).title, self.test_data['title'])
         self.assertEqual(len(models.CultureEvent.objects.all()), 2)
-        self.assertEqual(len(models.TextModel.objects.all()), 2)
-        self.assertEqual(len(models.VisitsModel.objects.all()), 1)
-        self.assertEqual(len(models.QuestionModel.objects.all()), 1)
+        self.assertEqual(len(models.Text.objects.all()), 2)
+        self.assertEqual(len(models.Visit.objects.all()), 1)
+        self.assertEqual(len(models.Question.objects.all()), 1)
 
     def test_edit_page_GET_response(self):
         response = self.client.get(reverse('CE:edit', args='1'))
@@ -74,7 +74,7 @@ class TestEditPage(CETestBaseClass):
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertRedirects(response, '/CE/1')
-        self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text, 'Changed',
+        self.assertEqual(models.Text.objects.get(pk=1).phonetic_text, 'Changed',
                          'Text 1 not updated on POST')
 
     def test_edit_second_text(self):
@@ -84,7 +84,7 @@ class TestEditPage(CETestBaseClass):
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertRedirects(response, '/CE/1')
-        self.assertEqual(models.TextModel.objects.get(pk=2).phonetic_text, 'Changed',
+        self.assertEqual(models.Text.objects.get(pk=2).phonetic_text, 'Changed',
                          'Text 2 not updated on POST')
 
     def test_edit_both_texts(self):
@@ -94,9 +94,9 @@ class TestEditPage(CETestBaseClass):
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertRedirects(response, '/CE/1')
-        self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text, 'Changed1',
+        self.assertEqual(models.Text.objects.get(pk=1).phonetic_text, 'Changed1',
                          'Text 1 not updated on POST')
-        self.assertEqual(models.TextModel.objects.get(pk=2).phonetic_text, 'Changed2',
+        self.assertEqual(models.Text.objects.get(pk=2).phonetic_text, 'Changed2',
                          'Text 2 not updated on POST')
 
     def test_user_adds_empty_text(self):
@@ -112,13 +112,13 @@ class TestEditPage(CETestBaseClass):
 
         # test there is no extra text in DB
         self.assertRedirects(response, '/CE/1')
-        with self.assertRaises(models.TextModel.DoesNotExist):
-            models.TextModel.objects.get(pk=3)
+        with self.assertRaises(models.Text.DoesNotExist):
+            models.Text.objects.get(pk=3)
 
         # test remaining texts are unchanged
-        self.assertEqual(models.TextModel.objects.get(pk=1).phonetic_text,
+        self.assertEqual(models.Text.objects.get(pk=1).phonetic_text,
                          self.test_data['phonetic_text'])
-        self.assertEqual(models.TextModel.objects.get(pk=2).phonetic_text,
+        self.assertEqual(models.Text.objects.get(pk=2).phonetic_text,
                          'phonetic_text2')
 
     @unittest.skip
@@ -134,8 +134,8 @@ class TestEditPage(CETestBaseClass):
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertRedirects(response, '/CE/1')
-        self.assertEqual(len(models.TextModel.objects.all()), 3)
-        self.assertEqual(models.TextModel.objects.get(pk=3).phonetic_text, 'phonetic_text3')
+        self.assertEqual(len(models.Text.objects.all()), 3)
+        self.assertEqual(models.Text.objects.get(pk=3).phonetic_text, 'phonetic_text3')
 
     def test_user_can_add_audio(self):
         try:
@@ -148,8 +148,8 @@ class TestEditPage(CETestBaseClass):
 
             # test audio in db
             self.assertRedirects(response, '/CE/1')
-            self.assertEqual(len(models.TextModel.objects.all()), 2)
-            self.assertEqual(models.TextModel.objects.get(pk=1).audio,
+            self.assertEqual(len(models.Text.objects.all()), 2)
+            self.assertEqual(models.Text.objects.get(pk=1).audio,
                              'CultureEventFiles/1/audio/test_audio1.mp3')
 
             # test mp3 in uploads
@@ -171,7 +171,7 @@ class TestEditPage(CETestBaseClass):
             os.makedirs(test_folder)
             shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
             # add audio to test text
-            text = models.TextModel.objects.get(pk=1)
+            text = models.Text.objects.get(pk=1)
             text.audio = 'CultureEventFiles/1/audio/test_audio1.mp3'
             text.save()
             with open('CLAHub/assets/test_data/test_audio2.mp3', 'rb') as file:
@@ -183,8 +183,8 @@ class TestEditPage(CETestBaseClass):
 
             # test audio in db
             self.assertRedirects(response, '/CE/1')
-            self.assertEqual(len(models.TextModel.objects.all()), 2)
-            self.assertEqual(models.TextModel.objects.get(pk=1).audio,
+            self.assertEqual(len(models.Text.objects.all()), 2)
+            self.assertEqual(models.Text.objects.get(pk=1).audio,
                              'CultureEventFiles/1/audio/test_audio2.mp3')
 
             # test mp3 in uploads
@@ -211,10 +211,10 @@ class TestEditPage(CETestBaseClass):
         response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
 
         self.assertRedirects(response, '/CE/1')
-        self.assertEqual(len(models.VisitsModel.objects.all()), 1)
-        self.assertEqual(models.VisitsModel.objects.get(pk=1).nationals_present, 'Changed',
+        self.assertEqual(len(models.Visit.objects.all()), 1)
+        self.assertEqual(models.Visit.objects.get(pk=1).nationals_present, 'Changed',
                          'Visit 1 not updated on POST')
-        self.assertEqual(models.VisitsModel.objects.get(pk=1).team_present, 'Changed',
+        self.assertEqual(models.Visit.objects.get(pk=1).team_present, 'Changed',
                          'visit 1 not updated on POST')
-        self.assertEqual(models.VisitsModel.objects.get(pk=1).date, datetime.date(2019, 10, 11),
+        self.assertEqual(models.Visit.objects.get(pk=1).date, datetime.date(2019, 10, 11),
                          'visit 1 not updated on POST')

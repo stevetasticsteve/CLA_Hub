@@ -2,10 +2,13 @@
 
 {% block page_content %}
 <div class="container fluid">
-    <h1>Search results</h1>
+    <h1>Search results for {{search}}</h1>
+    {% if CEs %}
+    {% include 'CE/partial/CE_list.html' %}
+    {% else %}
+    <p>No search results</p>
+    {% endif %}
+</div>
 
-    You searched {{search}}
-
-    </div>
 
 {% endblock %}

@@ -92,5 +92,10 @@ sudo systemctl enable CLAHub
 sudo systemctl start CLAHub
 sudo service apache2 restart
 
+cd to folder
+python manage.py collectstatic
+python manage.py migrate
+python manage.py createsuperuser
+
 
 

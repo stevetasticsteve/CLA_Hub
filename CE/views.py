@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.core import exceptions
 from CE.models import CultureEvent, Text, Picture, Visit, Question
 from taggit.models import Tag
@@ -249,7 +249,10 @@ def tag_list_page(request):
 def search_CE(request):
     template = 'CE/search.html'
     search = request.GET.get('search')
+    results = CultureEvent.objects.filter(Q(title__icontains=search))
+    print(results)
     context = {
-        'search': search
+        'search': search,
+        'CEs': results
     }
     return render(request, template, context)

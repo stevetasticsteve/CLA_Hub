@@ -118,9 +118,10 @@ class Picture(models.Model):
         return 'Picture for ' + str(self.ce)
 
     def save(self):
+        size = 1200, 1200
         im = Image.open(self.picture)
         output = BytesIO()
-        im = im.resize((1200, 900))
+        im.thumbnail(size)
         im.save(output, format='JPEG', quality=90)
         output.seek(0)
         self.picture = InMemoryUploadedFile(output, 'PictureField',

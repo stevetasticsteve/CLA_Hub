@@ -67,7 +67,11 @@ class CE_EditForm(forms.Form):
             'rows': 3
         })
     )
-    picture = forms.ImageField(required=False)
+    picture = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={
+            'class': 'form-control'
+        }))
 
 
     def save(self, request, **kwargs):

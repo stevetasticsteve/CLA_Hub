@@ -9,11 +9,11 @@
         </tr>
     </thead>
     <tbody>
-        {% for occasion in Participants %}
+        {% for occasion in Visits %}
         <tr>
             <td>{{occasion.date}}</td>
-            <td>{{occasion.team_participants}}</td>
-            <td>{{occasion.national_participants}}</td>
+            <td>{{occasion.team_present}}</td>
+            <td>{{occasion.nationals_present}}</td>
         </tr>
         {% endfor %}
     </tbody>

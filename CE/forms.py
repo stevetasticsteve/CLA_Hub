@@ -114,6 +114,14 @@ def prepopulated_CE_form(ce):
 
 
 class TextForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # init method injects 'form-control' in to enable bootstrap styling
+        super(TextForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
     class Meta:
         model = CE.models.Text
         exclude = ('ce', 'DELETE')
@@ -166,9 +174,20 @@ class QuestionForm(forms.ModelForm):
 
 
 class VisitsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # init method injects 'form-control' in to enable bootstrap styling
+        super(VisitsForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
     class Meta:
         model = CE.models.Visit
         fields = ('team_present', 'nationals_present', 'date')
+        widgets = {
+            'date': DateInput()
+        }
 
     def save(self, **kwargs):
         # only save the form if user has entered data. Otherwise default fields will be filled in

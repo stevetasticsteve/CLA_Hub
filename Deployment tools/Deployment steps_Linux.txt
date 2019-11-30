@@ -92,6 +92,8 @@ sudo systemctl enable CLAHub
 sudo systemctl start CLAHub
 sudo service apache2 restart
 
+13. Set up a bash script to take care of updates (see Linux_update.txt)
+
 cd to folder
 python manage.py collectstatic
 python manage.py migrate

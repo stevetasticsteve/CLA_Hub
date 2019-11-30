@@ -1,5 +1,14 @@
 How to update CLAHub on Linux server
 
 cd to CLAHub root directory
-
 git fetch --all && git reset --hard origin/master && sudo systemctl restart CLAHub
+
+Below is a bash script called update_CLAHub. Drop it in /usr/bin and typing update_CLAHub runs the commands
+
+#!/bin/bash
+
+# updates CLAHub
+cd /media/NAS/CLAHub
+git fetch --all &&
+git reset --hard origin/master &&
+sudo systemctl restart CLAHub

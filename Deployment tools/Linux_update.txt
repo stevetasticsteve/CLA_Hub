@@ -1,10 +1,5 @@
 How to update CLAHub on Linux server
 
 cd to CLAHub root directory
-git fetch --all
-git reset --hard origin/master
 
-sudo systemctl daemon-reload
-sudo systemctl enable CLAHub
-sudo systemctl start CLAHub
-sudo service apache2 restart
+git fetch --all && git reset --hard origin/master && sudo systemctl restart CLAHub

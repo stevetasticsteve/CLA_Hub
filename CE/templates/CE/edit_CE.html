@@ -4,12 +4,13 @@
 
 <h1>Edit {{ CE.title }} </h1>
 
-{% include 'CE/partial/CE_form.html' %}
-
-<div class="container container-fluid">
+<div class="container container-fluid bg-light">
     <h3>Current pictures</h3>
     {% for picture in CurrentPics %}
     <img src="{{picture.picture.url}}" alt="CE picture found in database" height="100">
     {% endfor %}
-    {% endblock %}
 </div>
+<hr>
+
+{% include 'CE/partial/CE_form.html' %}
+{% endblock %}

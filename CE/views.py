@@ -105,7 +105,8 @@ def edit(request, pk):
         'VisitForm': vist_form,
         'CurrentPics': current_pics,
         'QuestionForm': question_form,
-        'Errors': errors
+        'Errors': errors,
+        'CE': ce
     }
     return render(request, template, context)
 # todo upload multiple files at once

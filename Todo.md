@@ -9,6 +9,7 @@
 -Mobile friendly
 -Search tags
 -Search texts
+-Paginate texts and tags pages
 -Add date information to texts (even if it's not shown to user)
 -Think of other 'background' information that can be stored that might be helpful for queries
 -Improve navigation - create CE in prominent location
@@ -20,4 +21,9 @@
 -HTML validation rejects non image files for picture uploads - what about audio?
 -Texts page in navbar - page to search and look at texts
 -Bilas 404 and 500 pages
-
+-'Tell me about OCM tags' link on edit page
+-Hardcode in 2 example CEs
+-Hardcode in CLAHubDev admin login
+-All CEs alphabetical page (paginated)
+-Logging
+-Add migrations to bash update script

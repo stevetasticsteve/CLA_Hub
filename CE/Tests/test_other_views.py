@@ -237,3 +237,10 @@ class TagListViewTest(TestCase):
         pos1 = html.find('Culture')
         pos2 = html.find('1-16')
         self.assertGreater(pos2, pos1)
+
+
+class TextViewTest(TestCase):
+    def test_text_home_get_response(self):
+        response = self.client.get(reverse('CE:texts_home'))
+        self.assertEqual(response.status_code, 200, 'Not a 200 response')
+        self.assertTemplateUsed('CE/texts.html')

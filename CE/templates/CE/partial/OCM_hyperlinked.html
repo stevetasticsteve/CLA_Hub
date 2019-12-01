@@ -9,6 +9,8 @@
             {% if sub_category.name in Tags %}
             <ul>
                 <a href="tag/{{sub_category.slug}}">{{sub_category.name}}</a>
+                <!--call the filter method in CE.views to use the subcategory as a dict lookup-->
+                <span class="badge badge-primary badge-pill">{{ Tags|get_item:sub_category.name }}</span>
             </ul>
             {% else %}
             <ul>

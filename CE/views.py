@@ -7,6 +7,7 @@ from taggit.models import Tag
 from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
 from django import forms
+from django.template.defaulttags import register
 
 import CE.forms
 import CE.utilities
@@ -218,7 +219,9 @@ def OCM_home(request):
     # pull up all tags from .db with their frequency
     tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items'))
     # filter it down to just OCM tags
-    tagged_OCM = [tag.name for tag in tags if tag.name in OCM_categories.categories]
+    tagged_OCM = {tag.name: tag.num for tag in tags if tag.name in OCM_categories.categories}
+    print(tagged_OCM)
+    ocm_tags = [tag.name for tag in tags if tag.name in OCM_categories.categories]
 
     context = {
         'OCM': OCM_categories.OCM,
@@ -227,6 +230,13 @@ def OCM_home(request):
     }
 
     return render(request, template, context)
+
+
+@register.filter
+# a filter so that templates can use something in it's loop
+# as a lookup in a dictionary
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 
 @CE.utilities.conditional_login

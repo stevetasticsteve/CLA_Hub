@@ -215,10 +215,17 @@ def questions_recent(request):
 @CE.utilities.conditional_login
 def OCM_home(request):
     template = 'CE/OCM_home.html'
+    # pull up all tags from .db with their frequency
+    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items'))
+    # filter it down to just OCM tags
+    tagged_OCM = [tag.name for tag in tags if tag.name in OCM_categories.categories]
+
     context = {
         'OCM': OCM_categories.OCM,
-        'Sections': OCM_categories.OCM_categories
+        'Sections': OCM_categories.OCM_categories,
+        'Tags': tagged_OCM
     }
+
     return render(request, template, context)
 
 
@@ -247,6 +254,7 @@ def tag_list_page(request):
     return render(request, template, context)
 
 
+@CE.utilities.conditional_login
 def search_CE(request):
     template = 'CE/search.html'
     search = request.GET.get('search')

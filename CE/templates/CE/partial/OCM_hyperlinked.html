@@ -6,9 +6,15 @@
             {% for sub_category_list in OCM %}
             {% if forloop.counter0 == forloop.parentloop.counter0 %}
             {% for sub_category in sub_category_list %}
+            {% if sub_category.name in Tags %}
             <ul>
                 <a href="tag/{{sub_category.slug}}">{{sub_category.name}}</a>
             </ul>
+            {% else %}
+            <ul>
+                <p>{{sub_category.name}}</p>
+            </ul>
+            {% endif %}
             {% endfor %}
             {% endif %}
             {% endfor %}

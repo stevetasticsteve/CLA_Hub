@@ -128,6 +128,14 @@ OCM_sub_categories = [
 ]
 
 
+def _OCM_all_categories():
+    # provides a simple list of all the subcategories
+    categories = []
+    for level1 in OCM_sub_categories:
+        for level2 in level1:
+            categories.append(level2)
+    return categories
+
 def _OCM_slug_dictionary():
     # provides a dictionary where the key 1-1 refers to the value Geography & Weather
     # allows looking up of short codes and matching category titles
@@ -160,6 +168,7 @@ def Generate_OCM():
 
 
 OCM = Generate_OCM()
+categories = _OCM_all_categories()
 
 
 def check_tags_for_OCM(tagstring):

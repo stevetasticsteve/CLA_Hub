@@ -1,7 +1,23 @@
-*Missing features*
+#To do#
 
-Editing or removing uploaded pictures
-User section to see what everyone's worked on
-Export features
-Way to link institutes to realm of reality write up
-People
+-Editing or removing uploaded pictures (Ajax drag and drop?)
+-User section to see what everyone's worked on
+-Export features
+-Way to link institutes to realm of reality write up
+-People
+-Improve search
+-Mobile friendly
+-Search tags
+-Search texts
+-Add date information to texts (even if it's not shown to user)
+-Think of other 'background' information that can be stored that might be helpful for queries
+-Improve navigation - create CE in prominent location
+-User friendliness testing
+-Functional tests
+-Make jumbotron minimal_base.html shorter so it fits on screen
+-Make a 2nd level of user so Auth isn't open to them on the admin site
+-Check audio playback on mobile devices - my phone wouldn't play an upload
+-HTML validation rejects non image files for picture uploads - what about audio?
+-Texts page in navbar - page to search and look at texts
+-Bilas 404 and 500 pages
+

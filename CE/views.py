@@ -220,15 +220,12 @@ def OCM_home(request):
     tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items'))
     # filter it down to just OCM tags
     tagged_OCM = {tag.name: tag.num for tag in tags if tag.name in OCM_categories.categories}
-    print(tagged_OCM)
-    ocm_tags = [tag.name for tag in tags if tag.name in OCM_categories.categories]
 
     context = {
         'OCM': OCM_categories.OCM,
         'Sections': OCM_categories.OCM_categories,
         'Tags': tagged_OCM
     }
-
     return render(request, template, context)
 
 

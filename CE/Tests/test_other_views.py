@@ -168,11 +168,27 @@ class QuestionPageTest(TestCase):
 
 
 class OCMHomePageTest(TestCase):
+    def setUp(self):
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+        tags = OCM_categories.check_tags_for_OCM('1-1, 1-16')
+        for tag in tags:
+            ce.tags.add(tag)
 
     def test_ocm_home_page_displays(self):
         response = self.client.get(reverse('CE:OCM_home'))
         self.assertTemplateUsed('CE/OCM_home.html')
         self.assertEqual(response.status_code, 200, 'OCM Home not displaying')
+
+    def test_hyperlink_and_badge_present_for_tagged(self):
+        response = self.client.get(reverse('CE:OCM_home'))
+        self.assertContains(response, '<a href="tag/1-1-geography-weather">')
+        self.assertContains(response, '<span class="badge badge-primary badge-pill">1</span>')
+
+    def test_hyperlink_and_badge_absent_for_untagged(self):
+        response = self.client.get(reverse('CE:OCM_home'))
+        self.assertNotContains(response, '<a href="tag/1-2-settlements-communities">')
 
 
 class test_tag_summary_page(TestCase):
@@ -199,7 +215,7 @@ class test_tag_summary_page(TestCase):
         self.assertContains(response, 'A first CE')
 
     def test_404_response(self):
-        response = self.client.get(reverse('CE:view_tag', kwargs={'slug': '1-900'}))
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug': '1-2-settlements-and-communities'}))
         self.assertEqual(response.status_code, 404, 'No response')
 
 

@@ -191,7 +191,7 @@ class OCMHomePageTest(TestCase):
         self.assertNotContains(response, '<a href="tag/1-2-settlements-communities">')
 
 
-class test_tag_summary_page(TestCase):
+class TagSummaryPageTest(TestCase):
     def setUp(self):
         ce = models.CultureEvent(title='Example CE1',
                                  description_plain_text='A first CE')
@@ -255,8 +255,60 @@ class TagListViewTest(TestCase):
         self.assertGreater(pos2, pos1)
 
 
-class TextViewTest(TestCase):
+class TextViewAndGenreTest(TestCase):
+    def setUp(self):
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+        self.text1 = models.Text(text_title='Text 1',
+                                 last_modified_by='Tester',
+                                 phonetic_standard='1',
+                                 discourse_type='1',
+                                 orthographic_text='Ortho1',
+                                 ce=ce)
+        self.text1.save()
+        self.text2 = models.Text(text_title='Text 2',
+                                 last_modified_by='Tester',
+                                 phonetic_standard='2',
+                                 discourse_type='2',
+                                 orthographic_text='Ortho2',
+                                 ce=ce)
+        self.text2.save()
+
     def test_text_home_get_response(self):
         response = self.client.get(reverse('CE:texts_home'))
         self.assertEqual(response.status_code, 200, 'Not a 200 response')
         self.assertTemplateUsed('CE/texts.html')
+
+    def test_text_home_contents(self):
+        self.assertEqual(len(models.Text.objects.all()), 2, 'setup not functioning')
+        response = self.client.get(reverse('CE:texts_home'))
+
+        self.assertContains(response, self.text1.orthographic_text)
+        self.assertContains(response, self.text2.orthographic_text)
+        self.assertContains(response, self.text1.ce)
+
+    def test_text_genre_with_data_get_response(self):
+        response = self.client.get(reverse('CE:text_genre', args='1'))
+        self.assertEqual(response.status_code, 200, 'Not a 200 response')
+        self.assertTemplateUsed('CE/texts_genre.html')
+
+    def test_text_genre_with_data_content(self):
+        response = self.client.get(reverse('CE:text_genre', args='1'))
+
+        self.assertContains(response, self.text1.orthographic_text)
+        self.assertNotContains(response, self.text2.orthographic_text)
+
+    def test_text_genre_no_data_get_response(self):
+        response = self.client.get(reverse('CE:text_genre', args='5'))
+        self.assertEqual(response.status_code, 200, 'Not a 200 response')
+        self.assertTemplateUsed('CE/texts_genre.html')
+
+    def test_text_genre_no_data_content(self):
+        response = self.client.get(reverse('CE:text_genre', args='5'))
+
+        self.assertContains(response, 'No texts yet')
+
+    def test_text_genre_outOfRange_response(self):
+        self.client.get(reverse('CE:text_genre', args='9'))
+        self.assertTemplateUsed('404.html')

@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
 {% block page_content %}
-<h1>Texts</h1>
+<div class="container-fluid">
+    <h1>Recently edited texts</h1>
 
-{% include 'CE/partial/text_list.html' %}
+    {% include 'CE/partial/text_list.html' %}
 
-{% endblock %}
+    {% endblock %}
+</div>

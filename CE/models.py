@@ -133,25 +133,27 @@ class Picture(models.Model):
 
 
 class Text(models.Model):
+    genres = [('1', 'Narrative'),
+              ('2', 'Hortatory'),
+              ('3', 'Procedural'),
+              ('4', 'Expository'),
+              ('5', 'Descriptive')]
+    standard = [('1', 'Unchecked'),
+                ('2', 'Double checked by author'),
+                ('3', 'Checked by team mate'),
+                ('4', 'Approved by whole team'),
+                ('5', 'Valid for linguistic analysis')]
     ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
     text_title = models.CharField(max_length=50, blank=True)
     audio = models.FileField(upload_to=audio_folder, blank=True)
     phonetic_text = models.TextField(blank=True)
-    phonetic_standard = models.CharField(choices=[('1', 'Unchecked'),
-                                                  ('2', 'Double checked by author'),
-                                                  ('3', 'Checked by team mate'),
-                                                  ('4', 'Approved by whole team'),
-                                                  ('5', 'Valid for linguistic analysis')],
+    phonetic_standard = models.CharField(choices=standard,
                                          max_length=30,
                                          default='1',
                                          blank=True)
     orthographic_text = models.TextField(blank=True)
     valid_for_DA = models.BooleanField(default=False)
-    discourse_type = models.CharField(choices=[('1', 'Narrative'),
-                                               ('2', 'Hortatory'),
-                                               ('3', 'Procedural'),
-                                               ('4', 'Expository'),
-                                               ('5', 'Descriptive')],
+    discourse_type = models.CharField(choices=genres,
                                       max_length=15,
                                       blank=True)
     date_created = models.DateTimeField(auto_now_add=True)

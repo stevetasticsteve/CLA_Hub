@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
 
 {% block page_content %}
-<h1>{{Genre}} Texts</h1>
+<div class="container-fluid">
+    <h1>{{Genre}} Texts</h1>
+    <p></p>
 
-{% include 'CE/partial/text_list.html' %}
-
-{% endblock %}
+    {% if Texts %}
+    {% include 'CE/partial/text_list.html' %}
+    {% else %}
+    <div class="alert alert-info" role="alert">
+      No texts yet
+    </div>
+    {% endif %}
+    {% endblock %}
+</div>

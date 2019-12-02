@@ -290,6 +290,13 @@ def texts_home(request):
 def text_genre(request, genre):
     template = 'CE/texts_genre.html'
     texts = Text.objects.filter(discourse_type=genre).order_by('-last_modified')
+    # Find the genre that goes to the number
+    # if out of range return 404
+    if int(genre) <= len(Text.genres):
+        genre = Text.genres[int(genre)-1][1]
+    else:
+        return render(request, '404.html')
+
     context = {
         'Texts': texts,
         'Genre': genre

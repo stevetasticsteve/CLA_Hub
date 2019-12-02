@@ -75,21 +75,23 @@ def edit(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
     text_form = text_form_factory(prefix='text', instance=ce)
     question_form = question_form_factory(prefix='question', instance=ce)
-    vist_form = visits_form_factory(prefix='visit', instance=ce)
+    visit_form = visits_form_factory(prefix='visit', instance=ce)
     current_pics = Picture.objects.filter(ce_id=pk)
 
     if request.method == 'POST':
         form = CE.forms.CE_EditForm(request.POST, request.FILES)
         text_form = text_form_factory(request.POST, request.FILES, prefix='text', instance=ce)
         question_form = question_form_factory(request.POST, request.FILES, prefix='question', instance=ce)
-        vist_form = visits_form_factory(request.POST, prefix='visit', instance=ce)
+        visit_form = visits_form_factory(request.POST, prefix='visit', instance=ce)
         if form.is_valid():
             try:
                 form.save(request, instance=ce)
-                if text_form.is_valid():
-                    text_form.save()
-                if vist_form.is_valid():
-                    vist_form.save()
+                # required to loop through formsets when passing kwargs
+                for text in text_form:
+                    if text_form.is_valid():
+                        text.save(request=request)
+                if visit_form.is_valid():
+                    visit_form.save()
                 for question in question_form:
                     if question.is_valid():
                         question.save(request=request)
@@ -103,7 +105,7 @@ def edit(request, pk):
     context = {
         'TextForm': text_form,
         'Form': form,
-        'VisitForm': vist_form,
+        'VisitForm': visit_form,
         'CurrentPics': current_pics,
         'QuestionForm': question_form,
         'Errors': errors,
@@ -135,9 +137,11 @@ def new(request):
 
                 if visit_form.is_valid():
                     visit_form.save()
-                if text_form.is_valid():
-                    text_form.save()
-                for question in question_form: #todo might be able to refactor out this loop
+                    # required to loop through formsets when passing kwargs
+                    for text in text_form:
+                        if text_form.is_valid():
+                            text.save(request=request)
+                for question in question_form:
                     if question.is_valid():
                         question.save(request=request)
 

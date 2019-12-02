@@ -154,6 +154,9 @@ class Text(models.Model):
                                                ('5', 'Descriptive')],
                                       max_length=15,
                                       blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    last_modified_by = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return str(self.text_title)

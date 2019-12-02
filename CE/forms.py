@@ -128,7 +128,7 @@ class TextForm(forms.ModelForm):
 
     class Meta:
         model = CE.models.Text
-        exclude = ('ce', 'DELETE')
+        exclude = ('ce', 'DELETE', 'last_modified_by')
 
     def save(self, **kwargs):
         # only save the form if user has entered data. Otherwise default fields will be filled in
@@ -136,31 +136,22 @@ class TextForm(forms.ModelForm):
         try:
             if self.cleaned_data['phonetic_text'] or self.cleaned_data['orthographic_text']\
             or self.cleaned_data['audio'] or self.cleaned_data['text_title']:
+                # print('kwargs =' + str(kwargs))
+                self.instance.last_modified_by = 'Steve'
                 super(TextForm, self).save()
         except KeyError:
             pass
 
 
-text_form_set = forms.modelformset_factory(CE.models.Text, form=TextForm, extra=0)
-
-
-def text_formset_prepopulated(ce):
-    text_data = CE.models.Text.objects.filter(ce=ce)
-    text_forms = []
-    for data in text_data:
-        text_form = text_form_set(initial=[{
-            'audio': data.audio,
-            'phonetic_text': data.phonetic_text,
-            'orthographic_text': data.orthographic_text,
-            'phonetic_standard': data.phonetic_standard,
-            'valid_for_DA': data.valid_for_DA,
-            'discourse_type': data.discourse_type
-    }], prefix='text')
-        text_forms.append(text_form)
-    return text_forms
-
-
 class QuestionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # init method injects 'form-control' in to enable bootstrap styling
+        super(QuestionForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
     class Meta:
         model = CE.models.Question
         fields = ('question', 'answer')
@@ -170,7 +161,7 @@ class QuestionForm(forms.ModelForm):
         # and an entry made despite no user input
         try:
             if self.cleaned_data['question']:
-                self.instance.last_modified_by= str(kwargs['request'].user)
+                self.instance.last_modified_by = str(kwargs['request'].user)
                 self.instance.asked_by = str(kwargs['request'].user)
                 super(QuestionForm, self).save()
         except KeyError:

@@ -10,7 +10,7 @@ import time
 # test methods that describe their function
 
 
-class CEHomeViewTest(TestCase):
+class CEHomeAndAlphabeticalTest(TestCase):
     def setUp(self):
         self.total_CEs = settings.culture_events_shown_on_home_page + 1
         for i in range(self.total_CEs):
@@ -18,18 +18,33 @@ class CEHomeViewTest(TestCase):
                                       last_modified_by='Tester')
             Ces.save()
 
-    def test_home_page_returns_correct_html(self):
-        # home page should show recently modified CEs
+    def test_home_page_get_response(self):
         response = self.client.get(reverse('CE:home_page'))
+
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('CE/home.html')
+
+    def test_home_page_contents(self):
+        response = self.client.get(reverse('CE:home_page'))
+
         self.assertContains(response, '<!doctype html>') # checks base template used
         self.assertContains(response, 'CE Home')
-        self.assertTemplateUsed('CE/home.html')
         # test CE's loaded
         self.assertContains(response, 'Example culture event 2')
         # test not more loaded than settings allow
         self.assertNotContains(response, 'Example culture event ' + str(self.total_CEs))
         self.assertContains(response, 'by Tester')
+
+    def test_CE_alphabetical_page_response(self):
+        response = self.client.get(reverse('CE:alphabetical'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('CE/alphabetical.html')
+
+    def test_CE_alphabetical_page_contents(self):
+        response = self.client.get(reverse('CE:alphabetical'))
+
+        self.assertEqual(len(response.context['CEs']), self.total_CEs)
 
 
 class TestViewPage(TestCase):

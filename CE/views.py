@@ -280,7 +280,7 @@ def search_CE(request):
 @CE.utilities.conditional_login
 def texts_home(request):
     template = 'CE/texts.html'
-    texts = Text.objects.all()
+    texts = Text.objects.all().order_by('-last_modified')
     context = {
         'Texts': texts
     }

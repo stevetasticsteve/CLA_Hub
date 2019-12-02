@@ -2,9 +2,10 @@
 
 {% for text in Texts %}
 <ul>
-    <div class="card">
-        <h5><a href="{% url 'CE:view' text.ce.pk %}">{{text.text_title}}</a></h5>
-        <h6 class="card-subtitle mb-2 text-muted">Edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
+    <div class="card bg-light">
+        <h3>'{{text.text_title}}' from <a href="{% url 'CE:view' text.ce.pk %}">{{text.ce.title}}</a> CE</h3>
+        <h6 class="card-subtitle mb-2 text-muted">last edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
+        {% include 'CE/partial/text_detail.html' %}
     </div>
 </ul>
 {% endfor %}

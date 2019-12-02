@@ -56,23 +56,11 @@
 {% if Texts %}
     <h3>Texts</h3>
     {% for text in Texts %}
-    <div class="container-fluid border">
-    <h4>{{text.text_title}}</h4>
-    {% if text.audio %}
-    <audio controls> <source src="{{text.audio.url}}"></audio>
-    {% endif %}
-    {% if text.phonetic_text %}
-        <div class="container-fluid">
-            <h4>Phonetic text</h4>
-            <p> {{ text.phonetic_text }}</p>
-            {% endif %}
-            {% if text.orthographic_text %}
-            <h4>Orthographic text</h4>
-            <p> {{ text.orthographic_text }}</p>
-            {% endif %}
-            </div>
+    <div class="card bg-light">
+    <h3>{{text.text_title}} </h3>
+        <h6 class="card-subtitle mb-2 text-muted">last edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
+    {% include 'CE/partial/text_detail.html' %}
     </div>
-    <p></p>
     {% endfor %}
 {% endif %}
 </div>

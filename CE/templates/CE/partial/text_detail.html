@@ -1,0 +1,17 @@
+<div class="container-fluid border bg-white">
+
+    {% if text.audio %}
+    <audio controls> <source src="{{text.audio.url}}"></audio>
+    {% endif %}
+
+        <div class="container-fluid">
+            {% if text.phonetic_text %}
+            <h4>Phonetic text</h4>
+            <p> {{ text.phonetic_text }}</p>
+            {% endif %}
+            {% if text.orthographic_text %}
+            <h4>Orthographic text</h4>
+            <p> {{ text.orthographic_text }}</p>
+            {% endif %}
+            </div>
+    </div>

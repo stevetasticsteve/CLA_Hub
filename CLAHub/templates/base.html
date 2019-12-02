@@ -21,15 +21,26 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="{% url 'CE:home_page' %}">Culture Events <span class="sr-only"></span></a>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="{% url 'CE:home_page' %}" id="CEnavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Culture Events
+        </a>
+        <div class="dropdown-menu" aria-labelledby="CEnavbarDropdown">
+          <a class="dropdown-item" href="{% url 'CE:home_page' %}">Recently edited</a>
+          <a class="dropdown-item" href="{% url 'CE:alphabetical' %}">Alphabetical</a>
+          <a class="dropdown-item" href="{% url 'CE:new' %}">Add a CE</a>
+        </div>
+      </li>
+
       <a class="nav-item nav-link" href="{% url 'CE:questions_chron' %}">Questions <span class="sr-only"></span></a>
       <a class="nav-item nav-link" href="{% url 'CE:OCM_home' %}">OCM <span class="sr-only"></span></a>
 
        <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="{% url 'CE:texts_home' %}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="{% url 'CE:texts_home' %}" id="textDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Texts
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <div class="dropdown-menu" aria-labelledby="textDropdown">
           <a class="dropdown-item" href="{% url 'CE:texts_home' %}">Recently edited</a>
           <a class="dropdown-item" href="{% url 'CE:text_genre' 1 %}">Narrative</a>
           <a class="dropdown-item" href="{% url 'CE:text_genre' 2 %}">Hortatory</a>

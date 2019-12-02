@@ -4,6 +4,7 @@ from CE import views
 app_name = 'CE'
 urlpatterns = [
     path('', views.home_page, name='home_page'),
+    path('alphabetical', views.alphabetical, name='alphabetical'),
     path('<int:pk>/edit', views.edit, name='edit'),
     path('new', views.new, name='new'),
     path('ocm', views.OCM_home, name='OCM_home'),

@@ -8,6 +8,7 @@ from CE.settings import culture_events_shown_on_home_page
 from CE import OCM_categories
 from django import forms
 from django.template.defaulttags import register
+from django.db.models.functions import Lower
 
 import CE.forms
 import CE.utilities
@@ -27,9 +28,18 @@ def home_page(request):
     most_recent_ces = CultureEvent.objects.all().order_by(
         '-last_modified')[:culture_events_shown_on_home_page]
     context = {
-        'CEs' : most_recent_ces
+        'CEs': most_recent_ces
     }
     return render(request, 'CE/home_page.html', context)
+
+
+@CE.utilities.conditional_login
+def alphabetical(request):
+    ces = CultureEvent.objects.all().order_by(Lower('title'))
+    context = {
+        'CEs': ces
+    }
+    return render(request, 'CE/alphabetical.html', context)
 
 
 @CE.utilities.conditional_login

@@ -26,5 +26,4 @@
 -Hardcode in CLAHubDev admin login
 -All CEs alphabetical page (paginated)
 -Logging
--Add migrations to bash update script
 -Remove valid for DA Boolean? Covered by phonetic standard. Expand phonetic standard to include orthography?

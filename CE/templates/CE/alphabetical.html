@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+<div class="container-fluid">
+    {% block page_content %}
+    <h1> Alphabetical list of all CEs</h1>
+    {% include 'CE/partial/CE_list.html' %}
+</div>
+
+{% endblock %}

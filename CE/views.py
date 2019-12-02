@@ -285,3 +285,13 @@ def texts_home(request):
         'Texts': texts
     }
     return render(request, template, context)
+
+@CE.utilities.conditional_login
+def text_genre(request, genre):
+    template = 'CE/texts_genre.html'
+    texts = Text.objects.filter(discourse_type=genre).order_by('-last_modified')
+    context = {
+        'Texts': texts,
+        'Genre': genre
+    }
+    return render(request, template, context)

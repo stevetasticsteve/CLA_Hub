@@ -276,4 +276,8 @@ def search_CE(request):
 @CE.utilities.conditional_login
 def texts_home(request):
     template = 'CE/texts.html'
-    return render(request, template)
+    texts = Text.objects.all()
+    context = {
+        'Texts': texts
+    }
+    return render(request, template, context)

@@ -54,6 +54,17 @@ class NewCEPageTest(CETestBaseClass):
         with self.assertRaises(models.CultureEvent.DoesNotExist):
             models.CultureEvent.objects.get(pk=3)
 
+        # test that it's case insensitive
+        post_data = self.new_post
+        post_data['title'] = models.CultureEvent.objects.get(pk=1).title.lower()
+        response = self.client.post(reverse('CE:new'), post_data)
+        self.assertContains(response, 'CE already exists')
+
+        post_data = self.new_post
+        post_data['title'] = models.CultureEvent.objects.get(pk=1).title.upper()
+        response = self.client.post(reverse('CE:new'), post_data)
+        self.assertContains(response, 'CE already exists')
+
     def test_new_CE_page_invalid_POST_no_title_response(self):
         # Form should be shown again with error message
         # No extra CE should be added to .db

@@ -43,8 +43,8 @@ class CultureEvent(models.Model):
 
     def check_unique_title(self):
         ces = CultureEvent.objects.all()
-        titles = [ce.title for ce in ces if self.pk is not ce.pk]
-        if self.title in titles:
+        titles = [ce.title.lower() for ce in ces if self.pk is not ce.pk]
+        if self.title.lower() in titles:
             raise exceptions.ValidationError('CE already exists', code='invalid')
 
     def find_tag(self):

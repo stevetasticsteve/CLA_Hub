@@ -27,3 +27,5 @@
 -All CEs alphabetical page (paginated)
 -Logging
 -Add migrations to bash update script
+-Remove valid for DA Boolean? Covered by phonetic standard. Expand phonetic standard to include orthography?
+-Make a Genre page for texts. Turn text_details.html genre info into a hyperlink

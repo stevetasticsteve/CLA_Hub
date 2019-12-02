@@ -107,13 +107,12 @@ class CE_EditForm(forms.Form):
 
 def prepopulated_CE_form(ce):
     form = CE_EditForm(initial={
-    'title': ce.title,
-    'tags': ce.tags.all(),
-    'description_plain_text': ce.description_plain_text,
-    'differences': ce.differences,
-    'interpretation': ce.interpretation
-    })
-
+                                'title': ce.title,
+                                'tags': ce.tags.all(),
+                                'description_plain_text': ce.description_plain_text,
+                                'differences': ce.differences,
+                                'interpretation': ce.interpretation
+                                })
     return form
 
 
@@ -136,8 +135,7 @@ class TextForm(forms.ModelForm):
         try:
             if self.cleaned_data['phonetic_text'] or self.cleaned_data['orthographic_text']\
             or self.cleaned_data['audio'] or self.cleaned_data['text_title']:
-                # print('kwargs =' + str(kwargs))
-                self.instance.last_modified_by = 'Steve'
+                self.instance.last_modified_by = str(kwargs['request'].user)
                 super(TextForm, self).save()
         except KeyError:
             pass

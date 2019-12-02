@@ -157,6 +157,7 @@ class NewCEPageTest(CETestBaseClass):
         self.assertEqual(len(texts), 1, 'New text not added')
         self.assertEqual(texts[0].orthographic_text, post_data['text-0-orthographic_text'])
         self.assertEqual(texts[0].phonetic_standard, '1', 'Text not marked as unchecked')
+        self.assertEqual(texts[0].last_modified_by, 'Tester', 'User info not captured')
 
     def test_can_add_single_text(self):
         post_data = self.new_post

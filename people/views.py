@@ -1,10 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core import exceptions
+from django.template.defaulttags import register
+
 
 from people import forms
 from people import models
 
+
+@register.filter
+# a filter so that templates can use something in it's loop
+# as a lookup in a dictionary
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 @login_required
 def people_home(request):
@@ -28,8 +36,9 @@ def alphabetically(request):
 def people_detail(request, pk):
     template = 'people/detail.html'
     person = get_object_or_404(models.Person, pk=pk)
+    # village = person.village.get_FIELDNAME_display
     context = {
-        'person': person
+        'person': person,
     }
     return render(request, template, context)
 

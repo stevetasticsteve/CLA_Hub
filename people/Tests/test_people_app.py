@@ -114,3 +114,5 @@ class NewPersonViewTest(TestCase):
         self.assertEqual(len(models.Person.objects.all()), 2)
         self.assertEqual(models.Person.objects.get(pk=1).name, models.Person.objects.get(pk=2).name)
         self.assertEqual(models.Person.objects.get(pk=1).village, models.Person.objects.get(pk=2).village)
+
+    # todo picture upload and thumbnail tests

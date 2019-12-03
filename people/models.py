@@ -23,8 +23,8 @@ class Person(models.Model):
         ('4', 'Grade 4'),
         ('5', 'Grade 10'),
     ]
-    picture_folder = 'uploads/people/profile_picture'
-    thumbnail_folder = 'uploads/people/thumbnails'
+    picture_folder = 'people/profile_pictures'
+    thumbnail_folder = 'people/thumbnails'
 
     name = models.CharField(max_length=60, blank=False)
     village = models.CharField(max_length=60, blank=False, choices=villages)
@@ -51,8 +51,10 @@ class Person(models.Model):
             thumb.thumbnail(size)
             thumb.save(output, format='JPEG', quality=90)
             output.seek(0)
+            # args = (file, string type repr, name of file, charset, size)
             self.picture = InMemoryUploadedFile(output, 'PictureField',
                                                 "%s.jpg" % self.picture.name.split('.')[0],
+                                                'filename',
                                                 'image/jpeg',
                                                  sys.getsizeof(output), None)
             # save an even smaller thumbnail
@@ -61,8 +63,8 @@ class Person(models.Model):
             thumb.thumbnail(thumbnail_size)
             thumb.save(output, format='JPEG', quality=90)
             output.seek(0)
-            self.thumbnail = InMemoryUploadedFile(output, 'PictureField',
-                                                "%s.jpg" % self.picture.name.split('.')[0],
+            self.thumbnail = InMemoryUploadedFile(output, 'ThumbnailField',
+                                                "%s_thumbnail.jpg" % self.picture.name.split('.')[0],
                                                 'image/jpeg',
                                                 sys.getsizeof(output), None)
 

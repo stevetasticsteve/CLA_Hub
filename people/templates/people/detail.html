@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
 {% block page_content %}
 
-<h1>{{person.name}} Detail</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <img src="{{person.picture.url}}" class="img-thumbnail" alt="profile_pic">
+        </div>
+        <div class="col-8">
+            <h1>{{person.name}}</h1>
+            <ul>
+                <strong>from: </strong>
+                {{ person.get_village_display }}
+            </ul>
 
-<p>Last edited by {{person.last_modified_by}}</p>
+            <p>Last edited by {{person.last_modified_by}}</p>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

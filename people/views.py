@@ -10,6 +10,16 @@ def people_home(request):
     }
     return render(request, template, context)
 
+
+@login_required
+def alphabetically(request):
+    template = 'people/alphabetical.html'
+    context = {
+
+    }
+    return render(request, template, context)
+
+
 @login_required
 def people_detail(request, pk):
     template = 'people/detail.html'

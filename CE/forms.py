@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib import messages
-from django.core import exceptions
 
 import taggit.forms
 import CE.models

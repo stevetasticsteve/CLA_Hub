@@ -104,3 +104,13 @@ class NewPersonViewTest(TestCase):
         self.assertEqual(self.post_data['education'], new_entry.education)
         self.assertEqual(datetime.date, type(new_entry.born))
 
+    def test_same_data_allowed(self):
+        # .db unique constraint not applied as names, and village can be shared
+        post_data = self.post_data
+        post_data['name'] = 'Test person 1'
+        post_data['village'] = '2'
+        self.client.post(reverse('people:new'), post_data)
+
+        self.assertEqual(len(models.Person.objects.all()), 2)
+        self.assertEqual(models.Person.objects.get(pk=1).name, models.Person.objects.get(pk=2).name)
+        self.assertEqual(models.Person.objects.get(pk=1).village, models.Person.objects.get(pk=2).village)

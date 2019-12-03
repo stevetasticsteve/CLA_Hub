@@ -2,6 +2,9 @@ from django import forms
 import people.models
 
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
 class PeopleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # init method injects 'form-control' in to enable bootstrap styling
@@ -13,7 +16,10 @@ class PeopleForm(forms.ModelForm):
 
     class Meta:
         model = people.models.Person
-        exclude = ('DELETE', 'last_modified_by')
+        exclude = ('DELETE', 'last_modified_by', 'thumbnail')
+        widgets = {
+            'born': DateInput()
+        }
 
     def save(self, **kwargs):
         self.instance.asked_by = str(kwargs['request'].user)

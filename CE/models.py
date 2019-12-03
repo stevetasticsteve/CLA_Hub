@@ -118,17 +118,19 @@ class Picture(models.Model):
         return 'Picture for ' + str(self.ce)
 
     def save(self):
-        size = 1200, 1200
-        im = Image.open(self.picture)
-        output = BytesIO()
-        im.thumbnail(size)
-        im.save(output, format='JPEG', quality=90)
-        output.seek(0)
-        self.picture = InMemoryUploadedFile(output, 'PictureField',
-                                            "%s.jpg" % self.picture.name.split('.')[0],
-                                            'image/jpeg',
-                                             sys.getsizeof(output), None)
-
+        # reduce the size of the picture
+        if self.picture:
+            size = 1200, 1200
+            im = Image.open(self.picture)
+            output = BytesIO()
+            im.thumbnail(size)
+            im.save(output, format='JPEG', quality=90)
+            output.seek(0)
+            self.picture = InMemoryUploadedFile(output, 'PictureField',
+                                                "%s.jpg" % self.picture.name.split('.')[0],
+                                                'image/jpeg',
+                                                 sys.getsizeof(output), None)
+        # call the real save function
         super(Picture, self).save()
 
 

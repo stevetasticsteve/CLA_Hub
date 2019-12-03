@@ -14,3 +14,7 @@ class PeopleForm(forms.ModelForm):
     class Meta:
         model = people.models.Person
         exclude = ('DELETE', 'last_modified_by')
+
+    def save(self, **kwargs):
+        self.instance.asked_by = str(kwargs['request'].user)
+        return super(PeopleForm, self).save()

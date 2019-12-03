@@ -23,11 +23,11 @@ class Person(models.Model):
     village = models.CharField(max_length=60, blank=False, choices=villages)
     picture = models.ImageField(upload_to=picture_folder, blank=True)
     clan = models.CharField(max_length=60, blank=True)
-    born = models.DateField(auto_now=False)
+    born = models.DateField(auto_now=False, blank=True, null=True)
 
     medical = models.TextField(blank=True)
     team_contact = models.TextField(blank=True)
-    education = models.CharField(max_length=60, blank=False, choices=education_level)
+    education = models.CharField(max_length=60, blank=True, choices=education_level)
 
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)

@@ -243,6 +243,15 @@ def OCM_home(request):
     return render(request, template, context)
 
 
+@CE.utilities.conditional_login
+def OCM_ref(request):
+    template = 'CE/OCM_ref.html'
+    context = {
+        'OCM': OCM_categories.OCM,
+        'Sections': OCM_categories.OCM_categories,
+    }
+    return render(request, template, context)
+
 @register.filter
 # a filter so that templates can use something in it's loop
 # as a lookup in a dictionary

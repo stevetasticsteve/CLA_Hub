@@ -9,8 +9,20 @@
     {% endif %}
 
     <div class="container-fluid">
-        {{ Form.as_p }}
-        </div>
+<!--        {{ Form.as_p }}-->
+        {% for field in Form %}
+        {% if field.label == 'Tags' %}
+        <span>
+            {{field.label}}
+            <small><a href="{% url 'CE:OCM_ref' %}">Tell me about OCM tags</a></small>
+        </span>
+            <p>{{field}}</p>
+        {% else %}
+        {{field.label}}
+        <p>{{field}}</p>
+        {% endif %}
+        {% endfor %}
+    </div>
     <hr>
 
     <div class="container-fluid">

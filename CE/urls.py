@@ -8,6 +8,7 @@ urlpatterns = [
     path('<int:pk>/edit', views.edit, name='edit'),
     path('new', views.new, name='new'),
     path('ocm', views.OCM_home, name='OCM_home'),
+    path('ocm/reference', views.OCM_ref, name='OCM_ref'),
     path('texts/genre/<int:genre>', views.text_genre, name='text_genre'),
     path('texts', views.texts_home, name='texts_home'),
     path('tag/<slug:slug>', views.tag_detail_page, name='view_tag'),

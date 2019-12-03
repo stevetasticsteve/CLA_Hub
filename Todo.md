@@ -18,7 +18,6 @@
 - Check audio playback on mobile devices -  my phone wouldn't play an upload
 - Form validation for audio files
 - Bilas 404 and 500 pages
-- 'Tell me about OCM tags' link on edit page
 - Hardcode in 2 example CEs (django fixtures or hardcode into migration)
 - Hardcode in CLAHubDev admin login
 - Logging

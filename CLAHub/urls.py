@@ -21,7 +21,8 @@ from . import settings, views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('CE/', include('CE.urls')),
-    path('ror/', include('realmsofreality.urls')), # namespace='CE'
+    path('ror/', include('realmsofreality.urls')),
+    path('people/', include('people.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', views.home, name='home')
 ]

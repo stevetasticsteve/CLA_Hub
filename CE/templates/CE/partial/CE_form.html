@@ -14,7 +14,8 @@
         {% if field.label == 'Tags' %}
         <span>
             {{field.label}}
-            <small><a href="{% url 'CE:OCM_ref' %}">Tell me about OCM tags</a></small>
+            <small><a href="{% url 'CE:OCM_ref' %}"
+                      target="_blank" rek="noopener noreferer">Tell me about OCM tags</a></small>
         </span>
             <p>{{field}}</p>
         {% else %}

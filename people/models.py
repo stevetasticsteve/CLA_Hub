@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Person(models.Model):
     villages = [
         ('1', 'Elilim'),

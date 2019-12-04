@@ -3,27 +3,26 @@
 
 <h1>People living in {{village}}</h1>
 
+{% for person in village_residents %}
+{% if forloop.first %}
 <div class="row">
-    {% for person in village_residents %}
-    <div class="span">
-        <div class="card" style="width: 8rem;">
-            {% if person.thumbnail %}
-            <a href="{% url 'people:detail' person.pk %}">
-                <img src="{{person.thumbnail.url}}" class="img-thumbnail" alt="profile_pic">
-            </a>
-            {% else %}
-            <a href="{% url 'people:detail' person.pk %}">
-                <img src="..." class="img-thumbnail" alt="Missing profile pic">
-            </a>
-            {% endif %}
-            <div class="card-body">
-                <p class="card-text">{{person.name}}</p>
-            </div>
+    {% endif %}
+    <div class="card" style="width: 8rem;">
+        {% if person.thumbnail %}
+        <a href="{% url 'people:detail' person.pk %}">
+            <img src="{{person.thumbnail.url}}" class="img-thumbnail" alt="profile_pic">
+        </a>
+        {% else %}
+        <a href="{% url 'people:detail' person.pk %}">
+            <img src="..." class="img-thumbnail" alt="Missing profile pic">
+        </a>
+        {% endif %}
+        <div class="card-body">
+            <p class="card-text">{{person.name}}</p>
         </div>
     </div>
-{% if forloop.counter|divisibleby:"2" or forloop.last %}
-</div>
-{% endif %}
+    {% if forloop.counter|divisibleby:"6" %} </div><div class="row"> {% endif %}
+    {% if forloop.last %} </div> {% endif %}
 {% endfor %}
 
 {% endblock %}

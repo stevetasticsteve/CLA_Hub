@@ -17,15 +17,33 @@
             <ul>
                 <br>
                 <strong>from: </strong>
-                {{ person.get_village_display }}
+                <a href="{% url 'people:village' person.village %}" >
+                    {{ person.get_village_display }}</a>
             </ul>
             <ul>
+                {% if person.born %}
                 <strong>born: </strong>
                 {{ person.born }}   (age {{age}})
+                {% else %}
+                <strong>born: </strong>Unknown
+                {% endif %}
+            </ul><ul>
+                <strong>clan: </strong>
+                {{ person.clan }}
             </ul>
-
-
+            </ul><ul>
+                <strong>education: </strong>
+                {{ person.get_education_display }}
+            </ul>
         </div>
+    </div>
+    <br>
+    <div class="container">
+        <h4>Notes</h4>
+        {{ person.team_contact }}
+        <br><br>
+        <h4>Medical history</h4>
+        {{ person.medical }}
     </div>
 </div>
 

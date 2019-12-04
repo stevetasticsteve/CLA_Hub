@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core import exceptions
-from django.template.defaulttags import register
 
 import datetime
 
@@ -9,18 +8,27 @@ from people import forms
 from people import models
 
 
-@register.filter
-# a filter so that templates can use something in it's loop
-# as a lookup in a dictionary
-def get_item(dictionary, key):
-    return dictionary.get(key)
-
 @login_required
 def people_home(request):
     template = 'people/home.html'
+
     context = {
 
     }
+    return render(request, template, context)
+
+@login_required
+def village(request, village):
+    template = 'people/village.html'
+    residents = models.Person.objects.filter(village=village)
+    context = {
+        'village_residents': residents,
+    }
+    # pull the villages display name from the model and 404 if out of range
+    try:
+        context['village'] = models.Person.villages[village - 1][1]
+    except IndexError:
+        return render(request, '404.html')
     return render(request, template, context)
 
 

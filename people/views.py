@@ -11,9 +11,13 @@ from people import models
 @login_required
 def people_home(request):
     template = 'people/home.html'
-
+    recently_edited = models.Person.objects.all().order_by(
+        '-last_modified')[:6]
+    villages = dict(models.Person.villages)
+    print(villages)
     context = {
-
+        'recent': recently_edited,
+        'villages': villages
     }
     return render(request, template, context)
 

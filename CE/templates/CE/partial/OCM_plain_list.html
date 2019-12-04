@@ -1,20 +1,23 @@
-<div class="container">
-    <div class="row">
-        <div class="col-6">
-            {% for category in Sections %}
-            <h3>{{category}}</h3>
-            {% for sub_category_list in OCM %}
-            {% if forloop.counter0 == forloop.parentloop.counter0 %}
-            {% for sub_category in sub_category_list %}
-            <ul>
-                <p>{{sub_category.name}}</p>
-            </ul>
-            {% endfor %}
-            {% endif %}
-            {% endfor %}
-            <br>
-            {% endfor %}
-         </div>
+<br>
+{% for category in Sections %}
+{% if forloop.first %}
+<div class="row">
+    <div class="col-sm-3"> {% endif %}
+        <h3>{{category}}</h3>
+        {% for sub_category_list in OCM %}
+        {% if forloop.counter0 == forloop.parentloop.counter0 %}
+        {% for sub_category in sub_category_list %}
+        <ul>
+            <p>{{sub_category.name}}</p>
+        </ul>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    <!--If 2nd column close column and row. Open new column and row-->
+    {% if forloop.counter|divisibleby:"3" %} </div></div><br><div class="row"><div class="col-sm-3">
+    <!--If 1st column close column and open new column -->
+    {% else %}</div><div class="col-sm-3"> {% endif %}
+    {% if forloop.last %} </div> {% endif %}            {% endfor %}
+     </div>
 
-        </div>
-</div>
+    </div>

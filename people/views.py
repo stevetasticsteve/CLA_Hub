@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import exceptions
 from django.template.defaulttags import register
 
+import datetime
 
 from people import forms
 from people import models
@@ -36,9 +37,16 @@ def alphabetically(request):
 def people_detail(request, pk):
     template = 'people/detail.html'
     person = get_object_or_404(models.Person, pk=pk)
-    # village = person.village.get_FIELDNAME_display
+    age = None
+    dob = person.born
+    # since date of birth is an optional field, check it's there
+    if dob:
+        today = datetime.date.today()
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+
     context = {
         'person': person,
+        'age': age
     }
     return render(request, template, context)
 

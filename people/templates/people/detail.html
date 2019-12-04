@@ -1,19 +1,30 @@
 {% extends 'base.html' %}
 {% block page_content %}
-
 <div class="container">
     <div class="row">
         <div class="col-4">
+            {% if person.picture %}
             <img src="{{person.picture.url}}" class="img-thumbnail" alt="profile_pic">
+            {% else %}
+            <br>
+            <img src="..." class="img-thumbnail" alt="Missing profile pic">
+            {% endif %}
         </div>
         <div class="col-8">
             <h1>{{person.name}}</h1>
+            <small>Last edited by {{person.last_modified_by}}</small>
+            <br>
             <ul>
+                <br>
                 <strong>from: </strong>
                 {{ person.get_village_display }}
             </ul>
+            <ul>
+                <strong>born: </strong>
+                {{ person.born }}   (age {{age}})
+            </ul>
 
-            <p>Last edited by {{person.last_modified_by}}</p>
+
         </div>
     </div>
 </div>

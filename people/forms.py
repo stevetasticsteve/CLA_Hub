@@ -22,5 +22,5 @@ class PeopleForm(forms.ModelForm):
         }
 
     def save(self, **kwargs):
-        self.instance.asked_by = str(kwargs['request'].user)
+        self.instance.last_modified_by = str(kwargs['request'].user)
         return super(PeopleForm, self).save()

@@ -1,24 +1,13 @@
 <div class="container-fluid border bg-white">
 
         <div class="container-fluid">
-            <p></p>
+            <br>
 
             {% if text.discourse_type %}
-            {% if text.discourse_type == '1' %}
-            <strong>Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">Narrative</a></strong>
-            {% endif %}
-            {% if text.discourse_type == '2' %}
-            <strong>Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">Hortatory</a></strong>
-            {% endif %}
-            {% if text.discourse_type == '3' %}
-            <strong>Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">Procedural</a></strong>
-            {% endif %}
-            {% if text.discourse_type == '4' %}
-            <strong>Genre:<a href="{% url 'CE:text_genre' text.discourse_type %}"> Expository</a></strong>
-            {% endif %}
-            {% if text.discourse_type == '5' %}
-            <strong>Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">Descriptive</a></strong>
-            {% endif %}
+            <strong>
+                Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">{{text.get_discourse_type_display}}</a>
+                <br>
+            </strong>
             {% endif %}
 
             {% if text.audio %}

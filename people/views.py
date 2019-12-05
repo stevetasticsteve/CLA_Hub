@@ -39,8 +39,10 @@ def village(request, village):
 @login_required
 def alphabetically(request):
     template = 'people/alphabetical.html'
+    people = models.Person.objects.all().order_by(
+        'name')
     context = {
-
+        'People': people
     }
     return render(request, template, context)
 

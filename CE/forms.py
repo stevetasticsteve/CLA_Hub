@@ -127,6 +127,11 @@ class TextForm(forms.ModelForm):
     class Meta:
         model = CE.models.Text
         exclude = ('ce', 'DELETE', 'last_modified_by')
+        widgets = {
+                   'audio': forms.ClearableFileInput(attrs={
+                   'class': 'form-control',
+                   'accept': '.mp3'})
+        }
 
     def save(self, **kwargs):
         # only save the form if user has entered data. Otherwise default fields will be filled in

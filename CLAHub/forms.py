@@ -5,7 +5,7 @@ class ProfileUploadForm(forms.Form):
         required=True,
         label='file',
         widget=forms.ClearableFileInput(attrs={
-            'class': 'form-control'
+            'class': 'form-control',
+            'accept': '.csv'
         })
     )
-    # file = forms.FileField()

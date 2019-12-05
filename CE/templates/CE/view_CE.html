@@ -16,7 +16,9 @@
     </div>
 </div>
 {% for tag in Tags %}
+{% if tag.slug %}
 <a href ="{% url 'CE:view_tag' tag.slug %}" class="{% cycle 'badge badge-primary' 'badge badge-success' 'badge badge-warning' 'badge badge-secondary' 'badge badge-info' 'badge badge-danger' %}">{{tag}}</a>
+{% endif %}
 {% endfor %}
 {% resetcycle %}
 <hr>

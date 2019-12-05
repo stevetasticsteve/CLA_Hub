@@ -9,11 +9,12 @@
 - Search texts
 - Hardcode in 2 example CEs (django fixtures or hardcode into migration)
 - Hardcode in CLAHubDev admin login
+- dialects field to people
+- label and value tags - enables user extensions without coding - users can add their own fields
 
 ## UI improvements
 - Editing or removing uploaded pictures (Ajax drag and drop?)
 - User friendliness testing
-- Mobile friendly
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
 - Check audio playback on mobile devices -  my phone wouldn't play an upload
@@ -28,6 +29,14 @@
 - Make a 2nd level of user so Auth isn't open to them on the admin site
 - Remove valid for DA Boolean? Covered by phonetic standard. Expand phonetic standard to include orthography?
 
+## Bugs
+- CE card in list doesnt' display hyperlinks. The text shown is raw html
+- auto hyperlink defaults to finding the shortest thing it can, you can't refer to similarly worded CEs of shorter length
+- If a CE is titled '3' it clashes with CE pk=3
+- case sensitivity in auto cross linking
+- Tags can potentially produce None as the slug. django.slugify is used on the tag and '==' will become ''
+Added if loops in templates to catch this bug and stop a server error, but the tag will still exit - being
+visible on the tags page but unaccessible as it has no slug.
 
 
 

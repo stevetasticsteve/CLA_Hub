@@ -20,6 +20,7 @@ from . import settings, views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('tools/', views.tools, name='tools'),
     path('CE/', include('CE.urls')),
     path('ror/', include('realmsofreality.urls')),
     path('people/', include('people.urls')),

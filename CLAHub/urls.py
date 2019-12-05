@@ -21,6 +21,7 @@ from . import settings, views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('tools/', views.tools, name='tools'),
+    path('tools/import-profiles', views.import_profiles, name='import_profiles'),
     path('CE/', include('CE.urls')),
     path('ror/', include('realmsofreality.urls')),
     path('people/', include('people.urls')),

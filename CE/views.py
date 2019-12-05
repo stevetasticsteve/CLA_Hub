@@ -137,7 +137,7 @@ def new(request):
     visit_form = visits_form_factory(prefix='visit', instance=None)
 
     if request.method == 'POST':
-        form = CE.forms.CE_EditForm(request.POST, request.FILES)
+        form = CE.forms.CE_EditForm()
         if form.is_valid():
             try:
                 ce = form.save(request)

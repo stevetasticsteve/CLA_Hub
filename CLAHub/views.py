@@ -4,6 +4,7 @@ from django.contrib import messages
 
 
 from CLAHub import forms
+from CLAHub.tools import import_profiles_from_csv
 
 
 def home(request):
@@ -20,7 +21,7 @@ def import_profiles(request):
     if request.method == 'POST':
         form = forms.ProfileUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            print(request.FILES['file'].name) #todo hook up function here
+            import_profiles_from_csv(request.FILES['file'])
             messages.success(request, 'Import successful')
             return redirect('home')
     form = forms.ProfileUploadForm()

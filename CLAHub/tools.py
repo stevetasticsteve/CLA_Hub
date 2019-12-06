@@ -1,6 +1,8 @@
 from people import models
+from CLAHub.base_settings import BASE_DIR
 
 import csv
+import os
 
 
 def import_profiles_from_csv(file_upload):
@@ -13,17 +15,22 @@ def import_profiles_from_csv(file_upload):
         'name': 2
     }
     if data_missing(data):
-        return False
+        return 'missing_data'
     else:
+        villages = models.Person.villages
         for profile in data:
+            # csv file has the value, not the key to villages. Need to loop though and find the
+            # key that matches the value
+            village = ([item[0] for item in villages if item[1] == profile[columns['village']]][0])
             new_profile = models.Person(
-                village=columns['village'],
-                name=columns['name'],
-                picture=columns['picture'],
+                village=village,
+                name=profile[columns['name']],
+                # need to insert CLAHubs install dir before the filename
+                picture=os.path.join(BASE_DIR, 'uploads\import', profile[columns['picture']]),
                 last_modified_by='Batch importer'
             )
             new_profile.save()
-            return True
+        return len(data)
 
 
 

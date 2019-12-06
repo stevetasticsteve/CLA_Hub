@@ -21,9 +21,12 @@ def import_profiles(request):
     if request.method == 'POST':
         form = forms.ProfileUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            if import_profiles_from_csv(request.FILES['file']):
-                messages.success(request, 'Import successful')
+            _import = import_profiles_from_csv(request.FILES['file'])
+            if type(_import) == int:
+                messages.success(request, 'Import successful, %s records imported' %(_import,))
                 return redirect('home')
+            elif _import == 'missing_data':
+                messages.error(request, 'Data is missing, import cancelled')
             else:
                 messages.error(request, 'Import failed')
 

@@ -21,9 +21,12 @@ def import_profiles(request):
     if request.method == 'POST':
         form = forms.ProfileUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            import_profiles_from_csv(request.FILES['file'])
-            messages.success(request, 'Import successful')
-            return redirect('home')
+            if import_profiles_from_csv(request.FILES['file']):
+                messages.success(request, 'Import successful')
+                return redirect('home')
+            else:
+                messages.error(request, 'Import failed')
+
     form = forms.ProfileUploadForm()
     context = {
         'form': form

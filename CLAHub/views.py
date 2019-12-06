@@ -23,10 +23,16 @@ def import_profiles(request):
         if form.is_valid():
             _import = import_profiles_from_csv(request.FILES['file'])
             if type(_import) == int:
-                messages.success(request, 'Import successful, %s records imported' %(_import,))
+                messages.success(request, 'Import successful, %s records imported' % (_import,))
                 return redirect('home')
-            elif _import == 'missing_data':
+            elif _import == 'missing_data_error':
                 messages.error(request, 'Data is missing, import cancelled')
+            elif _import == 'village_spelling_error':
+                messages.error(request, 'Import cancelled, a village name has been spelt incorrectly')
+            elif _import.startswith('missing_file_error'):
+                # get the filename by stripping off the internal error message
+                missing_file = _import.lstrip('missing_file_error')
+                messages.error(request, 'Import cancelled, %s not found in imports folder' % (missing_file,))
             else:
                 messages.error(request, 'Import failed')
 

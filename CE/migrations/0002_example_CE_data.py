@@ -67,6 +67,40 @@ The wet clothes were put in another bucket again and hung up at the washing line
                                 )
     question2.save()
 
+    example_ce_2 = models.CultureEvent(
+        title='Explanation of CLAHub features',
+        last_modified_by='CLAHubDev',
+        description_plain_text='''This area is for describing the Culture Event (CE) in general. The
+         description field should contain objective information (no interpretation, guesses,
+          musings or language learner POV) about the CE.Your
+        team should work together to build a complete page for each CE. The intention of CLAHub is that
+        pages become a snapshot of the team's best information on any given CE. That means there will
+        be a single \'Harvesting Sago\' CE that team members add information to over time. There
+        shouldn\'t be \'Team member A goes fishing\' and \'Team member B goes fishing\' CEs, but
+        rather if team member A creates a Fishing CE, team member B should build on it.
+         
+         Language learning will require that both team member A and team member B both have personalised
+         notes elsewhere. For instance team member A might be working on learning basic vocabulary,
+          but Team member B is further along and is working on learning something else. CLAHub isn\'t 
+          designed to file those notes and they should be kept separately by each language learner so
+          they can learn as productively as possible
+          
+          The description field is unique in CLAHub in that it will automatically create cross
+          references between CEs by simply reading the text. All you need to do to create a link
+          to anther CE is to type it's title. example ce for example.''',
+        interpretation='''Typically a CE has much more going on than what can be documented on
+        a surface level. This field is a place where you can write up implicit information about a 
+        CE. As a language learner you're likely to guess wrong at times and interpret CEs incorrectly,
+        this is why the deescription is to remain objective. This field allows the team to dig deeper,
+        while keeping objective facts separate from the team's understanding of a culture's worldview''',
+        differences='Multiple team members will be contributing to each CE and team members will'
+                    'participate in CEs multiple times. The description field allows the team to write'
+                    'a generalized description of the CE, while the variations field allows team members'
+                    'to include information about times the CE deviated from the regular pattern, or to'
+                    'add specific information from their participation'
+    )
+    example_ce_2.save()
+
 class Migration(migrations.Migration):
     dependencies = [
         ('CE', '0001_initial'),

@@ -30,7 +30,6 @@
 - Remove valid for DA Boolean? Covered by phonetic standard. Expand phonetic standard to include orthography?
 
 ## Bugs
-- CE card in list doesnt' display hyperlinks. The text shown is raw html
 - auto hyperlink defaults to finding the shortest thing it can, you can't refer to similarly worded CEs of shorter length
 - If a CE is titled '3' it clashes with CE pk=3
 - case sensitivity in auto cross linking

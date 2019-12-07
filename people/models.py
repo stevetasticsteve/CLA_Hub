@@ -1,10 +1,6 @@
 from django.db import models
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from CLAHub import tools
 
-from PIL import Image
-from io import BytesIO
-
-import sys
 
 class Person(models.Model):
     villages = [
@@ -42,32 +38,11 @@ class Person(models.Model):
     thumbnail = models.ImageField(upload_to=thumbnail_folder, blank=True)
 
     def save(self):
-        '''Custom save method that compresses pictures so they are under 500kb'''
         if self.picture:
-            size = 1200, 1200
-            thumb = Image.open(self.picture)
-            thumb = thumb.copy()
-            output = BytesIO()
-            thumb.thumbnail(size)
-            thumb.save(output, format='JPEG', quality=90)
-            output.seek(0)
-            # args = (file, string type repr, name of file, charset, size)
-            self.picture = InMemoryUploadedFile(output, 'PictureField',
-                                                "%s.jpg" % self.picture.name.split('.')[0],
-                                                'filename',
-                                                'image/jpeg',
-                                                 sys.getsizeof(output), None)
+            thumbnail = self.picture
+            self.picture = tools.compress_picture(self.picture, (1200, 1200))
             # save an even smaller thumbnail
-            thumbnail_size = 300, 300
-            output = BytesIO()
-            thumb.thumbnail(thumbnail_size)
-            thumb.save(output, format='JPEG', quality=90)
-            output.seek(0)
-            self.thumbnail = InMemoryUploadedFile(output, 'ThumbnailField',
-                                                "%s_thumbnail.jpg" % self.picture.name.split('.')[0],
-                                                'image/jpeg',
-                                                sys.getsizeof(output), None)
-
+            self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
         super(Person, self).save()
 
     def __str__(self):

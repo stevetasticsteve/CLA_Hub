@@ -1,8 +1,12 @@
 from people import models
 from CLAHub.base_settings import BASE_DIR
+from PIL import Image, ExifTags, ImageOps
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 import csv
 import os
+import sys
 
 
 def import_profiles_from_csv(file_upload):
@@ -41,6 +45,7 @@ def import_profiles_from_csv(file_upload):
             # todo clean up imports folder
             # todo write instructions into template
             # todo add other if conditions: if encoding error
+            # todo write tests
         return len(data)
 
 
@@ -62,3 +67,18 @@ def check_csv(csv_data, columns):
             return 'missing_file_error%s' % (profile[columns['picture']],)
 
     return 'ok'
+
+def compress_picture(picture, compressed_size):
+    im = Image.open(picture)
+    # get correct orientation
+    im = ImageOps.exif_transpose(im)
+
+    output = BytesIO()
+    im.thumbnail(compressed_size)
+    im.save(output, format='JPEG', quality=90)
+    output.seek(0)
+    picture = InMemoryUploadedFile(output, 'PictureField',
+                                        "%s.jpg" % picture.name.split('.')[0],
+                                        'image/jpeg',
+                                        sys.getsizeof(output), None)
+    return picture

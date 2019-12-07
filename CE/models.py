@@ -1,15 +1,13 @@
 from django.db import models
 from django.utils.text import slugify
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core import exceptions
 from taggit.managers import TaggableManager
-from PIL import Image
-from io import BytesIO
 
 import CE.settings
-import sys
 import re
 import bleach
+
+from CLAHub import tools
 
 
 class CultureEvent(models.Model):
@@ -118,19 +116,8 @@ class Picture(models.Model):
         return 'Picture for ' + str(self.ce)
 
     def save(self):
-        # reduce the size of the picture
         if self.picture:
-            size = 1200, 1200
-            im = Image.open(self.picture)
-            output = BytesIO()
-            im.thumbnail(size)
-            im.save(output, format='JPEG', quality=90)
-            output.seek(0)
-            self.picture = InMemoryUploadedFile(output, 'PictureField',
-                                                "%s.jpg" % self.picture.name.split('.')[0],
-                                                'image/jpeg',
-                                                 sys.getsizeof(output), None)
-        # call the real save function
+            self.picture = tools.compress_picture(self.picture, (1200, 1200))
         super(Picture, self).save()
 
 

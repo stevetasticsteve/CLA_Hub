@@ -10,6 +10,7 @@
 - dialects field to people
 - label and value tags - enables user extensions without coding - users can add their own fields
 - tests for people app and imports
+- add people to admin interface
 
 ## UI improvements
 - Editing or removing uploaded pictures (Ajax drag and drop?)

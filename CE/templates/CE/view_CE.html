@@ -13,19 +13,23 @@
             <a href="{% url 'CE:edit' CE.pk %}" class="btn btn-info">Click here to edit</a>
         </div>
     </div>
+    {% for tag in Tags %}
+    {% if tag.slug %}
+    <a href ="{% url 'CE:view_tag' tag.slug %}" class="{% cycle 'badge badge-primary' 'badge badge-success' 'badge badge-warning' 'badge badge-secondary' 'badge badge-info' 'badge badge-danger' %}">{{tag}}</a>
+    {% endif %}
+    {% endfor %}
+    {% resetcycle %}
+    <hr>
 </div>
-{% for tag in Tags %}
-{% if tag.slug %}
-<a href ="{% url 'CE:view_tag' tag.slug %}" class="{% cycle 'badge badge-primary' 'badge badge-success' 'badge badge-warning' 'badge badge-secondary' 'badge badge-info' 'badge badge-danger' %}">{{tag}}</a>
-{% endif %}
-{% endfor %}
-{% resetcycle %}
-<hr>
 
 <!--Body-->
 <div class="container-fluid">
     <div class="row">
+        {% if Pics %}
         <div class="col-sm-8">
+        {% else %}
+        <div class = col-sm-12>
+        {% endif %}
             {% include 'CE/partial/visits_table.html' %}
 
             <div class="container-fluid bg-light">
@@ -39,16 +43,12 @@
                 {% endif %}
             </div>
             {% if CE.differences %}
-            <div class="container-fluid">
-                <h3>Variation</h3>
-                <p> {{ CE.differences }}</p>
-            </div>
+            <h3>Variation</h3>
+            <p> {{ CE.differences }}</p>
             {% endif %}
-            <div class="container-fluid">
-                {% if CE.interpretation %}
-                <h3>Interpretation</h3>
-                <p> {{ CE.interpretation }}</p>
-            </div>
+            {% if CE.interpretation %}
+            <h3>Interpretation</h3>
+            <p> {{ CE.interpretation }}</p>
             </div>
             {% endif %}
         <div class="col-sm-4">
@@ -58,25 +58,19 @@
         </div>
     </div>
 
-
-    <div class="container-fluid">
     {% if Texts %}
-        <h3>Texts</h3>
-        {% for text in Texts %}
-        <div class="card bg-light">
-        <h3>{{text.text_title}} </h3>
-            <h6 class="card-subtitle mb-2 text-muted">last edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
+    <h3>Texts</h3>
+    {% for text in Texts %}
+    <div class="card bg-light">
+        <h5>{{text.text_title}} </h5>
+        <h6 class="card-subtitle mb-2 text-muted">last edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
         {% include 'CE/partial/text_detail.html' %}
-        </div>
-        {% endfor %}
-    {% endif %}
     </div>
+    {% endfor %}
+    {% endif %}
 
-    <div class="container-fluid">
-        {% if Questions %}
-        <p></p>
-        <h3>Questions</h3>
-
+    {% if Questions %}
+    <h3>Questions</h3>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -89,13 +83,12 @@
         <tbody>
         {% for q in Questions %}
         <td>{{q.question}}</td>
-        <td>{{q.asked_by}} on {{q.date_created}}</td>
+        <td>{{q.asked_by}} <on></on> {{q.date_created}}</td>
         <td>{{q.answer}}</td>
         <td>{{q.answered_by}}</td>
         {% endfor %}
         </tbody>
     </table>
-    </div>
     {% endif %}
     </div>
 

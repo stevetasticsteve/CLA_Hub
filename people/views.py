@@ -14,7 +14,6 @@ def people_home(request):
     recently_edited = models.Person.objects.all().order_by(
         '-last_modified')[:6]
     villages = dict(models.Person.villages)
-    print(villages)
     context = {
         'recent': recently_edited,
         'villages': villages
@@ -82,6 +81,30 @@ def new(request):
     # GET request
     if not errors:  # don't overwrite the user's failed form
         form = forms.PeopleForm()
+
+    context = {
+        'Form': form,
+        'Errors': errors
+    }
+    return render(request, template, context)
+
+@login_required
+def edit(request, pk):
+    template = 'people/edit.html'
+    person = get_object_or_404(models.Person, pk=pk)
+    errors = None
+
+    if request.method == 'POST':
+        form = forms.PeopleForm(request.POST, request.FILES, instance=person)
+        if form.is_valid():
+            try:
+                form.save(request=request)
+                return redirect('people:detail', pk=pk)
+            except exceptions.ValidationError as e:
+                errors = e
+
+    if not errors:
+        form = forms.PeopleForm(instance=person)
 
     context = {
         'Form': form,

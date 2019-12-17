@@ -39,10 +39,12 @@ class Person(models.Model):
 
     def save(self):
         if self.picture:
-            thumbnail = self.picture
-            self.picture = tools.compress_picture(self.picture, (1200, 1200))
-            # save an even smaller thumbnail
-            self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
+            # don't re-upload a picture that hasn't changed
+            if self.picture != Person.objects.get(pk=self.pk).picture:
+                thumbnail = self.picture
+                self.picture = tools.compress_picture(self.picture, (1200, 1200))
+                # save an even smaller thumbnail
+                self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
         super(Person, self).save()
 
     def __str__(self):

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block page_content %}
 <div class="container">
+    <a href="{% url 'people:edit' person.pk %}">Edit</a>
     <div class="row">
         <div class="col-4">
             {% if person.picture %}

@@ -12,8 +12,8 @@ import time
 
 class CEHomeAndAlphabeticalTest(TestCase):
     def setUp(self):
-        self.total_CEs = settings.culture_events_shown_on_home_page + 1
-        for i in range(self.total_CEs):
+        self.total_CEs = settings.culture_events_shown_on_home_page + 3
+        for i in range(settings.culture_events_shown_on_home_page + 1):
             Ces = models.CultureEvent(title=('Example culture event ' + str(i)),
                                       last_modified_by='Tester')
             Ces.save()
@@ -53,7 +53,7 @@ class TestViewPage(TestCase):
                                  description_plain_text='A culture event happened',
                                  differences='Last time it was different')
         ce.save()
-        text = models.Text(ce=models.CultureEvent.objects.get(pk=1),
+        text = models.Text(ce=models.CultureEvent.objects.get(pk=3),
                            audio='musicFile.ogg',
                            phonetic_text='foᵘnɛtɪks',
                            orthographic_text='orthographic',
@@ -62,7 +62,7 @@ class TestViewPage(TestCase):
 
     def test_view_page(self):
         # should return Example CE 1 page
-        response = self.client.get(reverse('CE:view', args='1'))
+        response = self.client.get(reverse('CE:view', args='3'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('CE/view_CE.html')
         self.assertContains(response, 'Example CE1')
@@ -71,7 +71,7 @@ class TestViewPage(TestCase):
 
     def test_404(self):
         # test an out of range index
-        response = self.client.get(reverse('CE:view', args='2'))
+        response = self.client.get(reverse('CE:view', args='9'))
         self.assertEqual(response.status_code, 404)
 
 
@@ -165,10 +165,10 @@ class QuestionPageTest(TestCase):
         self.assertContains(response, 'because I can Example CE3')
         # get a ordered list from .db and then check slice position of each question
         q = models.Question.objects.all()
-        self.assertEqual(len(q), 4, 'Wrong number of questions')
+        self.assertEqual(len(q), 6, 'Wrong number of questions')
         set_ces = set([i.ce for i in q])
         set_ces = sorted(set_ces, key=lambda x: x.title.lower())
-        self.assertEqual(len(set_ces), 3, 'Wrong number of unique CEs')
+        self.assertEqual(len(set_ces), 4, 'Wrong number of unique CEs')
         # check that questions were uploaded in the right order on class initialisation
         self.assertEqual(set_ces[0].title, 'An Example CE1', 'Test data not in correct order')
         self.assertEqual(set_ces[1].title, 'because I can Example CE3', 'Test data not in correct order')
@@ -296,7 +296,7 @@ class TextViewAndGenreTest(TestCase):
         self.assertTemplateUsed('CE/texts.html')
 
     def test_text_home_contents(self):
-        self.assertEqual(len(models.Text.objects.all()), 2, 'setup not functioning')
+        self.assertEqual(len(models.Text.objects.all()), 3, 'setup not functioning')
         response = self.client.get(reverse('CE:texts_home'))
 
         self.assertContains(response, self.text1.orthographic_text)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block page_content %}
-
+<!-- Header-->
 <div class="container-fluid">
     <div class="row">
         <div class="col-5">
@@ -12,7 +12,6 @@
             <p></p>
             <a href="{% url 'CE:edit' CE.pk %}" class="btn btn-info">Click here to edit</a>
         </div>
-
     </div>
 </div>
 {% for tag in Tags %}
@@ -23,77 +22,83 @@
 {% resetcycle %}
 <hr>
 
-
-{% include 'CE/partial/visits_table.html' %}
-
-<div class="container-fluid bg-light">
-<h3>Description</h3>
-    {% if not CE.description %}
-    <p>No description, why don't you add something?</p>
-    {% else %}
-{% autoescape off %}
-<p>{{ CE.description }}</p>
-{% endautoescape %}
-{% endif %}
-</div>
-{% if CE.differences %}
+<!--Body-->
 <div class="container-fluid">
-<h3>Variation</h3>
-<p> {{ CE.differences }}</p>
-</div>
-{% endif %}
-<div class="container-fluid">
-{% if CE.interpretation %}
-<h3>Interpretation</h3>
-<p> {{ CE.interpretation }}</p>
-</div>
-</div>
-{% endif %}
+    <div class="row">
+        <div class="col-sm-8">
+            {% include 'CE/partial/visits_table.html' %}
 
-{% if Pics %}
-{% include 'CE/partial/bootstrap_carousel.html' %}
-{% endif %}
-
-<div class="container-fluid">
-{% if Texts %}
-    <h3>Texts</h3>
-    {% for text in Texts %}
-    <div class="card bg-light">
-    <h3>{{text.text_title}} </h3>
-        <h6 class="card-subtitle mb-2 text-muted">last edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
-    {% include 'CE/partial/text_detail.html' %}
+            <div class="container-fluid bg-light">
+                <h3>Description</h3>
+                {% if not CE.description %}
+                <p>No description, why don't you add something?</p>
+                {% else %}
+                {% autoescape off %}
+                <p>{{ CE.description }}</p>
+                {% endautoescape %}
+                {% endif %}
+            </div>
+            {% if CE.differences %}
+            <div class="container-fluid">
+                <h3>Variation</h3>
+                <p> {{ CE.differences }}</p>
+            </div>
+            {% endif %}
+            <div class="container-fluid">
+                {% if CE.interpretation %}
+                <h3>Interpretation</h3>
+                <p> {{ CE.interpretation }}</p>
+            </div>
+            </div>
+            {% endif %}
+        <div class="col-sm-4">
+            {% if Pics %}
+            {% include 'CE/partial/bootstrap_carousel.html' %}
+            {% endif %}
+        </div>
     </div>
-    {% endfor %}
-{% endif %}
-</div>
 
-<div class="container-fluid">
-    {% if Questions %}
-    <p></p>
-    <h3>Questions</h3>
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th scope="col">Question</th>
-        <th scope="col">Asked by</th>
-        <th scope="col">Answer</th>
-        <th scope="col">Answered by</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for q in Questions %}
-    <td>{{q.question}}</td>
-    <td>{{q.asked_by}} on {{q.date_created}}</td>
-    <td>{{q.answer}}</td>
-    <td>{{q.answered_by}}</td>
-    {% endfor %}
-    </tbody>
-</table>
-</div>
-{% endif %}
-</div>
+    <div class="container-fluid">
+    {% if Texts %}
+        <h3>Texts</h3>
+        {% for text in Texts %}
+        <div class="card bg-light">
+        <h3>{{text.text_title}} </h3>
+            <h6 class="card-subtitle mb-2 text-muted">last edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
+        {% include 'CE/partial/text_detail.html' %}
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
 
-<p></p>
+    <div class="container-fluid">
+        {% if Questions %}
+        <p></p>
+        <h3>Questions</h3>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Question</th>
+            <th scope="col">Asked by</th>
+            <th scope="col">Answer</th>
+            <th scope="col">Answered by</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for q in Questions %}
+        <td>{{q.question}}</td>
+        <td>{{q.asked_by}} on {{q.date_created}}</td>
+        <td>{{q.answer}}</td>
+        <td>{{q.answered_by}}</td>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
+    </div>
+
+</div>
 
 {% endblock %}

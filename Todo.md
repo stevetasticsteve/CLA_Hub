@@ -4,13 +4,12 @@
 - User section to see what everyone's worked on
 - Export features
 - Way to link institutes to realm of reality write up
-- People
 - Search tags
 - Search texts
-- Hardcode in 2 example CEs (django fixtures or hardcode into migration)
 - Hardcode in CLAHubDev admin login
 - dialects field to people
 - label and value tags - enables user extensions without coding - users can add their own fields
+- tests for people app and imports
 
 ## UI improvements
 - Editing or removing uploaded pictures (Ajax drag and drop?)
@@ -36,6 +35,8 @@
 - Tags can potentially produce None as the slug. django.slugify is used on the tag and '==' will become ''
 Added if loops in templates to catch this bug and stop a server error, but the tag will still exit - being
 visible on the tags page but unaccessible as it has no slug.
+
+- Edit tests not working now there is example data
 
 
 

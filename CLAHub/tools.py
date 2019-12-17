@@ -29,7 +29,7 @@ def import_profiles_from_csv(file_upload):
 
     else:
         for profile in data:
-            picture = os.path.join(BASE_DIR, 'uploads\import', profile[columns['picture']])
+            picture = os.path.join(BASE_DIR, 'uploads', 'import', profile[columns['picture']])
             villages = models.Person.villages
             village = ([item[0] for item in villages if item[1] == profile[columns['village']]][0])
             new_profile = models.Person(
@@ -62,7 +62,7 @@ def check_csv(csv_data, columns):
         except IndexError:
             return 'village_spelling_error'
 
-        pic_exists = os.path.exists(os.path.join(BASE_DIR, 'uploads\import', profile[columns['picture']]))
+        pic_exists = os.path.exists(os.path.join(BASE_DIR, 'uploads', 'import', profile[columns['picture']]))
         if not pic_exists:
             return 'missing_file_error%s' % (profile[columns['picture']],)
 
@@ -71,7 +71,11 @@ def check_csv(csv_data, columns):
 def compress_picture(picture, compressed_size):
     im = Image.open(picture)
     # get correct orientation
-    im = ImageOps.exif_transpose(im)
+    # PIL has an error, skip operation if error arises
+    try:
+        im = ImageOps.exif_transpose(im)
+    except TypeError:
+        pass
 
     output = BytesIO()
     im.thumbnail(compressed_size)

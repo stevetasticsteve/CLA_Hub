@@ -48,4 +48,4 @@ class Person(models.Model):
         super(Person, self).save()
 
     def __str__(self):
-        return self.name + '- ' + self.village
+        return self.name + '- ' + Person.villages[int(self.village) - 1][1]

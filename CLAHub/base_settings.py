@@ -101,7 +101,6 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'CLAHub/assets'),)
 STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
@@ -118,4 +117,37 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+                    }
+    },
+
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'Logs', 'debug_log.txt'),
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'simple'
+        }
+    },
+
+    'loggers': {
+        'CLAHub': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+            'formatter': 'simple'
+        },
+    },
 }

@@ -1,6 +1,6 @@
 from people import models
 from CLAHub.base_settings import BASE_DIR
-from PIL import Image, ExifTags, ImageOps
+from PIL import Image, ImageOps
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -40,8 +40,6 @@ def import_profiles_from_csv(file_upload):
                 last_modified_by='Batch importer'
             )
             new_profile.save()
-
-
             # todo clean up imports folder
             # todo write instructions into template
             # todo add other if conditions: if encoding error

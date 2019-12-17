@@ -5,9 +5,13 @@ from django.contrib import messages
 
 from CLAHub import forms
 from CLAHub.tools import import_profiles_from_csv
+import logging
+
+logger = logging.getLogger('CLAHub')
 
 
 def home(request):
+    logger.info('Home page called')
     return render(request, 'CLAHub_home.html')
 
 

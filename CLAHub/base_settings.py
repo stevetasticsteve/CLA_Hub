@@ -125,29 +125,45 @@ LOGGING = {
 
     'formatters': {
         'simple': {
+            'format': '%(message)s'
+                    },
+        'complex': {
             'format': '%(levelname)s %(asctime)s %(message)s'
-                    }
+        }
     },
 
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'Logs', 'debug_log.txt'),
+            'filename': os.path.join(BASE_DIR, 'Logs', 'CLAHub_log.txt'),
+            'formatter': 'complex'
         },
         'console': {
             'class': 'logging.StreamHandler',
             'level': 'DEBUG',
+            'formatter': 'simple'
+        },
+        'debug_log': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'Logs', 'debug_log.txt'),
             'formatter': 'simple'
         }
     },
 
     'loggers': {
         'CLAHub': {
-            'handlers': ['console', 'file'],
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+            'formatter': 'complex'
+        },
+        'debug': {
+            'handlers': ['console', 'debug_log'],
             'level': 'DEBUG',
             'propagate': True,
             'formatter': 'simple'
-        },
+        }
     },
 }

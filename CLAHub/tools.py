@@ -7,9 +7,12 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import csv
 import os
 import sys
+import logging
 
+logger = logging.getLogger('debug')
 
 def import_profiles_from_csv(file_upload):
+    logger.info('import_profiles_from_csv initiated')
     file = file_upload.read().decode('utf-8').splitlines()
     csv_data = csv.reader(file)
     data = [profile for profile in csv_data]
@@ -21,14 +24,19 @@ def import_profiles_from_csv(file_upload):
 
     check = check_csv(data, columns)
     if check == 'missing_data_error':
+        logger.error('No data imported, data seems to be blank or missing')
         return check
     elif check == 'village_spelling_error':
+        logger.error('No data imported, village mentioned is not an option')
         return check
     elif check.startswith('missing_file_error'):
+        logger.error('No data imported, %s not found in import folder') % \
+        (check.lstrip('missing_file_error'),)
         return check
 
     else:
-        for profile in data:
+        logger.info('All data cleared for import')
+        for i, profile in enumerate(data, 1):
             picture = os.path.join(BASE_DIR, 'uploads', 'import', profile[columns['picture']])
             villages = models.Person.villages
             village = ([item[0] for item in villages if item[1] == profile[columns['village']]][0])
@@ -40,15 +48,20 @@ def import_profiles_from_csv(file_upload):
                 last_modified_by='Batch importer'
             )
             new_profile.save()
+            logger.info('Saved profile %s of %s' % (i, len(data)))
             # todo clean up imports folder
             # todo write instructions into template
             # todo add other if conditions: if encoding error
             # todo write tests
+        logger.info('import_profiles_from_csv_finished %s profiles created\n\n' % len(data))
         return len(data)
 
 
 def check_csv(csv_data, columns):
-    for profile in csv_data:
+    logger.info('Checking integrity of .csv file')
+    logger.debug('%s rows of data in .csv' % len(csv_data))
+    for i, profile in enumerate(csv_data, 1):
+        logger.debug('checking row %s' % i)
         for column in csv_data:
             if '' in column:
                 return 'missing_data_error'
@@ -59,20 +72,27 @@ def check_csv(csv_data, columns):
             village = ([item[0] for item in villages if item[1] == profile[columns['village']]][0])
         except IndexError:
             return 'village_spelling_error'
-
-        pic_exists = os.path.exists(os.path.join(BASE_DIR, 'uploads', 'import', profile[columns['picture']]))
+        pic_path = os.path.join(BASE_DIR, 'uploads', 'import', profile[columns['picture']])
+        pic_exists = os.path.exists(pic_path)
         if not pic_exists:
-            return 'missing_file_error%s' % (profile[columns['picture']],)
+            return 'missing_file_error%s' % profile[columns['picture']]
+        logger.debug('Filename: %s' % pic_path)
+        logger.debug('Name: %s' % profile[columns['name']])
+        logger.debug('village: %s' % profile[columns['village']])
+        logger.debug('Row %s ok\n' % i)
 
     return 'ok'
 
+
 def compress_picture(picture, compressed_size):
     im = Image.open(picture)
+    logger.info('Compressing picture, target size %sx%s' % (compressed_size[0], compressed_size[1]))
     # get correct orientation
     # PIL has an error, skip operation if error arises
     try:
         im = ImageOps.exif_transpose(im)
     except TypeError:
+        logging.error('PIL error - image not rotated')
         pass
 
     output = BytesIO()
@@ -83,4 +103,6 @@ def compress_picture(picture, compressed_size):
                                         "%s.jpg" % picture.name.split('.')[0],
                                         'image/jpeg',
                                         sys.getsizeof(output), None)
+    size = sys.getsizeof(output)/1000000
+    logger.info('Picture compressed to %s Mb' % size)
     return picture

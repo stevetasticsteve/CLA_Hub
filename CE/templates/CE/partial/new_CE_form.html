@@ -1,0 +1,12 @@
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if Errors %}
+    <div class="form-group has-error">
+        {% for error in Errors %}
+        <div class="alert alert-danger">{{error}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {{Form.title.label_tag}}
+    {{Form.title}}

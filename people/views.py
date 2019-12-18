@@ -12,7 +12,7 @@ from people import models
 def people_home(request):
     template = 'people/home.html'
     recently_edited = models.Person.objects.all().order_by(
-        '-last_modified')[:6]
+        '-last_modified')[:24]
     villages = dict(models.Person.villages)
     context = {
         'recent': recently_edited,
@@ -23,7 +23,7 @@ def people_home(request):
 @login_required
 def village(request, village):
     template = 'people/village.html'
-    residents = models.Person.objects.filter(village=village)
+    residents = models.Person.objects.filter(village=village).order_by('name')
     context = {
         'village_residents': residents,
     }

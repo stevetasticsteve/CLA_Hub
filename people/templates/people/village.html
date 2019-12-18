@@ -8,7 +8,7 @@
 <div class="row">
     {% endif %}
     {% include 'people/partial/person_card.html' %}
-    {% if forloop.counter|divisibleby:"6" %} </div><div class="row"> {% endif %}
+    {% if forloop.counter|divisibleby:"9" %} </div><div class="row"> {% endif %}
     {% if forloop.last %} </div> {% endif %}
 {% endfor %}
 

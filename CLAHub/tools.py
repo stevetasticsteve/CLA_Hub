@@ -11,9 +11,13 @@ import logging
 
 logger = logging.getLogger('debug')
 
+
 def import_profiles_from_csv(file_upload):
     logger.info('import_profiles_from_csv initiated')
-    file = file_upload.read().decode('utf-8').splitlines()
+    if type(file_upload) == str:
+        file = open(file_upload)
+    else:
+        file = file_upload.read().decode('utf-8').splitlines()
     csv_data = csv.reader(file)
     data = [profile for profile in csv_data]
     columns = {
@@ -76,9 +80,9 @@ def check_csv(csv_data, columns):
         pic_exists = os.path.exists(pic_path)
         if not pic_exists:
             return 'missing_file_error%s' % profile[columns['picture']]
-        logger.debug('Filename: %s' % pic_path)
-        logger.debug('Name: %s' % profile[columns['name']])
-        logger.debug('village: %s' % profile[columns['village']])
+        logger.debug('Filename: %s\n' % pic_path)
+        logger.debug('Name: %s\n' % profile[columns['name']])
+        logger.debug('village: %s\n' % profile[columns['village']])
         logger.debug('Row %s ok\n' % i)
 
     return 'ok'
@@ -104,5 +108,5 @@ def compress_picture(picture, compressed_size):
                                         'image/jpeg',
                                         sys.getsizeof(output), None)
     size = sys.getsizeof(output)/1000000
-    logger.info('Picture compressed to %s Mb' % size)
+    logger.info('Picture compressed to %s Mb\n' % size)
     return picture

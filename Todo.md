@@ -7,7 +7,6 @@
 - Search tags
 - Search texts
 - Hardcode in CLAHubDev admin login
-- dialects field to people
 - label and value tags - enables user extensions without coding - users can add their own fields
 - tests for people app and imports
 
@@ -23,7 +22,6 @@
 - Think of 'background' information that can be stored by server that might be helpful for queries
 - Form validation for audio files
 - Improve search
-- Logging
 - Functional tests
 - Make a 2nd level of user so Auth isn't open to them on the admin site
 - Remove valid for DA Boolean? Covered by phonetic standard. Expand phonetic standard to include orthography?

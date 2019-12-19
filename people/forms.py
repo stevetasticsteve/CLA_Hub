@@ -18,7 +18,8 @@ class PeopleForm(forms.ModelForm):
         model = people.models.Person
         exclude = ('DELETE', 'last_modified_by', 'thumbnail')
         widgets = {
-            'born': DateInput()
+            'born': DateInput(),
+            'death': DateInput()
         }
 
     def save(self, **kwargs):

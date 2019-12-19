@@ -27,6 +27,8 @@ class Person(models.Model):
     picture = models.ImageField(upload_to=picture_folder, blank=True)
     clan = models.CharField(max_length=60, blank=True)
     born = models.DateField(auto_now=False, blank=True, null=True)
+    dialect = models.CharField(max_length=60, blank=True)
+    death = models.DateField(auto_now=False, blank=True, null=True)
 
     medical = models.TextField(blank=True)
     team_contact = models.TextField(blank=True)

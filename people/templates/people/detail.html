@@ -12,7 +12,7 @@
             {% endif %}
         </div>
         <div class="col-8">
-            <h1>{{person.name}}</h1>
+            <h1>{{person.name}} {% if person.death %} (Deceased) {% endif %}</h1>
             <small>Last edited by {{person.last_modified_by}}</small>
             <br>
             <ul>
@@ -35,7 +35,10 @@
             </ul><ul>
                 <strong>education: </strong>
                 {{ person.get_education_display }}
-            </ul>
+            </ul><ul>
+            <strong>dialect:</strong>
+            {{ person.dialect }}
+        </ul>
         </div>
     </div>
     <br>

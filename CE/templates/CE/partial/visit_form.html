@@ -8,14 +8,33 @@
     <p></p>
 </div>
 </script>
-
+<br>
 <h3>Visits</h3>
 <div id="visit-form-container">
     <div id="visit-server-items">
         {% for p_form in VisitForm %}
         <div class="container-fluid border bg-light" id="visit-{{ forloop.counter0 }}">
             {{ p_form.id }}
-            {{ p_form.as_p }}
+            <div class="form-row">
+                <div class="col-sm-4">
+                    {{ p_form.team_present.label_tag }}
+                    {{ p_form.team_present }}
+                </div>
+                <div class="col-sm-4">
+                    {{ p_form.nationals_present.label_tag }}
+                    {{ p_form.nationals_present }}
+                </div>
+                <div class="col-sm-2">
+                    {{ p_form.date.label_tag }}
+                    {{ p_form.date }}
+                </div>
+                <div class="col-sm-2">
+                    <br>
+                    {{ p_form.DELETE.label_tag }}
+                    {{ p_form.DELETE }}
+                </div>
+            </div>
+            <br>
         </div>
         {% endfor %}
     </div>

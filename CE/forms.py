@@ -30,10 +30,11 @@ class CE_EditForm(forms.Form):
         required=False,
         label='Tags',
         widget=taggit.forms.TagWidget(attrs={
-            'class': 'form-control',
+            'class': 'form-control-lg',
             'data-role': 'tagsinput',
             'type': 'text',
-            'name': 'tags'
+            'name': 'tags',
+            'placeholder': 'press enter after each tag'
         })
     )
 
@@ -43,7 +44,7 @@ class CE_EditForm(forms.Form):
         widget=forms.Textarea(attrs={
             'class': 'form-control',
             'placeholder': description_placeholder,
-            'rows': 5
+            'rows': 12
         })
     )
 

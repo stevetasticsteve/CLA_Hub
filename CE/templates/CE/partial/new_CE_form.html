@@ -8,5 +8,35 @@
     </div>
     {% endif %}
 
-    {{Form.title.label_tag}}
-    {{Form.title}}
+    <div class="form-row">
+        <div class="col-sm-6">
+            {{Form.title.label_tag}}
+            {{Form.title}}
+        </div>
+        <div class="col-sm-6">
+            {{Form.tags.label_tag}}
+            {{Form.tags}}
+        </div>
+    </div>
+
+        {% include 'CE/partial/visit_form.html' %}
+    <div class="form-row">
+        <div class="col">
+            {{Form.description_plain_text.label_tag}}
+            {{Form.description_plain_text}}
+        </div>
+        <div class="col">
+            {{Form.differences.label_tag}}
+            {{Form.differences}}
+            {{Form.interpretation.label_tag}}
+            {{Form.interpretation}}
+            {{Form.picture.label_tag}}
+            {{Form.picture}}
+        </div>
+    </div>
+    <hr>
+    {% include 'CE/partial/text_form.html' %}
+    {% include 'CE/partial/questions_form.html' %}
+
+    <button type="input" class="btn btn-primary">Submit</button>
+</form>

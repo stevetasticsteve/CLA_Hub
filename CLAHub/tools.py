@@ -34,8 +34,8 @@ def import_profiles_from_csv(file_upload):
         logger.error('No data imported, village mentioned is not an option')
         return check
     elif check.startswith('missing_file_error'):
-        logger.error('No data imported, %s not found in import folder') % \
-        (check.lstrip('missing_file_error'),)
+        logger.error('No data imported, %s not found in import folder'
+                     % check.lstrip('missing_file_error'))
         return check
 
     else:
@@ -89,7 +89,11 @@ def check_csv(csv_data, columns):
 
 
 def compress_picture(picture, compressed_size):
-    im = Image.open(picture)
+    try:
+        im = Image.open(picture)
+    except IOError:
+        logger.error('An invalid image was submitted')
+        return None
     logger.info('Compressing picture, target size %sx%s' % (compressed_size[0], compressed_size[1]))
     # get correct orientation
     # PIL has an error, skip operation if error arises

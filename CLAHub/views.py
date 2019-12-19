@@ -22,6 +22,7 @@ def tools(request):
 
 @login_required
 def import_profiles(request):
+    # todo need to install celery so this can be processed asynchroniously
     if request.method == 'POST':
         form = forms.ProfileUploadForm(request.POST, request.FILES)
         if form.is_valid():

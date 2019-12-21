@@ -12,7 +12,15 @@ class CETestBaseClass(TestCase):
         credentials.set_password('secure_password')
         credentials.save()
 
+
     def setUp(self):
+        # the prexisiting model objects variable is used to exclude example data
+        self. prexisiting_model_objects = {
+                'CE': len(models.CultureEvent.objects.all()),
+                'Text': len(models.Text.objects.all()),
+                'Visit': len(models.Visit.objects.all()),
+                'Question': len(models.Question.objects.all()),
+        }
         self.test_data = {
             'username': 'Tester',
             'title': 'Test CE1',
@@ -40,13 +48,9 @@ class CETestBaseClass(TestCase):
                               'tags': self.test_data['tags'],
                               'differences': self.test_data['differences'],
                               'interpretation': self.test_data['interpretation'],
-                              'text-0-ce': 1,
-                              'text-0-id': 1,
                               'text-0-phonetic_text': self.test_data['phonetic_text'],
                               'text-0-orthographic_text': self.test_data['orthographic_text'],
                               'text-0-valid_for_DA': self.test_data['valid_for_DA'],
-                              'text-1-ce': 1,
-                              'text-1-id': 2,
                               'text-1-phonetic_text': self.test_data['phonetic_text'],
                               'text-1-orthographic_text': self.test_data['orthographic_text'],
                               'text-1-valid_for_DA': self.test_data['valid_for_DA'],
@@ -80,7 +84,7 @@ class CETestBaseClass(TestCase):
                                  differences=self.test_data['differences'],
                                  interpretation=self.test_data['interpretation'], )
         ce.save()
-        ce2 = models.CultureEvent(title='CE2')
+        ce2 = models.CultureEvent(title='TestCE2')
         ce2.save()
         ce.tags.add(self.test_data['tags'])
         visit = models.Visit(nationals_present=self.test_data['nationals_present'],
@@ -93,15 +97,35 @@ class CETestBaseClass(TestCase):
                            orthographic_text=self.test_data['orthographic_text'],
                            valid_for_DA=self.test_data['valid_for_DA'])
         text.save()
-        text = models.Text(ce=ce,
+        text2 = models.Text(ce=ce,
                            phonetic_text='phonetic_text2',
                            orthographic_text=self.test_data['orthographic_text'],
                            valid_for_DA=self.test_data['valid_for_DA'])
-        text.save()
+        text2.save()
         q = models.Question(ce=ce,
                             question=self.test_data['question'],
                             answer=self.test_data['answer'])
         q.save()
+
+        self.test_ce1_pk = str(self.prexisiting_model_objects['CE'] + 1)
+        self.test_ce2_pk = str(self.prexisiting_model_objects['CE'] + 2)
+        self.test_text1_pk = str(self.prexisiting_model_objects['Text'] + 1)
+        self.test_text2_pk = str(self.prexisiting_model_objects['Text'] + 2)
+        self.test_visit_pk = str(self.prexisiting_model_objects['Visit'] + 1)
+        self.test_question_pk = str(self.prexisiting_model_objects['Question'] + 1)
+
+    def test_setup(self):
+        self.assertEqual(models.CultureEvent.objects.get(pk=3).title, self.test_data['title'])
+        self.assertEqual(len(models.CultureEvent.objects.all()),
+                         self.prexisiting_model_objects['CE'] + 2)
+        self.assertEqual(len(models.Text.objects.all()),
+                         self.prexisiting_model_objects['Text'] + 2)
+        self.assertEqual(len(models.Visit.objects.all()),
+                         self.prexisiting_model_objects['Visit'] + 1)
+        self.assertEqual(len(models.Question.objects.all()),
+                         self.prexisiting_model_objects['Question'] + 1)
+
+
 
     @staticmethod
     def cleanup_test_files(ce):

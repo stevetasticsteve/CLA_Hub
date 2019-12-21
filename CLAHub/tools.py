@@ -89,6 +89,14 @@ def check_csv(csv_data, columns):
 
 
 def compress_picture(picture, compressed_size):
+    # If the image has already been processed don't compress again.
+    # This avoids adding duplicate images to the file system
+    if check_picture_already_imported(picture):
+        return None
+    # todo It's possible this could misbehave if a file has the same name and the user intends
+    # to upload it. An uncompressed image would go through. If it went into a different upload folder
+    # it wouldn't clash with the name previously.
+
     try:
         im = Image.open(picture)
     except IOError:
@@ -114,3 +122,26 @@ def compress_picture(picture, compressed_size):
     size = sys.getsizeof(output)/1000000
     logger.info('Picture compressed to %s Mb\n' % size)
     return picture
+
+
+def check_picture_already_imported(picture):
+    # look in CE and people uploads for files user has already uploaded
+    imported_files = list_all_files('uploads/CultureEventFiles') \
+                     + list_all_files('uploads/people/profile_pictures')
+    if os.path.basename(str(picture)) in imported_files:
+        return True
+
+
+def list_all_files(path):
+    # create a list of all file names recursively in a directory
+    list_of_file = os.listdir(path)
+    all_files = list()
+    for entry in list_of_file:
+        full_path = os.path.join(path, entry)
+        if os.path.isdir(full_path):
+            all_files = all_files + list_all_files(full_path)
+        else:
+            all_files.append(full_path)
+    all_files = [os.path.basename(file) for file in all_files]
+
+    return all_files

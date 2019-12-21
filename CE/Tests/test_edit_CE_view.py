@@ -96,118 +96,143 @@ class TestEditPage(CETestBaseClass):
         self.assertEqual(models.Text.objects.get(pk=self.test_text1_pk).phonetic_text,
                          self.test_data['phonetic_text'], 'Text 1 mistakenly changed')
 
-    # def test_edit_both_texts(self):
-    #     post_data = self.standard_post
-    #     post_data['text-0-phonetic_text'] = 'Changed1'
-    #     post_data['text-1-phonetic_text'] = 'Changed2'
-    #     response = self.client.post(reverse('CE:edit', args='3'), data=post_data, follow=True)
-    #
-    #     self.assertRedirects(response, '/CE/3')
-    #     self.assertEqual(models.Text.objects.get(pk=2).phonetic_text, 'Changed1',
-    #                      'Text 1 not updated on POST')
-    #     self.assertEqual(models.Text.objects.get(pk=3).phonetic_text, 'Changed2',
-    #                      'Text 2 not updated on POST')
-    #
-    # def test_user_adds_empty_text(self):
-    #     # ensure blank formsets are rejected
-    #     post_data = self.standard_post
-    #     post_data['text-TOTAL_FORMS'] = 3
-    #     post_data['text-2-ce'] = 1
-    #     post_data['text-2-id'] = 3
-    #     post_data['text-2-phonetic_text'] = ''
-    #     post_data['text-2-orthographic_text'] = ''
-    #     post_data['text-2-valid_for_DA'] = False
-    #     response = self.client.post(reverse('CE:edit', args='3'), data=post_data, follow=True)
-    #
-    #     # test there is no extra text in DB
-    #     self.assertRedirects(response, '/CE/3')
-    #     with self.assertRaises(models.Text.DoesNotExist):
-    #         models.Text.objects.get(pk=4)
-    #
-    #     # test remaining texts are unchanged
-    #     self.assertEqual(models.Text.objects.get(pk=2).phonetic_text,
-    #                      self.test_data['phonetic_text'])
-    #     self.assertEqual(models.Text.objects.get(pk=3).phonetic_text,
-    #                      'phonetic_text2')
-    #
-    # @unittest.skip
-    # def test_user_adds_new_text(self):
-    #     #todo works manually, fails testing
-    #     post_data = self.standard_post
-    #     post_data['text-TOTAL_FORMS'] = 3
-    #     post_data['text-2-ce'] = 1
-    #     post_data['text-2-id'] = 3
-    #     post_data['text-2-phonetic_text'] = 'phonetic_text3'
-    #     post_data['text-2-orthographic_text'] = 'orthographic_text3'
-    #     post_data['text-2-valid_for_DA'] = False
-    #     response = self.client.post(reverse('CE:edit', args='1'), data=post_data, follow=True)
-    #
-    #     self.assertRedirects(response, '/CE/1')
-    #     self.assertEqual(len(models.Text.objects.all()), 3)
-    #     self.assertEqual(models.Text.objects.get(pk=3).phonetic_text, 'phonetic_text3')
-    #
-    # def test_user_can_add_audio(self):
-    #     try:
-    #         with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
-    #             file = file.read()
-    #             test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
-    #         post_data = self.standard_post
-    #         post_data['text-0-audio'] = test_audio
-    #         response = self.client.post(reverse('CE:edit', args='3'), data=post_data, follow=True)
-    #
-    #         # test audio in db
-    #         self.assertRedirects(response, '/CE/3')
-    #         self.assertEqual(len(models.Text.objects.all()), 3)
-    #         self.assertEqual(models.Text.objects.get(pk=2).audio,
-    #                          'CultureEventFiles/3/audio/test_audio1.mp3')
-    #
-    #         # test mp3 in uploads
-    #         self.assertTrue(os.path.exists('uploads/CultureEventFiles/3/audio'), 'upload folder doesn\'t exist')
-    #         folder_contents = os.listdir('uploads/CultureEventFiles/3/audio')
-    #         self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
-    #
-    #         # test displayed on view page
-    #         response = self.client.get(reverse('CE:view', args='3'))
-    #         self.assertContains(response,
-    #                             '<audio controls> <source src="/uploads/CultureEventFiles/3/audio/test_audio1.mp3"></audio>')
-    #
-    #     finally:
-    #         self.cleanup_test_files(3)
-    #
-    # def test_user_can_change_audio(self):
-    #     try:
-    #         test_folder = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/3/audio')
-    #         os.makedirs(test_folder)
-    #         shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
-    #         # add audio to test text
-    #         text = models.Text.objects.get(pk=2)
-    #         text.audio = 'CultureEventFiles/3/audio/test_audio1.mp3'
-    #         text.save()
-    #         with open('CLAHub/assets/test_data/test_audio2.mp3', 'rb') as file:
-    #             file = file.read()
-    #             test_audio = SimpleUploadedFile('test_data/test_audio2.mp3', file, content_type='audio')
-    #         post_data = self.standard_post
-    #         post_data['text-0-audio'] = test_audio
-    #         response = self.client.post(reverse('CE:edit', args='3'), data=post_data, follow=True)
-    #
-    #         # test audio in db
-    #         self.assertRedirects(response, '/CE/3')
-    #         self.assertEqual(len(models.Text.objects.all()), 3)
-    #         self.assertEqual(models.Text.objects.get(pk=2).audio,
-    #                          'CultureEventFiles/3/audio/test_audio2.mp3')
-    #
-    #         # test mp3 in uploads
-    #         self.assertTrue(os.path.exists('uploads/CultureEventFiles/3/audio'), 'upload folder doesn\'t exist')
-    #         folder_contents = os.listdir('uploads/CultureEventFiles/3/audio')
-    #         self.assertIn('test_audio2.mp3', folder_contents, 'Uploaded audio not in upload folder')
-    #
-    #         # test displayed on view page
-    #         response = self.client.get(reverse('CE:view', args='3'))
-    #         self.assertContains(response,
-    #                             '<audio controls> <source src="/uploads/CultureEventFiles/3/audio/test_audio2.mp3"></audio>')
-    #
-    #     finally:
-    #         self.cleanup_test_files(3)
+    def test_edit_both_texts(self):
+        post_data = self.standard_post
+        post_data['text-0-phonetic_text'] = 'Changed1'
+        post_data['text-1-phonetic_text'] = 'Changed2'
+        post_data['text-0-id'] = self.test_text1_pk
+        post_data['text-0-ce'] = self.test_ce1_pk
+        post_data['text-1-id'] = self.test_text2_pk
+        post_data['text-1-ce'] = self.test_ce1_pk
+        response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
+                                    data=post_data, follow=True)
+
+        self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+        self.assertEqual(models.Text.objects.get(pk=self.test_text1_pk).phonetic_text, 'Changed1',
+                         'Text 1 not updated on POST')
+        self.assertEqual(models.Text.objects.get(pk=self.test_text2_pk).phonetic_text, 'Changed2',
+                         'Text 2 not updated on POST')
+
+    def test_user_adds_empty_text(self):
+        # ensure blank formsets are rejected
+        post_data = self.standard_post
+        post_data['text-TOTAL_FORMS'] = 3
+        post_data['text-0-id'] = self.test_text1_pk
+        post_data['text-0-ce'] = self.test_ce1_pk
+        post_data['text-1-id'] = self.test_text2_pk
+        post_data['text-1-ce'] = self.test_ce1_pk
+        response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk), data=post_data, follow=True)
+
+        # test there is no extra text in DB
+        self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+        extra_pk = str(int(self.test_text2_pk) + 1)
+        with self.assertRaises(models.Text.DoesNotExist):
+            models.Text.objects.get(pk=extra_pk)
+
+        # test remaining texts are unchanged
+        self.assertEqual(models.Text.objects.get(pk=self.test_ce1_pk).phonetic_text,
+                         self.test_data['phonetic_text'])
+        self.assertEqual(models.Text.objects.get(pk=self.test_text2_pk).phonetic_text,
+                         self.test_data['phonetic_text'])
+
+    def test_user_adds_new_text(self):
+        num_texts = len(models.Text.objects.all())
+        post_data = self.standard_post
+        post_data['text-TOTAL_FORMS'] = 3
+        post_data['text-0-id'] = self.test_text1_pk
+        post_data['text-0-ce'] = self.test_ce1_pk
+        post_data['text-1-id'] = self.test_text2_pk
+        post_data['text-1-ce'] = self.test_ce1_pk
+        post_data['text-2-phonetic_text'] = 'New'
+        response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
+                                    data=post_data, follow=True)
+
+        new_text_pk = str(int(self.test_text2_pk) + 1)
+        self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+        self.assertEqual(len(models.Text.objects.all()), num_texts + 1)
+        self.assertEqual(models.Text.objects.get(pk=new_text_pk).phonetic_text, 'New')
+
+    def test_user_can_add_audio(self):
+        num_texts = len(models.Text.objects.all())
+        try:
+            with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
+                file = file.read()
+                test_audio = SimpleUploadedFile('test_data/test_audio1.mp3',
+                                                file, content_type='audio')
+            post_data = self.standard_post
+            post_data['text-0-id'] = self.test_text1_pk
+            post_data['text-0-ce'] = self.test_ce1_pk
+            post_data['text-1-id'] = self.test_text2_pk
+            post_data['text-1-ce'] = self.test_ce1_pk
+            post_data['text-0-audio'] = test_audio
+            response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
+                                        data=post_data, follow=True)
+
+            # test audio in db
+            self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+            self.assertEqual(len(models.Text.objects.all()), num_texts)
+            self.assertEqual(models.Text.objects.get(pk=self.test_text1_pk).audio,
+                             'CultureEventFiles/%s/audio/test_audio1.mp3' % self.test_ce1_pk)
+
+            # test mp3 in uploads
+            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk),
+                            'upload folder doesn\'t exist')
+            folder_contents = os.listdir('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
+            self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
+
+            # test displayed on view page
+            response = self.client.get(reverse('CE:view', args=self.test_ce1_pk))
+            self.assertContains(response,
+                                '<audio controls> <source src="/uploads/CultureEventFiles/%s/'
+                                'audio/test_audio1.mp3"></audio>' % self.test_ce1_pk)
+
+        finally:
+            self.cleanup_test_files(int(self.test_ce1_pk))
+
+    def test_user_can_change_audio(self):
+        num_texts = len(models.Text.objects.all())
+        try:
+            # add audio file to uploads
+            test_folder = os.path.join(os.getcwd(),
+                                       'uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
+            os.makedirs(test_folder)
+            shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
+            # add audio to test text
+            text = models.Text.objects.get(pk=self.test_text1_pk)
+            text.audio = 'CultureEventFiles/%s/audio/test_audio1.mp3' % self.test_ce1_pk
+            text.save()
+            with open('CLAHub/assets/test_data/test_audio2.mp3', 'rb') as file:
+                file = file.read()
+                test_audio = SimpleUploadedFile('test_data/test_audio2.mp3',
+                                                file, content_type='audio')
+            post_data = self.standard_post
+            post_data['text-0-id'] = self.test_text1_pk
+            post_data['text-0-ce'] = self.test_ce1_pk
+            post_data['text-1-id'] = self.test_text2_pk
+            post_data['text-1-ce'] = self.test_ce1_pk
+            post_data['text-0-audio'] = test_audio
+            response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
+                                        data=post_data, follow=True)
+
+            # test audio in db
+            self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+            self.assertEqual(len(models.Text.objects.all()), num_texts)
+            self.assertEqual(models.Text.objects.get(pk=self.test_text1_pk).audio,
+                             'CultureEventFiles/%s/audio/test_audio2.mp3' % self.test_ce1_pk)
+
+            # test mp3 in uploads
+            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
+            self.assertIn('test_audio2.mp3', folder_contents, 'Uploaded audio not in upload folder')
+
+            # test displayed on view page
+            response = self.client.get(reverse('CE:view', args=self.test_ce1_pk))
+            self.assertContains(response,
+                                '<audio controls> <source src="/uploads/CultureEventFiles/%s/'
+                                'audio/test_audio2.mp3"></audio>' % self.test_ce1_pk)
+
+        finally:
+            self.cleanup_test_files(int(self.test_ce1_pk))
 
     def test_can_edit_first_visit_form(self):
         num_visits = len(models.Visit.objects.all())

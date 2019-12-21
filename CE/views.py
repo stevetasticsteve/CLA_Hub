@@ -20,7 +20,7 @@ question_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.m
                                                     form=CE.forms.QuestionForm, extra=0)
 
 visits_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Visit,
-                                                  form=CE.forms.VisitsForm, extra=1)
+                                                  form=CE.forms.VisitsForm, extra=0)
 
 
 @CE.utilities.conditional_login
@@ -100,8 +100,9 @@ def edit(request, pk):
                 for text in text_form:
                     if text_form.is_valid():
                         text.save(request=request)
-                if visit_form.is_valid():
-                    visit_form.save()
+                for visit in visit_form:
+                    if visit.is_valid():
+                        visit.save()
                 for question in question_form:
                     if question.is_valid():
                         question.save(request=request)

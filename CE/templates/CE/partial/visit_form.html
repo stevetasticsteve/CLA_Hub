@@ -3,9 +3,28 @@
 
 <script type="text/html" id="visit-template">
 <div id="visit-__prefix__" class="container-fluid border bg-light">
-    <p></p>
-    {{ VisitForm.empty_form.as_p }}
-    <p></p>
+    <div class="container-fluid border bg-light" id="NewVisit-{{ forloop.counter0 }}">
+            <div class="form-row">
+                <div class="col-sm-4">
+                    {{ VisitForm.empty_form.team_present.label_tag }}
+                    {{ VisitForm.empty_form.team_present }}
+                </div>
+                <div class="col-sm-4">
+                    {{ VisitForm.empty_form.nationals_present.label_tag }}
+                    {{ VisitForm.empty_form.nationals_present }}
+                </div>
+                <div class="col-sm-2">
+                    {{ VisitForm.empty_form.date.label_tag }}
+                    {{ VisitForm.empty_form.date }}
+                </div>
+                <div class="col-sm-2">
+                    <br>
+                    {{ VisitForm.empty_form.DELETE.label_tag }}
+                    {{ VisitForm.empty_form.DELETE }}
+                </div>
+            </div>
+        <br>
+    </div>
 </div>
 </script>
 <br>
@@ -34,12 +53,11 @@
                     {{ p_form.DELETE }}
                 </div>
             </div>
-            <br>
         </div>
         {% endfor %}
     </div>
+    <br>
 </div>
-<p></p>
 
 <!--Add new visit button-->
 <a href="#" id="add-visit-button" class="btn btn-info add-visit">Add a visit</a>

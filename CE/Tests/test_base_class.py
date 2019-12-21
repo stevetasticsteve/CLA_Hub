@@ -15,7 +15,7 @@ class CETestBaseClass(TestCase):
     def setUp(self):
         self.test_data = {
             'username': 'Tester',
-            'title': 'Example CE1',
+            'title': 'Test CE1',
             'description_plain_text': 'A culture event happened',
             'differences': 'Last time it was different',
             'interpretation': 'It probably has meaning',

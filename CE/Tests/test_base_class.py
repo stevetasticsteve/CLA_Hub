@@ -113,6 +113,7 @@ class CETestBaseClass(TestCase):
         self.test_text2_pk = str(self.prexisiting_model_objects['Text'] + 2)
         self.test_visit_pk = str(self.prexisiting_model_objects['Visit'] + 1)
         self.test_question_pk = str(self.prexisiting_model_objects['Question'] + 1)
+        self.new_ce_pk = str(self.prexisiting_model_objects['CE'] + 3)
 
     def test_setup(self):
         self.assertEqual(models.CultureEvent.objects.get(pk=3).title, self.test_data['title'])

@@ -16,6 +16,7 @@ else:
 class DateInput(forms.DateInput):
     input_type = 'date'
 
+
 class CE_EditForm(forms.Form):
     title = forms.CharField(
         required=True,

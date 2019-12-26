@@ -134,7 +134,10 @@ def check_picture_already_imported(picture):
 
 def list_all_files(path):
     # create a list of all file names recursively in a directory
-    list_of_file = os.listdir(path)
+    try:
+        list_of_file = os.listdir(path)
+    except FileNotFoundError:
+        return []
     all_files = list()
     for entry in list_of_file:
         full_path = os.path.join(path, entry)

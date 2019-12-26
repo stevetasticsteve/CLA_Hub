@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 
 import datetime
 
@@ -27,7 +29,7 @@ class PeopleHomeAndAlphabeticalPageTest(TestCase):
     def test_home_page_content(self):
         response = self.client.get(reverse('people:home'))
 
-        self.assertContains(response, 'People Home')
+        self.assertContains(response, 'Recently edited profiles')
 
     def test_alphabetical_get_response(self):
         response = self.client.get(reverse('people:alphabetically'))
@@ -115,4 +117,12 @@ class NewPersonViewTest(TestCase):
         self.assertEqual(models.Person.objects.get(pk=1).name, models.Person.objects.get(pk=2).name)
         self.assertEqual(models.Person.objects.get(pk=1).village, models.Person.objects.get(pk=2).village)
 
-    # todo picture upload and thumbnail tests
+    def test_picture_upload(self):
+        post_data = self.post_data
+        with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
+            file = file.read()
+            test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
+        post_data['picture'] = test_image
+        self.client.post(reverse('people:new'), post_data)
+
+        self.

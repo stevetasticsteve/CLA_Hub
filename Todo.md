@@ -15,7 +15,6 @@
 - User friendliness testing
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
-- Check audio playback on mobile devices -  my phone wouldn't play an upload
 
 ## Server improvements
 - Paginate texts, alphabetical CEs and tags pages

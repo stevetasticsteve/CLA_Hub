@@ -155,7 +155,7 @@ LOGGING = {
     'loggers': {
         'CLAHub': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
             'formatter': 'complex'
         },

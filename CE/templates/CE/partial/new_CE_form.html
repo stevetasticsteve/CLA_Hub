@@ -15,6 +15,8 @@
         </div>
         <div class="col-sm-6">
             {{Form.tags.label_tag}}
+            <small><a href="{% url 'CE:OCM_ref' %}"
+                      target="_blank" rek="noopener noreferer">Tell me about OCM tags</a></small>
             {{Form.tags}}
         </div>
     </div>
@@ -30,7 +32,7 @@
             {{Form.differences}}
             {{Form.interpretation.label_tag}}
             {{Form.interpretation}}
-            {{Form.picture.label_tag}}
+            Add a picture:
             {{Form.picture}}
         </div>
     </div>

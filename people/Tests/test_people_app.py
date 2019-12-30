@@ -9,45 +9,7 @@ import os
 from people import models
 from CLAHub import base_settings
 
-# class PeopleTest(TestCase):
-
-
-
-class PeopleHomeAndAlphabeticalPageTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        credentials = User(username='Tester')
-        credentials.set_password('secure_password')
-        credentials.save()
-
-    def setUp(self):
-        self.client.login(username='Tester', password='secure_password')
-
-    def test_home_get_response(self):
-        response = self.client.get(reverse('people:home'))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('people/home.html')
-
-    def test_home_page_content(self):
-        response = self.client.get(reverse('people:home'))
-
-        self.assertContains(response, 'Recently edited profiles')
-
-    def test_alphabetical_get_response(self):
-        response = self.client.get(reverse('people:alphabetically'))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('people/alphabetical.html')
-
-    def test_alphabetical_content(self):
-        response = self.client.get(reverse('people:alphabetically'))
-
-        self.assertContains(response, 'People Alphabetically')
-
-
-class NewPersonViewTest(TestCase):
+class PeopleTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -71,7 +33,7 @@ class NewPersonViewTest(TestCase):
             name='Test person 1',
             village='2',
             clan='Snake clan',
-            born=datetime.date(1970,2,2),
+            born=datetime.date(1970, 2, 2),
             medical='Healthy',
             team_contact='high fived us',
             education=2
@@ -109,6 +71,31 @@ class NewPersonViewTest(TestCase):
         self.assertEqual('Test person 1', example_person.name)
         self.assertEqual(datetime.date(1970, 2, 2), example_person.born)
 
+class PeopleHomeAndAlphabeticalPageTest(PeopleTest):
+    def test_home_get_response(self):
+        response = self.client.get(reverse('people:home'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('people/home.html')
+
+    def test_home_page_content(self):
+        response = self.client.get(reverse('people:home'))
+
+        self.assertContains(response, 'Recently edited profiles')
+
+    def test_alphabetical_get_response(self):
+        response = self.client.get(reverse('people:alphabetically'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('people/alphabetical.html')
+
+    def test_alphabetical_content(self):
+        response = self.client.get(reverse('people:alphabetically'))
+
+        self.assertContains(response, 'People Alphabetically')
+
+
+class NewPersonViewTest(PeopleTest):
     def test_new_person_GET_response(self):
         response = self.client.get(reverse('people:new'))
 
@@ -180,12 +167,8 @@ class NewPersonViewTest(TestCase):
         finally:
             self.cleanup_test_files()
 
-#
-# class EditPersonTest(NewPersonViewTest):
-#     def setUp(self):
-#         pass
-#         # super(NewPersonViewTest)
-#
-#     def test_edit(self):
-#         print(self.test_pk1)
+
+class EditPersonTest(PeopleTest):
+    def test_edit(self):
+        print(self.test_pk1)
 

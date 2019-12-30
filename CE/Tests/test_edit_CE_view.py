@@ -278,3 +278,5 @@ class TestEditPage(CETestBaseClass):
                          'visit 2 not updated on POST')
         self.assertEqual(models.Visit.objects.get(pk=int(self.test_visit_pk)+1).date,
                          datetime.date(2019, 10, 11), 'visit 2 not updated on POST')
+
+    #todo no change picture test

@@ -5,9 +5,12 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 import datetime
 import os
+import shutil
+from unittest import skip
 
 from people import models
 from CLAHub import base_settings
+
 
 class PeopleTest(TestCase):
     @classmethod
@@ -19,7 +22,7 @@ class PeopleTest(TestCase):
 
     def setUp(self):
         self.client.login(username='Tester', password='secure_password')
-        self.post_data = {
+        self.new_post_data = {
             'name': 'Test person 2',
             'village': '1',
             'clan': 'Python clan',
@@ -39,6 +42,16 @@ class PeopleTest(TestCase):
             education=2
         )
         example.save()
+
+        self.unchanged_post = {
+            'name': 'Test person 1',
+            'village': '2',
+            'clan': 'Snake clan',
+            'born': '1970-02-02',
+            'medical': 'Healthy',
+            'team_contact': 'high fived us',
+            'education': '2'
+        }
 
         self.test_pk1 = '1'
         self.new_pk = str(int(self.test_pk1) + 1)
@@ -70,6 +83,7 @@ class PeopleTest(TestCase):
         example_person = models.Person.objects.get(pk=self.test_pk1)
         self.assertEqual('Test person 1', example_person.name)
         self.assertEqual(datetime.date(1970, 2, 2), example_person.born)
+
 
 class PeopleHomeAndAlphabeticalPageTest(PeopleTest):
     def test_home_get_response(self):
@@ -108,23 +122,23 @@ class NewPersonViewTest(PeopleTest):
         self.assertContains(response, 'Add a Person')
 
     def test_redirect_after_post(self):
-        response = self.client.post(reverse('people:new'), self.post_data)
+        response = self.client.post(reverse('people:new'), self.new_post_data)
 
         self.assertRedirects(response, reverse('people:detail', args=self.new_pk))
 
     def test_database_entry_after_post(self):
-        self.client.post(reverse('people:new'), self.post_data)
+        self.client.post(reverse('people:new'), self.new_post_data)
 
         self.assertEqual(len(models.Person.objects.all()), self.num_profiles + 1)
         new_entry = models.Person.objects.get(pk=self.new_pk)
-        self.assertEqual(self.post_data['name'], new_entry.name)
-        self.assertEqual(self.post_data['medical'], new_entry.medical)
-        self.assertEqual(self.post_data['education'], new_entry.education)
+        self.assertEqual(self.new_post_data['name'], new_entry.name)
+        self.assertEqual(self.new_post_data['medical'], new_entry.medical)
+        self.assertEqual(self.new_post_data['education'], new_entry.education)
         self.assertEqual(datetime.date, type(new_entry.born))
 
     def test_same_data_allowed(self):
         # .db unique constraint not applied as names, and village can be shared
-        post_data = self.post_data
+        post_data = self.new_post_data
         post_data['name'] = 'Test person 1'
         post_data['village'] = '2'
         self.client.post(reverse('people:new'), post_data)
@@ -135,14 +149,15 @@ class NewPersonViewTest(PeopleTest):
         self.assertEqual(models.Person.objects.get(pk=self.test_pk1).village,
                          models.Person.objects.get(pk=self.new_pk).village)
 
+    @skip
     def test_picture_upload(self):
         try:
             uploads_dir = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'profile_pictures')
             num_uploads = len(os.listdir(uploads_dir))
-            post_data = self.post_data
-            with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
+            post_data = self.new_post_data
+            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
                 file = file.read()
-                test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
+                test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image
                 response = self.client.post(reverse('people:new'), post_data)
 
@@ -169,6 +184,111 @@ class NewPersonViewTest(PeopleTest):
 
 
 class EditPersonTest(PeopleTest):
-    def test_edit(self):
-        print(self.test_pk1)
+    def test_edit_response(self):
+        response = self.client.get(reverse('people:edit', args=self.test_pk1))
 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('people/edit.html')
+
+    def test_edit_content(self):
+        response = self.client.get(reverse('people:edit', args=self.test_pk1))
+
+        self.assertContains(response, 'Test person 1')
+
+    def test_redirect_after_post_no_changes(self):
+        response = self.client.post(reverse('people:edit', args=self.test_pk1), data=self.unchanged_post)
+
+        self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
+
+    def test_redirect_after_change(self):
+        post_data = self.unchanged_post
+        post_data['name'] = 'Changed'
+        response = self.client.post(reverse('people:edit', args=self.test_pk1), data=post_data)
+
+        self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
+
+    def test_contents_changed(self):
+        post_data = self.unchanged_post
+        post_data['name'] = 'Changed'
+        self.client.post(reverse('people:edit', args=self.test_pk1), data=post_data)
+
+        self.assertEqual(models.Person.objects.get(pk=self.test_pk1).name, 'Changed')
+
+    def test_contents_erased(self):
+        post_data = self.unchanged_post
+        post_data['clan'] = ''
+        self.client.post(reverse('people:edit', args=self.test_pk1), data=post_data)
+
+        self.assertEqual(models.Person.objects.get(pk=self.test_pk1).clan, '')
+
+    def test_name_removed_fail(self):
+        post_data = self.unchanged_post
+        post_data['name'] = ''
+        response = self.client.post(reverse('people:edit', args=self.test_pk1), data=post_data)
+
+        # should respond with the original form
+        self.assertContains(response, 'Test person 1')
+
+    @skip
+    def test_add_picture(self):
+        try:
+            uploads_dir = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'profile_pictures')
+            num_uploads = len(os.listdir(uploads_dir))
+            post_data = self.unchanged_post
+            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+                file = file.read()
+                test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
+                post_data['picture'] = test_image
+                response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data)
+
+            self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
+            # check pic in .db
+            pic = models.Person.objects.get(pk=self.test_pk1).picture
+            self.assertEqual(str(pic), 'people/profile_pictures/test_pic1.jpg')
+            thumb = models.Person.objects.get(pk=self.test_pk1).thumbnail
+            self.assertEqual(str(thumb), 'people/thumbnails/test_pic1.jpg')
+            # test new picture present in file system
+            self.assertEqual(len(os.listdir(uploads_dir)), num_uploads + 1)
+            pic_path = 'uploads/people/profile_pictures/test_pic1.jpg'
+            thumb_path = 'uploads/people/thumbnails/test_pic1.jpg'
+            self.assertTrue(os.path.exists(pic_path),
+                            'Picture not located on file system')
+            self.assertTrue(os.path.exists(thumb_path),
+                            'Picture not located on file system')
+            # test thumbnail smaller than pic
+            self.assertLess(os.path.getsize(thumb_path), os.path.getsize(pic_path),
+                            'Compression isn\'t working')
+
+        finally:
+            self.cleanup_test_files()
+
+    def test_change_picture(self):
+        try:
+            # add picture file to uploads
+            picture_folder = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'profile_pictures')
+            thumbnail_folder = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'thumbnails')
+            test_image_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
+            replacement_image_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic2.jpg')
+            shutil.copy(test_image_path, picture_folder)
+            # add audio to test text
+            person = models.Person.objects.get(pk=self.test_pk1)
+            person.picture = os.path.join(picture_folder, 'test_pic1.jpg')
+            person.thumbnail = os.path.join(thumbnail_folder, 'test_pic1.jpg')
+            person.save()
+            with open(replacement_image_path, 'rb') as file:
+                file = file.read()
+                test_pic = SimpleUploadedFile('test_data/test_pic2.jpg',
+                                              file, content_type='image')
+                post_data = self.unchanged_post
+                post_data['picture'] = test_pic
+                response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data)
+
+            self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
+            # test pic in .db
+            profile = models.Person.objects.get(pk=self.test_pk1)
+            self.assertEqual(str(profile.picture), 'people/profile_pictures/test_pic2.jpg')
+            self.assertEqual(str(profile.thumbnail), 'people/thumbnails/test_pic2.jpg')
+
+        finally:
+            pass
+            self.cleanup_test_files()

@@ -25,9 +25,9 @@ class CE_EditFormTests(TestCase):
 class PictureUploadForm(TestCase):
     #todo test still useful, but needs refactored, form was rolled into standard form
     def test_valid_data(self):
-        with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
+        with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
             file = file.read()
-            test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
+            test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
         form_data = {'title': 'Test CE',
                      'date': '2019-02-20',
                      'picture': test_image}

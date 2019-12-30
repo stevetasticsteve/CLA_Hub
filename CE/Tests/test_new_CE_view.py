@@ -79,9 +79,9 @@ class NewCEPageTest(CETestBaseClass):
     def test_new_CE_page_saves_single_picture(self):
         try:
             post_data = self.new_post
-            with open('CLAHub/assets/test_data/test_pic1.JPG', 'rb') as file:
+            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
                 file = file.read()
-                test_image = SimpleUploadedFile('test_data/test_pic1.JPG', file, content_type='image')
+                test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image
                 response = self.client.post(reverse('CE:new'), post_data)
 

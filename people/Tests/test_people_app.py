@@ -239,9 +239,11 @@ class EditPersonTest(PeopleTest):
                 file = file.read()
                 test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image
-                response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data)
+                response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data, follow=True)
 
             self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
+            # test pic in response
+            self.assertContains(response, 'test_pic1.jpg')
             # check pic in .db
             pic = models.Person.objects.get(pk=self.test_pk1).picture
             self.assertEqual(str(pic), 'people/profile_pictures/test_pic1.jpg')
@@ -266,11 +268,12 @@ class EditPersonTest(PeopleTest):
         try:
             # add picture file to uploads
             picture_folder = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'profile_pictures')
+            num_uploads = len(os.listdir(picture_folder))
             thumbnail_folder = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'thumbnails')
             test_image_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
             replacement_image_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic2.jpg')
             shutil.copy(test_image_path, picture_folder)
-            # add audio to test text
+            # add image to test profile
             person = models.Person.objects.get(pk=self.test_pk1)
             person.picture = os.path.join(picture_folder, 'test_pic1.jpg')
             person.thumbnail = os.path.join(thumbnail_folder, 'test_pic1.jpg')
@@ -281,13 +284,65 @@ class EditPersonTest(PeopleTest):
                                               file, content_type='image')
                 post_data = self.unchanged_post
                 post_data['picture'] = test_pic
-                response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data)
+                response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data, follow=True)
 
             self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
+            # test pic in response
+            self.assertContains(response, 'test_pic2.jpg')
             # test pic in .db
             profile = models.Person.objects.get(pk=self.test_pk1)
             self.assertEqual(str(profile.picture), 'people/profile_pictures/test_pic2.jpg')
             self.assertEqual(str(profile.thumbnail), 'people/thumbnails/test_pic2.jpg')
+            # test pic in file system
+            self.assertEqual(len(os.listdir(picture_folder)), num_uploads + 2)
+            pic_path = 'uploads/people/profile_pictures/test_pic2.jpg'
+            thumb_path = 'uploads/people/thumbnails/test_pic2.jpg'
+            self.assertTrue(os.path.exists(pic_path),
+                            'Picture not located on file system')
+            self.assertTrue(os.path.exists(thumb_path),
+                            'Picture not located on file system')
+            # test old pic still there
+            pic_path = 'uploads/people/profile_pictures/test_pic1.jpg'
+            self.assertTrue(os.path.exists(pic_path),
+                            'Picture not located on file system')
+        finally:
+            pass
+            self.cleanup_test_files()
+
+    def test_post_with_blank_picture(self):
+        # The edit form passes pic = [""] if the user edits a profile containing a picture and doesn't specify a new picture
+        # The picture shouldn't be overwritten by a blank
+        try:
+            # add picture file to uploads
+            picture_folder = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'profile_pictures')
+            num_uploads = len(os.listdir(picture_folder))
+            thumbnail_folder = os.path.join(base_settings.BASE_DIR, 'uploads', 'people', 'thumbnails')
+            test_image_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
+            shutil.copy(test_image_path, picture_folder)
+            # add image to test profile
+            person = models.Person.objects.get(pk=self.test_pk1)
+            person.picture = os.path.join(picture_folder, 'test_pic1.jpg')
+            person.thumbnail = os.path.join(thumbnail_folder, 'test_pic1.jpg')
+            person.save()
+            post_data = self.unchanged_post
+            post_data['picture'] = ''
+            response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data, follow=True)
+
+            self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
+            # test pic in .db
+            # test pic in response
+            self.assertContains(response, 'test_pic1.jpg')
+            profile = models.Person.objects.get(pk=self.test_pk1)
+            self.assertEqual(str(profile.picture), 'people/profile_pictures/test_pic1.jpg')
+            self.assertEqual(str(profile.thumbnail), 'people/thumbnails/test_pic1.jpg')
+            # test pic in file system
+            self.assertEqual(len(os.listdir(picture_folder)), num_uploads + 2)
+            pic_path = 'uploads/people/profile_pictures/test_pic1.jpg'
+            thumb_path = 'uploads/people/thumbnails/test_pic1.jpg'
+            self.assertTrue(os.path.exists(pic_path),
+                            'Picture not located on file system')
+            self.assertTrue(os.path.exists(thumb_path),
+                            'Picture not located on file system')
 
         finally:
             pass

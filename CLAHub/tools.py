@@ -100,7 +100,8 @@ def compress_picture(picture, compressed_size):
     try:
         im = ImageOps.exif_transpose(im)
     except TypeError:
-        logging.error('PIL error - image %s not rotated' % str(picture))
+        logging.error('PIL error %s - image rotated manually' % str(picture))
+        im = im.rotate(270, expand=True)
         pass
 
     output = BytesIO()
@@ -119,7 +120,7 @@ def compress_picture(picture, compressed_size):
 def check_picture_already_imported(picture):
     # look in CE and people uploads for files user has already uploaded
 
-    # todo It's possible this could misbehave if a file has the same name and the user intends
+    # todo It's possible this could misbehave if a file has the same name and the user intends that
     # to upload it. An uncompressed image would go through. If it went into a different upload folder
     # it wouldn't clash with the name previously.
 

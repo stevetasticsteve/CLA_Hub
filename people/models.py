@@ -52,7 +52,13 @@ class Person(models.Model):
                 self.picture = tools.compress_picture(self.picture, (1200, 1200))
                 # save an even smaller thumbnail
                 self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
+
         super(Person, self).save()
+
+    def clear_picture(self):
+        self.picture = None
+        self.thumbnail = None
+        self.save()
 
     def __str__(self):
         return self.name + '- ' + Person.villages[int(self.village) - 1][1]

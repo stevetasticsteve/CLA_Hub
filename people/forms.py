@@ -24,4 +24,6 @@ class PeopleForm(forms.ModelForm):
 
     def save(self, **kwargs):
         self.instance.last_modified_by = str(kwargs['request'].user)
+        if kwargs.get('request').POST.get('picture-clear'):
+            self.instance.clear_picture()
         return super(PeopleForm, self).save()

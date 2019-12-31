@@ -347,7 +347,6 @@ class EditPersonTest(PeopleTest):
         finally:
             self.cleanup_test_files()
 
-    @ skip('need to delete thumbnail too')
     def test_picture_clear(self):
         try:
             self.add_test_picture_file()
@@ -362,7 +361,7 @@ class EditPersonTest(PeopleTest):
             # test blank in .db
             profile = models.Person.objects.get(pk=self.test_pk1)
             self.assertEqual(str(profile.picture), '')
-            self.assertEqual(str(profile.thumbnail), '')
+            self.assertEqual(str(profile.thumbnail), '', 'Thumbnail not deleted when image cleared')
             # test pic still in file system
             self.assertEqual(self.get_num_of_uploads(), uploads_before)
             pic_path = 'uploads/people/profile_pictures/test_pic1.jpg'

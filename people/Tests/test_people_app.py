@@ -77,11 +77,6 @@ class PeopleTest(TestCase):
                 os.remove(os.path.join(self.thumbnail_folder, data))
             except FileNotFoundError:
                 pass
-        for folder in folders:
-            try:
-                os.removedirs(folder)
-            except OSError:
-                pass
 
     def add_test_picture_file(self):
         # add picture file to uploads
@@ -206,6 +201,27 @@ class NewPersonViewTest(PeopleTest):
             self.assertRedirects(response, reverse('people:detail', args=self.new_pk))
             self.run_test_uploaded_file(self.new_pk)
             self.assertEqual(self.get_num_of_uploads(), uploads_before + 1)
+
+        finally:
+            self.cleanup_test_files()
+
+    def test_picture_compression(self):
+        try:
+            post_data = self.new_post_data
+            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+                file = file.read()
+                test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
+                post_data['picture'] = test_image
+                self.client.post(reverse('people:new'), post_data)
+
+            test_file_size = os.path.getsize(self.test_pic1_path)
+            profile_pic_size = os.path.getsize(os.path.join(self.picture_folder, self.test_pic1))
+            thumbnail_size = os.path.getsize(os.path.join(self.thumbnail_folder, self.test_pic1))
+            self.assertLess(thumbnail_size, profile_pic_size)
+            self.assertLess(profile_pic_size, test_file_size)
+
+            self.assertLess(profile_pic_size, 500000, 'Profile picture larger than 500kb')
+            self.assertLess(thumbnail_size, 50000, 'Profile picture larger than 50kb')
 
         finally:
             self.cleanup_test_files()

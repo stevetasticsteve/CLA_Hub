@@ -45,7 +45,9 @@ class Person(models.Model):
 
     def save(self):
         if self.picture:
-            if not tools.check_picture_already_imported(self.picture):
+            if tools.check_picture_already_imported(self.picture):
+                self.picture = self.original_picture
+            else:
                 thumbnail = self.picture # do this if changing picture
                 self.picture = tools.compress_picture(self.picture, (1200, 1200))
                 # save an even smaller thumbnail

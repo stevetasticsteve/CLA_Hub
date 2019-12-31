@@ -372,9 +372,10 @@ class EditPersonTest(PeopleTest):
         finally:
             self.cleanup_test_files()
 
-    @ skip
     def test_uploading_pre_existing_file(self):
+        # ensure a duplicate upload isn't created
         try:
+            self.add_test_picture_file()
             uploads_before = self.get_num_of_uploads()
             post_data = self.unchanged_post
             with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
@@ -386,22 +387,8 @@ class EditPersonTest(PeopleTest):
             self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
             # test pic in response
             self.assertContains(response, 'test_pic1.jpg')
-            # check pic in .db
-            pic = models.Person.objects.get(pk=self.test_pk1).picture
-            self.assertEqual(str(pic), 'people/profile_pictures/test_pic1.jpg')
-            thumb = models.Person.objects.get(pk=self.test_pk1).thumbnail
-            self.assertEqual(str(thumb), 'people/thumbnails/test_pic1.jpg')
-            # test new picture present in file system
+            self.run_test_uploaded_file(self.test_pk1)
             self.assertEqual(self.get_num_of_uploads(), uploads_before)
-            pic_path = 'uploads/people/profile_pictures/test_pic1.jpg'
-            thumb_path = 'uploads/people/thumbnails/test_pic1.jpg'
-            self.assertTrue(os.path.exists(pic_path),
-                            'Picture not located on file system')
-            self.assertTrue(os.path.exists(thumb_path),
-                            'Picture not located on file system')
-            # test thumbnail smaller than pic
-            self.assertLess(os.path.getsize(thumb_path), os.path.getsize(pic_path),
-                            'Compression isn\'t working')
 
         finally:
             self.cleanup_test_files()

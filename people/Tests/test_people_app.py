@@ -113,6 +113,7 @@ class PeopleTest(TestCase):
         self.assertTrue(os.path.exists(thumb_path),
                         'Picture not located on file system')
 
+
 class BaseClassTest(PeopleTest):
     def test_setup(self):
         self.assertEqual(1, len(models.Person.objects.all()))
@@ -318,13 +319,14 @@ class EditPersonTest(PeopleTest):
             self.add_test_picture_file()
             uploads_before = self.get_num_of_uploads()
             post_data = self.unchanged_post
-            post_data['picture'] = ''
+            # post_data['picture'] = ''
             response = self.client.post(reverse('people:edit', args=self.test_pk1), post_data, follow=True)
 
             self.assertRedirects(response, reverse('people:detail', args=self.test_pk1))
             # test pic in response
             self.assertContains(response, 'test_pic1.jpg')
             self.run_test_uploaded_file(self.test_pk1)
+            self.assertEqual(self.get_num_of_uploads(), uploads_before)
 
         finally:
             self.cleanup_test_files()

@@ -108,7 +108,7 @@ def compress_picture(picture, compressed_size):
     try:
         im = ImageOps.exif_transpose(im)
     except TypeError:
-        logging.error('PIL error - image not rotated')
+        logging.error('PIL error - image %s not rotated' % str(picture))
         pass
 
     output = BytesIO()
@@ -128,7 +128,9 @@ def check_picture_already_imported(picture):
     # look in CE and people uploads for files user has already uploaded
     imported_files = list_all_files('uploads/CultureEventFiles') \
                      + list_all_files('uploads/people/profile_pictures')
+
     if os.path.basename(str(picture)) in imported_files:
+        logger.info('This file already exists: ' + os.path.basename(str(picture)))
         return True
 
 

@@ -3,6 +3,10 @@ from CLAHub import tools
 
 
 class Person(models.Model):
+    def __init__(self, *args, **kwargs):
+        super(Person, self).__init__(*args, **kwargs)
+        self.original_picture = self.picture
+
     villages = [
         ('1', 'Elilim'),
         ('2', 'Evesil'),
@@ -41,13 +45,13 @@ class Person(models.Model):
 
     def save(self):
         if self.picture:
-            # don't re-upload a picture that hasn't changed
-            # if self.picture != Person.objects.get(pk=self.pk).picture:
             thumbnail = self.picture
+            # compress_picture returns None if picture already exists in .db
             self.picture = tools.compress_picture(self.picture, (1200, 1200))
             # save an even smaller thumbnail
             self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
         super(Person, self).save()
+
 
     def __str__(self):
         return self.name + '- ' + Person.villages[int(self.village) - 1][1]

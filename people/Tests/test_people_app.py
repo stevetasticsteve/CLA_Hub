@@ -2,12 +2,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.files import File
 
 import datetime
 import os
-import shutil
-from unittest import skip
 
 from people import models
 from CLAHub import base_settings
@@ -66,7 +63,6 @@ class PeopleTest(TestCase):
         return len(os.listdir(self.picture_folder))
 
     def cleanup_test_files(self):
-        folders = [self.picture_folder, self.thumbnail_folder]
         test_data = ['test_pic1.jpg', 'test_pic2.jpg']
         for data in test_data:
             try:
@@ -81,7 +77,6 @@ class PeopleTest(TestCase):
     def add_test_picture_file(self):
         # add picture file to uploads
         num_uploads = len(os.listdir(self.picture_folder))
-        test_image_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', self.test_pic1)
 
         # add image to test profile
         person = models.Person.objects.get(pk=self.test_pk1)
@@ -329,8 +324,8 @@ class EditPersonTest(PeopleTest):
             self.cleanup_test_files()
 
     def test_post_with_blank_picture(self):
-        # The edit form passes pic = '' if the user edits a profile containing a picture and doesn't specify a new picture
-        # The picture shouldn't be overwritten by a blank
+        # The edit form passes pic = '' if the user edits a profile containing a picture and doesn't specify
+        # a new picture. The picture shouldn't be overwritten by a blank
         try:
             self.add_test_picture_file()
             uploads_before = self.get_num_of_uploads()

@@ -69,28 +69,31 @@
     {% endfor %}
     {% endif %}
 
-    {% if Questions %}
-    <h3>Questions</h3>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Question</th>
-            <th scope="col">Asked by</th>
-            <th scope="col">Answer</th>
-            <th scope="col">Answered by</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for q in Questions %}
-        <td>{{q.question}}</td>
-        <td>{{q.asked_by}} <on></on> {{q.date_created}}</td>
-        <td>{{q.answer}}</td>
-        <td>{{q.answered_by}}</td>
-        {% endfor %}
-        </tbody>
-    </table>
-    {% endif %}
+    <div class="container-fluid">
+        {% if Questions %}
+        <h3>Questions</h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Question</th>
+                <th scope="col">Asked by</th>
+                <th scope="col">Answer</th>
+                <th scope="col">Answered by</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for q in Questions %}
+            <td>{{q.question}}</td>
+            <td>{{q.asked_by}} <on></on> {{q.date_created}}</td>
+            <td>{{q.answer}}</td>
+            <td>{{q.answered_by}}</td>
+            </tbody>
+            {% endfor %}
+        </table>
+        {% endif %}
     </div>
+    </div>
+
 
 </div>
 

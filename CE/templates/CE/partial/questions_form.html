@@ -7,20 +7,35 @@
     <p></p>
 </div>
 </script>
-
-<h2>Questions</h2>
-<div id="questions-form-container">
-    <div id="question-server-items">
-        {% for question in QuestionForm %}
-        {{ question.id }}
-        <div class="container container-fluid" id="question-{{ forloop.counter0 }}">
-            {{ question.as_table }}
+<p></p>
+<div class="container-fluid">
+    <h2>Questions</h2>
+    <div id="questions-form-container">
+        <div id="question-server-items">
+            {% for question in QuestionForm %}
+            <div class="form-row" id="question-{{ forloop.counter0 }}">
+                <div class="col">
+                {{ question.id }}
+                <strong>Question {{forloop.counter}}</strong>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    {{ question.question.label_tag }}
+                    {{ question.question }}
+                </div>
+                <div class="col">
+                    {{ question.answer.label_tag }}
+                    {{ question.answer }}
+                </div>
+            </div>
         </div>
+        <hr>
         {% endfor %}
     </div>
 </div>
-<p></p>
 
+<br>
 <!--Add new text button-->
 <a href="#" id="add-question-button" class="btn btn-info add-question">Add Question</a>
 <hr>

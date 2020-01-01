@@ -28,7 +28,7 @@ The wet clothes were put in another bucket again and hung up at the washing line
     differences='I\'ve seen people washing at a nearby stream too'
     )
     example_ce_1.save()
-    with open(os.path.join(example_data_folder, 'example_CE_pic%s.jpg'), 'rb') as file:
+    with open(os.path.join(example_data_folder, 'example_audio1.mp3'), 'rb') as file:
         file = file.read()
         audio = SimpleUploadedFile(name='example_audio1.mp3', content=file, content_type='audio')
 

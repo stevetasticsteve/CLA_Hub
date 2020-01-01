@@ -279,4 +279,55 @@ class TestEditPage(CETestBaseClass):
         self.assertEqual(models.Visit.objects.get(pk=int(self.test_visit_pk)+1).date,
                          datetime.date(2019, 10, 11), 'visit 2 not updated on POST')
 
-    #todo no change picture test
+    def test_can_add_picture(self):
+        try:
+            before_uploads = self.get_number_of_uploaded_images(self.test_ce1_pk)
+            post_data = self.standard_post
+            with open(self.test_pic1_path, 'rb') as file:
+                file = file.read()
+                picture = SimpleUploadedFile(name='test_pic1.jpg', content=file, content_type='image')
+                post_data['picture'] = picture
+                response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
+                                            data=post_data, follow=True)
+
+            self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+            # test pic in .db
+            picture = models.Picture.objects.filter(ce=self.test_ce1_pk)
+            self.assertEqual(len(picture), 1)
+            self.assertEqual(str(picture[0].picture), 'CultureEventFiles/%s/images/test_pic1.jpg' % self.test_ce1_pk)
+            # test pic on file system
+            self.assertEqual(self.get_number_of_uploaded_images(self.test_ce1_pk), before_uploads + 1)
+            self.assertTrue(os.path.exists(os.path.join(self.test_ce1_upload_path, 'images', 'test_pic1.jpg')))
+        finally:
+            self.cleanup_test_files(self.test_ce1_pk)
+
+    def test_preexisting_pic_ignored(self):
+        try:
+            with open(self.test_pic1_path, 'rb') as file:
+                file = file.read()
+                picture = SimpleUploadedFile(name='test_pic1.jpg', content=file, content_type='image')
+                ce = models.CultureEvent.objects.get(pk=self.test_ce1_pk)
+                new_pic = models.Picture(ce=ce,
+                                         picture=picture)
+                new_pic.save()
+            before_uploads = self.get_number_of_uploaded_images(self.test_ce1_pk)
+
+            post_data = self.standard_post
+            with open(self.test_pic1_path, 'rb') as file:
+                file = file.read()
+                picture = SimpleUploadedFile(name='test_pic1.jpg', content=file, content_type='image')
+                post_data['picture'] = picture
+                response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
+                                            data=post_data, follow=True)
+
+            self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+            # test pic in .db
+            picture = models.Picture.objects.filter(ce=self.test_ce1_pk)
+            # test no extra files created
+            self.assertEqual(len(picture), 1, 'Duplicated uploaded files are being created')
+
+        finally:
+            self.cleanup_test_files(self.test_ce1_pk)
+
+
+

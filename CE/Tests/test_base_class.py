@@ -3,6 +3,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from CE import models
 
+from CLAHub import base_settings
+
 
 class CETestBaseClass(TestCase):
     @classmethod
@@ -114,6 +116,8 @@ class CETestBaseClass(TestCase):
         self.test_visit_pk = str(self.prexisiting_model_objects['Visit'] + 1)
         self.test_question_pk = str(self.prexisiting_model_objects['Question'] + 1)
         self.new_ce_pk = str(self.prexisiting_model_objects['CE'] + 3)
+        self.test_ce1_upload_path = os.path.join(base_settings.BASE_DIR, 'uploads', 'CultureEventFiles', str(self.test_ce1_pk))
+        self.test_pic1_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
 
     def test_setup(self):
         self.assertEqual(models.CultureEvent.objects.get(pk=3).title, self.test_data['title'])
@@ -125,6 +129,14 @@ class CETestBaseClass(TestCase):
                          self.prexisiting_model_objects['Visit'] + 1)
         self.assertEqual(len(models.Question.objects.all()),
                          self.prexisiting_model_objects['Question'] + 1)
+
+    @ staticmethod
+    def get_number_of_uploaded_images(ce):
+        ce_upload_path = os.path.join(base_settings.BASE_DIR, 'uploads', 'CultureEventFiles', str(ce), 'images')
+        try:
+            return len(os.listdir(ce_upload_path))
+        except FileNotFoundError:
+            return 0
 
 
 

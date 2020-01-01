@@ -117,6 +117,8 @@ class Picture(models.Model):
 
     def save(self):
         if self.picture:
+            if tools.check_picture_already_imported(self.picture):
+                return None
             self.picture = tools.compress_picture(self.picture, (1200, 1200))
         super(Picture, self).save()
 

@@ -4,7 +4,13 @@
 # inserts
 
 from django.db import migrations
+from django.core.files.uploadedfile import SimpleUploadedFile
 from CE import models
+from CLAHub import base_settings
+
+import os
+
+example_data_folder = os.path.join(base_settings.BASE_DIR, 'CLAHub/assets/example_data')
 
 def insert_example_CEs(apps, schema_editor):
     example_ce_1 = models.CultureEvent(
@@ -22,35 +28,34 @@ The wet clothes were put in another bucket again and hung up at the washing line
     differences='I\'ve seen people washing at a nearby stream too'
     )
     example_ce_1.save()
-    example_text_1 = models.Text(
-        ce=example_ce_1,
-        text_title='Maryanne talking about doing laundry',
-        phonetic_text='''oke fəst mipla ɡo pulapim wara kam kapsaⁱtim insaⁱt lo bakɛt sɛrim wara biloŋ 
-        raᵘsim dəti lo rins na mipla fəst mipla wasim dəti bihaⁱn mipla putim ɡo lo sop wara mipla 
-        brasim ol klots pinis sampla blo blits ja mipla blitsim ol pinis mipla putim go lo rins wara 
-        mipla rinsim rinsim sop raᵘsim mipla ɡo lo klin wara mipla rinsim naᵘ mipla ɡo haŋgamapim lo 
-        laⁱn ɛm tʃol''',
-        phonetic_standard='1',
-        discourse_type='3',
-        last_modified_by='CLAHubDev',
-        orthographic_text='''Orthographic text goes here :)''',
-        audio='example_data/example_audio1.mp3'
-)
-    example_text_1.save()
-    example_ce_1.tags.add('Example')
+    with open(os.path.join(example_data_folder, 'example_CE_pic%s.jpg'), 'rb') as file:
+        file = file.read()
+        audio = SimpleUploadedFile(name='example_audio1.mp3', content=file, content_type='audio')
 
-    example_pic1 = models.Picture(picture='example_data/example_CE_pic1.jpg',
-                                  ce=example_ce_1)
-    example_pic1.save()
-    example_pic2 = models.Picture(picture='example_data/example_CE_pic2.jpg',
-                                  ce=example_ce_1)
-    example_pic2.save()
-    example_pic3 = models.Picture(picture='example_data/example_CE_pic3.jpg',
-                                  ce=example_ce_1)
-    example_pic3.save()
-    example_pic4 = models.Picture(picture='example_data/example_CE_pic4.jpg',
-                                  ce=example_ce_1)
-    example_pic4.save()
+        example_text_1 = models.Text(
+            ce=example_ce_1,
+            text_title='Maryanne talking about doing laundry',
+            phonetic_text='''oke fəst mipla ɡo pulapim wara kam kapsaⁱtim insaⁱt lo bakɛt sɛrim wara biloŋ 
+            raᵘsim dəti lo rins na mipla fəst mipla wasim dəti bihaⁱn mipla putim ɡo lo sop wara mipla 
+            brasim ol klots pinis sampla blo blits ja mipla blitsim ol pinis mipla putim go lo rins wara 
+            mipla rinsim rinsim sop raᵘsim mipla ɡo lo klin wara mipla rinsim naᵘ mipla ɡo haŋgamapim lo 
+            laⁱn ɛm tʃol''',
+            phonetic_standard='1',
+            discourse_type='3',
+            last_modified_by='CLAHubDev',
+            orthographic_text='''Orthographic text goes here :)''',
+            audio=audio
+            )
+        example_text_1.save()
+        example_ce_1.tags.add('Example')
+
+    for i in range(1, 5):
+        with open(os.path.join(example_data_folder, 'example_CE_pic%s.jpg' % str(i)), 'rb') as file:
+            file = file.read()
+            picture = SimpleUploadedFile(name='example_CE_pic%s.jpg' % str(i), content=file, content_type='image')
+            example_pic = models.Picture(picture=picture,
+                                          ce=example_ce_1)
+            example_pic.save()
 
     visit = models.Visit(ce=example_ce_1,
                          team_present='Gerdine, Becky',

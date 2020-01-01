@@ -30,7 +30,7 @@
     <tr>
         <td>{{q.question}}</td>
         <td>{{q.asked_by}} on {{q.date_created}}</td>
-        <td>{{q.ce.title}}</td>
+        <td><a href="{% url 'CE:view' q.ce.pk%}">{{q.ce.title}}</a></td>
         <td>{{q.answer}}</td>
         <td>{{q.answered_by}}</td>
     </tr>

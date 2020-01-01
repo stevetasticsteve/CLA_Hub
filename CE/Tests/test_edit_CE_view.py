@@ -310,7 +310,6 @@ class TestEditPage(CETestBaseClass):
                 new_pic = models.Picture(ce=ce,
                                          picture=picture)
                 new_pic.save()
-            before_uploads = self.get_number_of_uploaded_images(self.test_ce1_pk)
 
             post_data = self.standard_post
             with open(self.test_pic1_path, 'rb') as file:
@@ -329,5 +328,15 @@ class TestEditPage(CETestBaseClass):
         finally:
             self.cleanup_test_files(self.test_ce1_pk)
 
+    def test_can_add_question(self):
+        post_data = self.standard_post
+        post_data['question-0-question'] = 'New'
+        response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
+                                    data=post_data, follow=True)
 
+        self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
+        ce = models.CultureEvent.objects.get(pk=self.test_ce1_pk)
+        questions = models.Question.objects.filter(ce=ce)
+        self.assertEqual(len(questions), 1)
+        self.assertEqual(questions[0].question, 'New')
 

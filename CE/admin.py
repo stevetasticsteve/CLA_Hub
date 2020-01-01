@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from CE.models import CultureEvent, Text, Picture, Visit
+from CE.models import CultureEvent, Text, Picture, Visit, Question
 
 
 class CEAdmin(admin.ModelAdmin):
@@ -21,7 +21,12 @@ class VisitsAdmin(admin.ModelAdmin):
     list_display = ('ce', 'date', 'team_present')
 
 
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('question', 'answer', 'ce')
+
+
 admin.site.register(CultureEvent, CEAdmin)
 admin.site.register(Text, TextsAdmin)
 admin.site.register(Picture, PicturesAdmin)
 admin.site.register(Visit, VisitsAdmin)
+admin.site.register(Question, QuestionAdmin)

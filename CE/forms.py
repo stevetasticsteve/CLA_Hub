@@ -151,25 +151,37 @@ class QuestionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # init method injects 'form-control' in to enable bootstrap styling
         super(QuestionForm, self).__init__(*args, **kwargs)
+        self.original_question = self.instance.question
+        self.original_answer = self.instance.answer
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
+
+    def question_changed(self):
+        if self.cleaned_data.get('question'):
+            if self.cleaned_data['question'] != self.original_question:
+                return True
+
+    def answer_changed(self):
+        if self.cleaned_data.get('answer'):
+            if self.cleaned_data['answer'] != self.original_answer:
+                return True
 
     class Meta:
         model = CE.models.Question
         fields = ('question', 'answer')
 
     def save(self, **kwargs):
-        # only save the form if user has entered data. Otherwise default fields will be filled in
-        # and an entry made despite no user input
-        try:
-            if self.cleaned_data['question']:
-                self.instance.last_modified_by = str(kwargs['request'].user)
-                self.instance.asked_by = str(kwargs['request'].user)
-                super(QuestionForm, self).save()
-        except KeyError:
-            pass
+        if self.question_changed():
+            self.instance.asked_by = str(kwargs.get('request').user)
+            self.instance.last_modified_by = str(kwargs.get('request').user)
+        if self.answer_changed():
+            self.instance.answered_by = str(kwargs.get('request').user)
+            self.instance.last_modified_by = str(kwargs.get('request').user)
+        if self.cleaned_data.get('question'):
+            super(QuestionForm, self).save()
+
 
 
 class VisitsForm(forms.ModelForm):

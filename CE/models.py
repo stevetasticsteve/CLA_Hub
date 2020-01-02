@@ -156,6 +156,11 @@ class Text(models.Model):
 
 
 class Question(models.Model):
+    def __init__(self, *args, **kwargs):
+        # init method injects 'form-control' in to enable bootstrap styling
+        super(Question, self).__init__(*args, **kwargs)
+        self.original_answer = self.answer
+
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     question = models.CharField(max_length=200)
     answer = models.CharField(max_length=200,
@@ -167,6 +172,6 @@ class Question(models.Model):
     answered_by = models.CharField(max_length=20)
 
     def __str__(self):
-        return 'Question about ' + str(self.ce) + ' CE'
+        return 'Question about ' + str(self.ce) + ': ' + str(self.question)
 
 

@@ -1,38 +1,46 @@
 {{ QuestionForm.management_form }}
+<h2>Questions</h2>
 
 <script type="text/html" id="question-template">
-<div id="question-__prefix__" class="container-fluid border bg-light">
-    <p></p>
-    {{ QuestionForm.empty_form.as_p }}
+<div id="question-__prefix__" class="container-fluid border bg-light" value="__prefix__">
+    <h3>New Question</h3>
+        <div class="form-row">
+            <div class="col">
+                {{ QuestionForm.empty_form.question.label_tag }}
+                {{ QuestionForm.empty_form.question }}
+            </div>
+            <div class="col">
+                {{ QuestionForm.empty_form.answer.label_tag }}
+                {{ QuestionForm.empty_form.answer }}
+            </div>
+        </div>
     <p></p>
 </div>
 </script>
+
 <p></p>
-<div class="container-fluid">
-    <h2>Questions</h2>
-    <div id="questions-form-container">
-        <div id="question-server-items">
-            {% for question in QuestionForm %}
-            <div class="form-row" id="question-{{ forloop.counter0 }}">
-                <div class="col">
-                {{ question.id }}
-                <strong>Question {{forloop.counter}}</strong>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col">
-                    {{ question.question.label_tag }}
-                    {{ question.question }}
-                </div>
-                <div class="col">
-                    {{ question.answer.label_tag }}
-                    {{ question.answer }}
-                </div>
+<div id="questions-form-container">
+    <div id="question-server-items">
+        {% for question in QuestionForm %}
+        <div class="form-row" id="question-{{ forloop.counter0 }}">
+            {{ question.id }}
+            <div class="col">
+            <strong>Question {{forloop.counter}}</strong>
             </div>
         </div>
-        <hr>
-        {% endfor %}
+        <div class="form-row">
+            <div class="col">
+                {{ question.question.label_tag }}
+                {{ question.question }}
+            </div>
+            <div class="col">
+                {{ question.answer.label_tag }}
+                {{ question.answer }}
+            </div>
+        </div>
     </div>
+    <p></p>
+    {% endfor %}
 </div>
 
 <br>

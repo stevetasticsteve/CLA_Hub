@@ -16,6 +16,7 @@
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
 - Visit form in CE pages different format to other formsets
+- When adding a new question form it appears below submit on New CE form
 
 ## Server improvements
 - Paginate texts, alphabetical CEs and tags pages
@@ -33,7 +34,7 @@
 - Tags can potentially produce None as the slug. django.slugify is used on the tag and '==' will become ''
 Added if loops in templates to catch this bug and stop a server error, but the tag will still exit - being
 visible on the tags page but unaccessible as it has no slug.
-- Example mp3 was corrupted and needs replaciing
+- Can't add a question to the Example CE for some reason (can edit)
 
 - Edit tests not working now there is example data
 

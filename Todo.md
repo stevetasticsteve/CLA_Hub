@@ -8,20 +8,18 @@
 - Search texts
 - Hardcode in CLAHubDev admin login
 - label and value tags - enables user extensions without coding - users can add their own fields
-- tests for people app and imports
+- tests for imports
 
 ## UI improvements
 - Editing or removing uploaded pictures (Ajax drag and drop?)
 - User friendliness testing
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
-- Visit form in CE pages different format to other formsets
 - When adding a new question form it appears below submit on New CE form
 
 ## Server improvements
 - Paginate texts, alphabetical CEs and tags pages
 - Think of 'background' information that can be stored by server that might be helpful for queries
-- Form validation for audio files
 - Improve search
 - Functional tests
 - Make a 2nd level of user so Auth isn't open to them on the admin site
@@ -35,8 +33,7 @@
 Added if loops in templates to catch this bug and stop a server error, but the tag will still exit - being
 visible on the tags page but unaccessible as it has no slug.
 - Can't add a question to the Example CE for some reason (can edit)
-
-- Edit tests not working now there is example data
+- Audio is replicated on save during tests
 
 
 

@@ -2,6 +2,10 @@
 {% block page_content %}
 <div class="container-fluid">
     <h2>Import profiles</h2>
+    <p>This tool is to batch import profiles to kick off your database. It accepts a .csv file formatted as
+    UTF8 with the following columns: filename| village name | person name</p>
+    <p>This tool currently needs to be called from the command line until CLAHub incorporates asynchronous
+    event handling</p>
     <br>
     <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}

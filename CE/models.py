@@ -143,7 +143,6 @@ class Text(models.Model):
                                          default='1',
                                          blank=True)
     orthographic_text = models.TextField(blank=True)
-    valid_for_DA = models.BooleanField(default=False)
     discourse_type = models.CharField(choices=genres,
                                       max_length=15,
                                       blank=True)

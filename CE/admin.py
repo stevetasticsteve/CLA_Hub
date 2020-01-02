@@ -9,8 +9,8 @@ class CEAdmin(admin.ModelAdmin):
 
 
 class TextsAdmin(admin.ModelAdmin):
-    list_display = ('text_title', 'ce', 'phonetic_standard', 'valid_for_DA', 'discourse_type')
-    list_filter = ('phonetic_standard', 'valid_for_DA', 'discourse_type')
+    list_display = ('text_title', 'ce', 'phonetic_standard', 'discourse_type')
+    list_filter = ('phonetic_standard', 'discourse_type')
 
 
 class PicturesAdmin(admin.ModelAdmin):

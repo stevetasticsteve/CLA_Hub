@@ -23,7 +23,6 @@
 - Improve search
 - Functional tests
 - Make a 2nd level of user so Auth isn't open to them on the admin site
-- Remove valid for DA Boolean? Covered by phonetic standard. Expand phonetic standard to include orthography?
 
 ## Bugs
 - auto hyperlink defaults to finding the shortest thing it can, you can't refer to similarly worded CEs of shorter length

@@ -36,7 +36,6 @@ class CETestBaseClass(TestCase):
             'date': '2019-02-20',
             'phonetic_text': 'foᵘnɛtɪks',
             'orthographic_text': 'orthographic',
-            'valid_for_DA': False,
             'tags': 'taggie',
             'question': 'Does this test work?',
             'answer': 'Yes, it does!'}
@@ -59,13 +58,11 @@ class CETestBaseClass(TestCase):
         visit.save()
         text = models.Text(ce=ce,
                            phonetic_text=self.test_data['phonetic_text'],
-                           orthographic_text=self.test_data['orthographic_text'],
-                           valid_for_DA=self.test_data['valid_for_DA'])
+                           orthographic_text=self.test_data['orthographic_text'])
         text.save()
         text2 = models.Text(ce=ce,
                            phonetic_text='phonetic_text2',
-                           orthographic_text=self.test_data['orthographic_text'],
-                           valid_for_DA=self.test_data['valid_for_DA'])
+                           orthographic_text=self.test_data['orthographic_text'])
         text2.save()
         q = models.Question(ce=ce,
                             question=self.test_data['question'],
@@ -100,12 +97,10 @@ class CETestBaseClass(TestCase):
                               'text-0-orthographic_text': self.test_data['orthographic_text'],
                               'text-0-ce': self.test_ce1_pk,
                               'text-0-id': 1,
-                              'text-0-valid_for_DA': self.test_data['valid_for_DA'],
                               'text-1-phonetic_text': self.test_data['phonetic_text'],
                               'text-1-orthographic_text': self.test_data['orthographic_text'],
                               'text-1-ce': self.test_ce1_pk,
                               'text-1-id': '2',
-                              'text-1-valid_for_DA': self.test_data['valid_for_DA'],
                               'visit-0-ce': self.test_ce1_pk,
                               'visit-0-id': 1,
                               'visit-0-team_present': self.test_data['team_present'],

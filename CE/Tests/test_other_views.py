@@ -56,8 +56,7 @@ class TestViewPage(TestCase):
         text = models.Text(ce=models.CultureEvent.objects.get(pk=3),
                            audio='musicFile.ogg',
                            phonetic_text='foᵘnɛtɪks',
-                           orthographic_text='orthographic',
-                           valid_for_DA=False)
+                           orthographic_text='orthographic')
         text.save()
 
     def test_view_page(self):

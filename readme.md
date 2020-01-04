@@ -3,6 +3,9 @@
 A Django project to give bush teams a way to collaboratively create and maintain a culture file for learning tribal language and culture.
 The software is intended to be run on a Raspberry pi 3 on an internal team network and accessed through a desktop web browser.
 
+PythonAnywhere are hosting an example instance of CLAHub: http://stevetasticsteve.pythonanywhere.com
+Feel free to check it out. Pythonanywhere are hosting it for free which is amazing, but of course performance might suffer.
+
 ## Core features
 - Create web pages to document culture events (CEs)
     - Allow cross linking to other CEs

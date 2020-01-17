@@ -19,7 +19,14 @@ class PeopleForm(forms.ModelForm):
         exclude = ('DELETE', 'last_modified_by', 'thumbnail')
         widgets = {
             'born': DateInput(),
-            'death': DateInput()
+            'death': DateInput(),
+            'team_contact': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write whatever notes you like here',
+            })
+        }
+        labels = {
+            'team_contact': 'Notes'
         }
 
     def save(self, **kwargs):

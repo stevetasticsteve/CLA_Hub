@@ -9,7 +9,7 @@ import os
 import sys
 import logging
 
-logger = logging.getLogger('CLAHub')
+logger = logging.getLogger('debug')
 
 
 def import_profiles_from_csv(file_upload):

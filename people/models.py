@@ -33,6 +33,8 @@ class Person(models.Model):
     born = models.DateField(auto_now=False, blank=True, null=True)
     dialect = models.CharField(max_length=60, blank=True)
     death = models.DateField(auto_now=False, blank=True, null=True)
+    family_plain_text = models.TextField(blank=True)
+    family = models.TextField(blank=True)
 
     medical = models.TextField(blank=True)
     team_contact = models.TextField(blank=True)
@@ -52,6 +54,10 @@ class Person(models.Model):
                 self.picture = tools.compress_picture(self.picture, (1200, 1200))
                 # save an even smaller thumbnail
                 self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
+
+        if self.family_plain_text:
+            self.family = self.family_plain_text
+            # todo add auto hyperlink functionality
 
         super(Person, self).save()
 

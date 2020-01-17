@@ -16,7 +16,7 @@ class PeopleForm(forms.ModelForm):
 
     class Meta:
         model = people.models.Person
-        exclude = ('DELETE', 'last_modified_by', 'thumbnail')
+        exclude = ('DELETE', 'last_modified_by', 'thumbnail', 'family')
         widgets = {
             'born': DateInput(),
             'death': DateInput(),
@@ -26,7 +26,8 @@ class PeopleForm(forms.ModelForm):
             })
         }
         labels = {
-            'team_contact': 'Notes'
+            'team_contact': 'Notes',
+            'family_plain_text': 'Family'
         }
 
     def save(self, **kwargs):

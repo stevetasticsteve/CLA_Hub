@@ -1,6 +1,14 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 from CLAHub import tools
 
+import re
+import bleach
+
+import CE.settings # todo move that out of CE and into general settings
+
+
+integer_regex = re.compile(' \d+')
 
 class Person(models.Model):
     def __init__(self, *args, **kwargs):
@@ -56,8 +64,16 @@ class Person(models.Model):
                 self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
 
         if self.family_plain_text:
-            self.family = self.family_plain_text
-            # todo add auto hyperlink functionality
+            integers = re.findall(integer_regex, self.family_plain_text)
+            self.family = bleach.clean(self.family_plain_text,
+                                       tags=CE.settings.bleach_allowed,
+                                       strip=True)
+            for match in integers:
+                try:
+                    link = Person.objects.get(pk=match)
+                    self.family = self.family.replace(match, '<a href="' + match + '"> ' + link.name + '</a>')
+                except ObjectDoesNotExist:
+                    pass
 
         super(Person, self).save()
 

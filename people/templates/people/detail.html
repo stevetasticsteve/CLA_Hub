@@ -47,7 +47,9 @@
         {{ person.team_contact }}
         <br><br>
         <h4>Family</h4>
+        {% autoescape off %}
         {{ person.family }}
+        {% endautoescape %}
         <br><br>
 
         <h4>Medical history</h4>

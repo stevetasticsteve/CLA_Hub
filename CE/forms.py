@@ -7,10 +7,10 @@ import CE.settings
 
 if CE.settings.auto_cross_reference:
     description_placeholder = 'Auto cross reference is on. If you type the (lowercase) title of an existing CE' \
-                              ' it will become a hyperlink.'
+                              ' it will become a hyperlink. \nField is html enabled'
 else:
     description_placeholder = 'Auto cross reference is off. To insert a cross reference put the title of an existing' \
-                              ' CE within curly brackets like this: {fishing}'
+                              ' CE within curly brackets like this: {fishing} \nField is html enabled'
 
 
 class DateInput(forms.DateInput):

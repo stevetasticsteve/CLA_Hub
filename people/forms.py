@@ -22,7 +22,11 @@ class PeopleForm(forms.ModelForm):
             'death': DateInput(),
             'team_contact': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'Write whatever notes you like here',
+                'placeholder': 'Write whatever notes you like here'
+            }),
+            'family_plain_text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Field is html enabled'
             })
         }
         labels = {

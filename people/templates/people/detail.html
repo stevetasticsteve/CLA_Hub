@@ -47,6 +47,9 @@
         {{ person.team_contact }}
         <br><br>
         <h4>Family</h4>
+        <small><a href="{% url 'people:family_help' %}">Tell me about recording family trees</a></small>
+        <br>
+        <br>
         {% autoescape off %}
         {{ person.family }}
         {% endautoescape %}

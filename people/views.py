@@ -111,3 +111,7 @@ def edit(request, pk):
         'Errors': errors
     }
     return render(request, template, context)
+
+
+def help_family(request):
+    return render(request, 'people/help/family_help.html')

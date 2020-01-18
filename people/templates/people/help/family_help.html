@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<h1>CLAHub help</h1>
+<h2>Family field</h2>
+<p>
+    Recording family information for people is a tedious and complex task. Unfortunately because there are so
+    many exceptions to the rules CLAHub isn't able to automate the family tree building process. CLAHub has chosen a
+    flexible and mostly manual approach to recording family information.
+</p>
+
+<p>
+    You're able to write anything you want in the family field. CLAHub won't try to enforce database integrity rules,
+    or automatically fill in family connections.
+    It will however assume that whenever you type any numbers you intend for those to become hyperlinks. Every profile
+    in CLAHub has a unique numeric key. This numeric key can be seen in the url for the profile you're interested in.
+</p>
+
+<p>
+    Upon saving a profile CLAHub will read the contents of the family field and replace any numbers with a hyperlink to
+    the profile with that numeric key (if it exists) and display the linked profile's name.
+</p>
+<hr>
+<p>
+    For example typing:
+    <ul>Brother: 1</ul>
+    Will become
+    <ul>Brother: <a href="#">Brother's name</a></ul>
+</p>
+{% endblock %}

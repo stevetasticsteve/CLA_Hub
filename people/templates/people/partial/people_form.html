@@ -1,0 +1,67 @@
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if Errors %}
+    <div class="form-group has-error">
+        {% for error in Errors %}
+            <div class="alert alert-danger">{{error}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+     <div class="form-row">
+        <div class="col-sm-3">
+            {{Form.name.label_tag}}
+            {{Form.name}}
+        </div>
+        <div class="col-sm-3">
+            {{Form.village.label_tag}}
+            {{Form.village}}
+        </div>
+         <div class="col-sm-3">
+            {{Form.clan.label_tag}}
+            {{Form.clan}}
+        </div>
+         <div class="col-sm-3">
+            {{Form.dialect.label_tag}}
+            {{Form.dialect}}
+        </div>
+    </div><hr>
+
+    <div class="form-row">
+        <div class="col-sm-6">
+            <div class="form-row">
+                <div class="col-sm-3">
+                    {{Form.born.label_tag}}
+                    {{Form.born}}
+                </div>
+                <div class="col-sm-3">
+                    {{Form.death.label_tag}}
+                    {{Form.death}}
+                </div>
+                <div class="col-sm-6">
+                    {{Form.picture.label_tag}}
+                    {{Form.picture}}
+                </div>
+            </div>
+            <br>
+            {{Form.education.label_tag}}
+            {{Form.education}}
+            <br>
+            {{Form.family_plain_text.label_tag}}
+             <small><a href="{% url 'people:family_help' %}"
+                      target="_blank" rek="noopener noreferer">Tell me about entering family info</a></small>
+            {{Form.family_plain_text}}
+        </div>
+        <div class="col-sm-6">
+            {{Form.team_contact.label_tag}}
+            {{Form.team_contact}}
+
+            {{Form.medical.label_tag}}
+            {{Form.medical}}
+        </div>
+
+    </div>
+
+    <br>
+    <button type="input" class="btn btn-primary">Submit</button>
+</form>

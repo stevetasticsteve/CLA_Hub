@@ -8,7 +8,7 @@ import bleach
 import CE.settings # todo move that out of CE and into general settings
 
 
-integer_regex = re.compile(' \d+')
+integer_regex = re.compile('\d+')
 
 class Person(models.Model):
     def __init__(self, *args, **kwargs):

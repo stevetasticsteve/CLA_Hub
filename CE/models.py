@@ -150,6 +150,9 @@ class Text(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=20, blank=True)
 
+    def save(self):
+        super(Text, self).save()
+
     def __str__(self):
         return str(self.text_title)
 

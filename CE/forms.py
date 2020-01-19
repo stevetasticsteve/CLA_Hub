@@ -132,7 +132,7 @@ class TextForm(forms.ModelForm):
         widgets = {
                    'audio': forms.ClearableFileInput(attrs={
                    'class': 'form-control',
-                   'accept': '.mp3'})
+                   'accept': '.mp3, .m4a'})
         }
 
     def save(self, **kwargs):

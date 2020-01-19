@@ -130,7 +130,7 @@ class TestEditPage(CETestBaseClass):
             models.Text.objects.get(pk=extra_pk)
 
         # test remaining texts are unchanged
-        self.assertEqual(models.Text.objects.get(pk=self.test_ce1_pk).phonetic_text,
+        self.assertEqual(models.Text.objects.get(pk=self.test_text1_pk).phonetic_text,
                          self.test_data['phonetic_text'])
         self.assertEqual(models.Text.objects.get(pk=self.test_text2_pk).phonetic_text,
                          self.test_data['phonetic_text'])
@@ -195,7 +195,10 @@ class TestEditPage(CETestBaseClass):
             # add audio file to uploads
             test_folder = os.path.join(os.getcwd(),
                                        'uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
-            os.makedirs(test_folder)
+            try:
+                os.makedirs(test_folder)
+            except FileExistsError: # don't need to create it
+                pass
             shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
             # add audio to test text
             text = models.Text.objects.get(pk=self.test_text1_pk)

@@ -118,7 +118,7 @@ class Picture(models.Model):
     def save(self):
         if self.picture:
             if tools.check_already_imported(self.picture):
-                return None
+                return None # exit function, don't save anything
             self.picture = tools.compress_picture(self.picture, (1200, 1200))
         super(Picture, self).save()
 
@@ -151,6 +151,10 @@ class Text(models.Model):
     last_modified_by = models.CharField(max_length=20, blank=True)
 
     def save(self):
+        if self.audio:
+            if tools.check_already_imported(self.audio):
+                # don't duplicate audio in uploads during tests
+                self.audio.upload_to = None
         super(Text, self).save()
 
     def __str__(self):

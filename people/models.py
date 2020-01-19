@@ -55,7 +55,7 @@ class Person(models.Model):
 
     def save(self):
         if self.picture:
-            if tools.check_picture_already_imported(self.picture):
+            if tools.check_already_imported(self.picture):
                 self.picture = self.original_picture
             else:
                 thumbnail = self.picture # do this if changing picture

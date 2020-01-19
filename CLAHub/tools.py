@@ -117,15 +117,15 @@ def compress_picture(picture, compressed_size):
     return picture
 
 
-def check_picture_already_imported(picture):
+def check_already_imported(picture):
     # look in CE and people uploads for files user has already uploaded
 
     # todo It's possible this could misbehave if a file has the same name and the user intends that
     # to upload it. An uncompressed image would go through. If it went into a different upload folder
     # it wouldn't clash with the name previously.
 
-    imported_files = list_all_files('uploads/CultureEventFiles') \
-                     + list_all_files('uploads/people/profile_pictures')
+    imported_files = list_all_files(os.path.join('uploads', 'CultureEventFiles')) \
+                     + list_all_files(os.path.join('uploads', 'people', 'profile_pictures'))
 
     if os.path.basename(str(picture)) in imported_files:
         logger.info('This file already exists: ' + os.path.basename(str(picture)))

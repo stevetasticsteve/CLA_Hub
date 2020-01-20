@@ -6,6 +6,7 @@
 - Way to link institutes to realm of reality write up
 - Search tags
 - Search texts
+- Search people
 - Hardcode in CLAHubDev admin login
 - label and value tags - enables user extensions without coding - users can add their own fields
 - tests for imports
@@ -16,6 +17,8 @@
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
 - When adding a new question form it appears below submit on New CE form
+- When there are multiple questions the new question appears in the middle of the
+questions not at the end
 
 ## Server improvements
 - Paginate texts, alphabetical CEs and tags pages
@@ -33,6 +36,9 @@ Added if loops in templates to catch this bug and stop a server error, but the t
 visible on the tags page but unaccessible as it has no slug.
 - Can't add a question to the Example CE for some reason (can edit)
 - Audio is replicated on save during tests
+- Can't save more than one question when there is more than one text
+- Editing a CE means your user overwrites the last edited by information for texts too,
+even if you didn't edit them.
 
 
 

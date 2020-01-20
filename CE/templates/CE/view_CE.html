@@ -30,7 +30,9 @@
         {% else %}
         <div class = col-sm-12>
         {% endif %}
+            {% if Visits %}
             {% include 'CE/partial/visits_table.html' %}
+            {% endif %}
 
             <div class="container-fluid bg-light">
                 <h3>Description</h3>

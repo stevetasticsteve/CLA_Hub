@@ -22,18 +22,21 @@ class CE_EditFormTests(TestCase):
         self.assertFalse(form.is_valid())
 
 
-class PictureUploadForm(TestCase):
-    #todo test still useful, but needs refactored, form was rolled into standard form
-    def test_valid_data(self):
-        with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
-            file = file.read()
-            test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
-        form_data = {'title': 'Test CE',
-                     'date': '2019-02-20',
-                     'picture': test_image}
-        form = forms.CE_EditForm(data=form_data)
-        form.full_clean()
-        self.assertTrue(form.is_valid())
+# class PictureUploadForm(TestCase):
+#     #todo test still useful, but needs refactored, form was rolled into standard form
+#     def test_valid_data(self):
+#         try:
+#             with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+#                 file = file.read()
+#                 test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
+#             form_data = {'title': 'Test CE',
+#                          'date': '2019-02-20',
+#                          'picture': test_image}
+#             form = forms.CE_EditForm(data=form_data)
+#             form.full_clean()
+#             self.assertTrue(form.is_valid())
+#         finally:
+#
 
 # class ParticipationFormsetTest(TestCase):
 #     def test_date_missing(self):

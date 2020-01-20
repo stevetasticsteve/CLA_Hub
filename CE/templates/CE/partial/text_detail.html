@@ -1,44 +1,49 @@
 <div class="container-fluid border bg-white">
 
-        <div class="container-fluid">
-            <br>
+    <div class="container-fluid">
+        <br>
 
-            {% if text.discourse_type %}
-            <strong>
-                Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">{{text.get_discourse_type_display}}</a>
-                <br>
-            </strong>
-            {% endif %}
+        {% if text.discourse_type %}
+            <ul><strong>
+            Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">{{text.get_discourse_type_display}}</a>
+        </strong></ul>
+        {% endif %}
 
-            {% if text.audio %}
-            <p></p>
-            <audio controls> <source src="{{text.audio.url}}"></audio>
-            <p></p>
-            {% endif %}
+        {% if text.speaker %}
+        {% autoescape off %}
+        <ul><strong>Speaker: {{ text.speaker }}</strong></ul>
+        {% endautoescape %}
+        {% endif %}
 
-            {% if text.phonetic_text %}
-            <strong>Phonetic text</strong>
-            {% if text.phonetic_standard == '1' %}
-            <span class="badge badge-danger">Unchecked</span>
-            {% endif %}
-            {% if text.phonetic_standard == '2' %}
-            <span class="badge badge-warning">Double checked by author</span>
-            {% endif %}
-            {% if text.phonetic_standard == '3' %}
-            <span class="badge badge-secondary">Checked by team mate</span>
-            {% endif %}
-            {% if text.phonetic_standard == '4' %}
-            <span class="badge badge-primary">Approved by whole team</span>
-            {% endif %}
-            {% if text.phonetic_standard == '5' %}
-            <span class="badge badge-success">Valid for discourse</span>
-            {% endif %}
-            <p> {{ text.phonetic_text }}</p>
-            {% endif %}
+        {% if text.audio %}
+        <p></p>
+        <audio controls> <source src="{{text.audio.url}}"></audio>
+        <p></p>
+        {% endif %}
 
-            {% if text.orthographic_text %}
-            <strong>Orthographic text</strong>
-            <p> {{ text.orthographic_text }}</p>
-            {% endif %}
-            </div>
+        {% if text.phonetic_text %}
+        <strong>Phonetic text</strong>
+        {% if text.phonetic_standard == '1' %}
+        <span class="badge badge-danger">Unchecked</span>
+        {% endif %}
+        {% if text.phonetic_standard == '2' %}
+        <span class="badge badge-warning">Double checked by author</span>
+        {% endif %}
+        {% if text.phonetic_standard == '3' %}
+        <span class="badge badge-secondary">Checked by team mate</span>
+        {% endif %}
+        {% if text.phonetic_standard == '4' %}
+        <span class="badge badge-primary">Approved by whole team</span>
+        {% endif %}
+        {% if text.phonetic_standard == '5' %}
+        <span class="badge badge-success">Valid for discourse</span>
+        {% endif %}
+        <p> {{ text.phonetic_text }}</p>
+        {% endif %}
+
+        {% if text.orthographic_text %}
+        <strong>Orthographic text</strong>
+        <p> {{ text.orthographic_text }}</p>
+        {% endif %}
     </div>
+</div>

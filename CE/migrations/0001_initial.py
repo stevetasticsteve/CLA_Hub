@@ -79,4 +79,14 @@ class Migration(migrations.Migration):
                 ('ce', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='CE.CultureEvent')),
             ],
         ),
+        migrations.AddField(
+            model_name='text',
+            name='speaker',
+            field=models.CharField(blank=True, max_length=80),
+        ),
+        migrations.AddField(
+            model_name='text',
+            name='speaker_plain_text',
+            field=models.CharField(blank=True, max_length=50),
+        ),
     ]

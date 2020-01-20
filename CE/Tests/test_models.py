@@ -106,6 +106,8 @@ class TextsModelTest(TestCase):
         self.assertEqual(str(text), 'example text')
 
 
+
+
 # class PictureModelTest(TestCase):
     # def test_invalid_file_type(self):
     #     pic = models.PictureModel(picture='string')

@@ -10,10 +10,6 @@
             {{ TextForm.empty_form.text_title.label_tag }}
             {{ TextForm.empty_form.text_title }}
         </div>
-        <div class="col-sm-4">
-            {{ TextForm.empty_form.audio.label_tag }}
-            {{ TextForm.empty_form.audio }}
-        </div>
         <div class="col-sm-2">
             {{ TextForm.empty_form.phonetic_standard.label_tag }}
             {{ TextForm.empty_form.phonetic_standard }}
@@ -23,6 +19,18 @@
             {{ TextForm.empty_form.discourse_type }}
         </div>
     </div>
+    <br>
+    <div class="form-row">
+        <div class="col-sm-6">
+            {{ TextForm.empty_form.speaker_plain_text.label_tag }}
+            {{ TextForm.empty_form.speaker_plain_text }}
+        </div>
+        <div class="col-sm-6">
+            {{ TextForm.empty_form.audio.label_tag }}
+            {{ TextForm.empty_form.audio }}
+        </div>
+    </div>
+    <br>
     <div class="form-row">
         <div class="col-sm-6">
             {{ TextForm.empty_form.phonetic_text.label_tag }}
@@ -44,39 +52,47 @@
             {{ text_form.id }}
             <h3>Text {{forloop.counter}}</h3>
             <div class="form-row">
-        <div class="col-sm-4">
-            {{ text_form.text_title.label_tag }}
-            {{ text_form.text_title }}
-        </div>
-        <div class="col-sm-4">
-            {{ text_form.audio.label_tag }}
-            {{ text_form.audio }}
-        </div>
-        <div class="col-sm-2">
-            {{ text_form.phonetic_standard.label_tag }}
-            {{ text_form.phonetic_standard }}
-        </div>
-        <div class="col-sm-2">
-            {{ text_form.discourse_type.label_tag }}
-            {{ text_form.discourse_type }}
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="col-sm-6">
-            {{ text_form.phonetic_text.label_tag }}
-            {{ text_form.phonetic_text }}
-        </div>
-        <div class="col-sm-6">
-            {{ text_form.orthographic_text.label_tag }}
-            {{ text_form.orthographic_text }}
-        </div>
-    </div>
+                <div class="col-sm-4">
+                    {{ text_form.text_title.label_tag }}
+                    {{ text_form.text_title }}
+                </div>
+                <div class="col-sm-2">
+                    {{ text_form.phonetic_standard.label_tag }}
+                    {{ text_form.phonetic_standard }}
+                </div>
+                <div class="col-sm-2">
+                    {{ text_form.discourse_type.label_tag }}
+                    {{ text_form.discourse_type }}
+                </div>
+            </div>
+            <br>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    {{ text_form.speaker_plain_text.label_tag }}
+                    {{ text_form.speaker_plain_text }}
+                </div>
+                <div class="col-sm-6">
+                    {{ text_form.audio.label_tag }}
+                    {{ text_form.audio }}
+                </div>
+            </div>
+            <br>
+            <div class="form-row">
+                <div class="col-sm-6">
+                    {{ text_form.phonetic_text.label_tag }}
+                    {{ text_form.phonetic_text }}
+                </div>
+                <div class="col-sm-6">
+                    {{ text_form.orthographic_text.label_tag }}
+                    {{ text_form.orthographic_text }}
+                </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+        {% endfor %}
 </div>
 <br>
+
 <!--Add new text button-->
 <a href="#" id="add-text-button" class="btn btn-info add-text">Add Text</a>
 

@@ -2,12 +2,17 @@ from django.db import models
 from django.utils.text import slugify
 from django.core import exceptions
 from taggit.managers import TaggableManager
+from django.core.exceptions import ObjectDoesNotExist
+
 
 import CE.settings
 import re
 import bleach
+import people.models
 
 from CLAHub import tools
+
+integer_regex = re.compile('\d+')
 
 
 class CultureEvent(models.Model):
@@ -149,12 +154,27 @@ class Text(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=20, blank=True)
+    speaker_plain_text = models.CharField(max_length=50, blank=True)
+    speaker = models.CharField(max_length=80, blank=True)
 
     def save(self):
         if self.audio:
             if tools.check_already_imported(self.audio):
                 # don't duplicate audio in uploads during tests
-                self.audio.upload_to = None
+                self.audio.upload_to = None # todo duplicates still added
+        # search for integers in speaker field and provide link to profile if found
+        if self.speaker_plain_text:
+            integers = re.findall(integer_regex, self.speaker_plain_text)
+            self.speaker = bleach.clean(self.speaker_plain_text,
+                                        tags=CE.settings.bleach_allowed,
+                                        strip=True)
+            for match in integers:
+                try:
+                    link = people.models.Person.objects.get(pk=match)
+                    self.speaker = self.speaker.replace(match, '<a href="' + match + '"> ' + link.name + '</a>')
+                except ObjectDoesNotExist:
+                    pass
+
         super(Text, self).save()
 
     def __str__(self):

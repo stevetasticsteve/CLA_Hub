@@ -120,7 +120,8 @@ def edit(request, pk):
         'CurrentPics': current_pics,
         'QuestionForm': question_form,
         'Errors': errors,
-        'CE': ce
+        'CE': ce,
+        'button_text': 'Update CE'
     }
     return render(request, template, context)
 # todo upload multiple files at once
@@ -177,7 +178,8 @@ def new(request):
             'TextForm': text_form,
             'QuestionForm': question_form,
             'VisitForm': visit_form,
-            'Errors': errors
+            'Errors': errors,
+            'button_text': 'Create CE'
         }
 
     return render(request, template, context)

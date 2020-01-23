@@ -95,23 +95,25 @@
 
 <!--Add new text button-->
 <a href="#" id="add-text-button" class="btn btn-info add-text">Add Text</a>
-
+<br>
+<br>
 <!--Script to make new form appear-->
 <script>
 $(document).ready(function() {
     $('.add-text').click(function(ev) {
         ev.preventDefault();
-        var count = $('#text-form-container').children().length;
+        var count = $('#text-server-items').children().length;
         var tmplMarkup = $('#text-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-        $('div#text-form-container').append(compiledTmpl);
+        $('div#text-server-items').append(compiledTmpl);
 
         // update form count
         $('#id_text-TOTAL_FORMS').attr('value', count+1);
 
         // some animate to scroll to view our new form
+        var newDiv = 'text-' + count
         $('html, body').animate({
-                scrollTop: $("#add-item-button").position().top-200
+                scrollTop: $(`div#${newDiv}`).position().top-10
             }, 800);
     });
 });

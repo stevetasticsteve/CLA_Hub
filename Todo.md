@@ -16,9 +16,6 @@
 - User friendliness testing
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
-- When adding a new question form it appears below submit on New CE form
-- When there are multiple questions the new question appears in the middle of the
-questions not at the end
 
 ## Server improvements
 - Paginate texts, alphabetical CEs and tags pages

@@ -38,9 +38,9 @@
                 {{ question.answer }}
             </div>
         </div>
+        <br>
+        {% endfor %}
     </div>
-    <p></p>
-    {% endfor %}
 </div>
 
 <br>
@@ -55,7 +55,7 @@ $(document).ready(function() {
         var count = $('#questions-form-container').children().length;
         var tmplMarkup = $('#question-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-        $('div#questions-form-container').append(compiledTmpl);
+        $('div#question-server-items').append(compiledTmpl);
 
         // update form count
         $('#id_question-TOTAL_FORMS').attr('value', count+1);

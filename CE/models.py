@@ -171,7 +171,7 @@ class Text(models.Model):
             for match in integers:
                 try:
                     link = people.models.Person.objects.get(pk=match)
-                    self.speaker = self.speaker.replace(match, '<a href="' + match + '"> ' + link.name + '</a>')
+                    self.speaker = self.speaker.replace(match, '<a href="/people/' + match + '"> ' + link.name + '</a>')
                 except ObjectDoesNotExist:
                     pass
 

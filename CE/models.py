@@ -4,7 +4,6 @@ from django.core import exceptions
 from taggit.managers import TaggableManager
 from django.core.exceptions import ObjectDoesNotExist
 
-
 import CE.settings
 import re
 import bleach
@@ -199,5 +198,3 @@ class Question(models.Model):
 
     def __str__(self):
         return 'Question about ' + str(self.ce) + ': ' + str(self.question)
-
-

@@ -1,5 +1,6 @@
 from django.urls import path
 from CE import views
+from CE import feeds
 
 app_name = 'CE'
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     path('questions_recent', views.questions_recent, name='questions_recent'),
     path('questions_unanswered', views.questions_unanswered, name='questions_unanswered'),
     path('<int:pk>', views.view, name='view'),
+    path('rss', feeds.PodcastFeed()),
     path('search/', views.search_CE, name='search_CE'),
     path('<slug:slug>', views.view_slug, name='view_slug'),
 ]

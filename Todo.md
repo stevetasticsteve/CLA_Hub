@@ -16,6 +16,7 @@
 - User friendliness testing
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
+- html title. Code an if into base template so a view can pass a title, otherwise read CLAHub
 
 ## Server improvements
 - Paginate texts, alphabetical CEs and tags pages
@@ -36,6 +37,8 @@ visible on the tags page but unaccessible as it has no slug.
 - Can't save more than one question when there is more than one text
 - Editing a CE means your user overwrites the last edited by information for texts too,
 even if you didn't edit them.
+- Repeated digits cause clashes in people family auto linking. 5 and 359 won't play nicely together
+as the replace operation replaces the match of 5 within 359
 
 
 

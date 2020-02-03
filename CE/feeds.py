@@ -1,6 +1,7 @@
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
 from django.utils.feedgenerator import Atom1Feed
+from django.urls import reverse
 
 from CE.models import Text
 from CLAHub.base_settings import BASE_DIR
@@ -9,6 +10,7 @@ import subprocess
 import os
 
 server_url = "http://192.168.0.151:8000/"
+#todo server_url is hardcoded. Must get the host address some way
 
 class TextsFeed(Feed):
     title = "CLAHub"
@@ -36,7 +38,7 @@ class TextsFeed(Feed):
             return 'No description for this text'
 
     def item_link(self, item):
-        return server_url + 'CE/' + str(item.ce.pk)
+        return reverse('CE:view', args=str(item.ce.pk))
 
     def item_author_name(self, item):
         return "CLAHub"

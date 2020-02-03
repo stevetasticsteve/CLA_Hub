@@ -12,6 +12,7 @@ from django.db.models.functions import Lower
 
 import CE.forms
 import CE.utilities
+import CE.feeds
 
 text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Text,
                                                 form=CE.forms.TextForm, extra=0)
@@ -307,6 +308,7 @@ def texts_home(request):
         'Texts': texts
     }
     return render(request, template, context)
+
 
 @CE.utilities.conditional_login
 def text_genre(request, genre):

@@ -12,45 +12,6 @@ import os
 server_url = "http://192.168.0.151:8000/"
 #todo server_url is hardcoded. Must get the host address some way
 
-class TextsFeed(Feed):
-    title = "CLAHub"
-    link = "https://github.com/stevetasticsteve/CLA_Hub"
-    author_name = "CLAHub"
-    author_link = "https://github.com/stevetasticsteve"
-    categories = ["Language Learning"]
-    feed_copyright = "Creative Commons Attribution 4.0 International"
-    description = "CLAHub provides missionary teams with a collaborative tool for creating and maintaining" \
-                  "a culture and language file. This podcast feed contains uploaded vernacular texts that are stored" \
-                  "in the CLAHub database"
-
-    def items(self):
-        return Text.objects.order_by('-date_created').exclude(audio='')
-
-    def item_title(self, item):
-        return item.text_title
-
-    def item_description(self, item):
-        if item.orthographic_text:
-            return item.orthographic_text
-        elif item.phonetic_text:
-            return item.phonetic_text
-        else:
-            return 'No description for this text'
-
-    def item_link(self, item):
-        return reverse('CE:view', args=str(item.ce.pk))
-
-    def item_author_name(self, item):
-        return "CLAHub"
-
-    def item_pubdate(self, item):
-        return item.date_created
-
-
-class AtomFeed(TextsFeed):
-    feed_type = Atom1Feed
-    subtitle = TextsFeed.description
-
 
 class iTunesFeed(Rss201rev2Feed):
     def rss_attributes(self):
@@ -81,15 +42,45 @@ class iTunesFeed(Rss201rev2Feed):
         handler.addQuickElement(u'itunes:explicit', item['explicit'])
 
 
-class PodcastFeed(AtomFeed):
+class PodcastFeed(Feed):
+    title = "CLAHub"
+    link = "https://github.com/stevetasticsteve/CLA_Hub"
+    author_name = "CLAHub"
+    author_link = "https://github.com/stevetasticsteve"
+    categories = ["Language Learning"]
+    feed_copyright = "Creative Commons Attribution 4.0 International"
+    description = "CLAHub provides missionary teams with a collaborative tool for creating and maintaining" \
+                  "a culture and language file. This podcast feed contains uploaded vernacular texts that are stored" \
+                  "in the CLAHub database"
+
     iTunes_explicit = 'no'
     iTunes_name = "CLAHub"
     iTunes_image_url = server_url + "static/logo/CLAHub_podcast.jpeg"
-    iTunes_summary = AtomFeed.description
+    iTunes_summary = description
     feed_type = iTunesFeed
 
     def items(self):
         return Text.objects.order_by('-date_created').exclude(audio='')
+
+    def item_title(self, item):
+        return item.text_title
+
+    def item_description(self, item):
+        if item.orthographic_text:
+            return item.orthographic_text
+        elif item.phonetic_text:
+            return item.phonetic_text
+        else:
+            return 'No description for this text'
+
+    def item_link(self, item):
+        return reverse('CE:view', args=str(item.ce.pk))
+
+    def item_author_name(self, item):
+        return "CLAHub"
+
+    def item_pubdate(self, item):
+        return item.date_created
 
     def feed_extra_kwargs(self, obj):
         return {

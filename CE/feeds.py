@@ -7,7 +7,9 @@ from CLAHub.base_settings import BASE_DIR
 
 import subprocess
 import os
+import logging
 
+logger = logging.getLogger('CLAHub')
 
 server_url = "http://192.168.0.100/"
 #todo server_url is hardcoded. Must get the host address somehow
@@ -101,14 +103,19 @@ class PodcastFeed(Feed):
         return server_url + 'uploads/' + str(item.audio)
 
     def item_enclosure_length(self, item):
-        audio_path = os.path.join(BASE_DIR, 'uploads', str(item.audio))
-        args = ("ffprobe", "-show_entries", "format=duration", "-i", audio_path)
-        p = subprocess.Popen(args, stdout=subprocess.PIPE)
-        duration_info = p.stdout.read()
-        duration = str(duration_info)
-        duration = duration.lstrip("b'[FORMAT]\\nduration=")
-        duration = duration.rstrip("\\n[/FORMAT]\\n'")
-        self.duration = duration.split('.')[0]
+        try:
+            audio_path = os.path.join(BASE_DIR, 'uploads', str(item.audio))
+            args = ("ffprobe", "-show_entries", "format=duration", "-i", audio_path)
+            p = subprocess.Popen(args, stdout=subprocess.PIPE)
+            duration_info = p.stdout.read()
+            duration = str(duration_info)
+            duration = duration.lstrip("b'[FORMAT]\\nduration=")
+            duration = duration.rstrip("\\n[/FORMAT]\\n'")
+            self.duration = duration.split('.')[0]
+        except FileNotFoundError:
+            logger.error('ffmpeg isn\'t installed on the server. "apt install ffmpeg" to fix issue. Temporary'
+                         'audio length designated for now' )
+            self.duration = '10'
         return self.duration
 
     def item_enclosure_mime_type(self, item):

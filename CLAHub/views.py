@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-
 from CLAHub import forms
 from CLAHub.tools import import_profiles_from_csv
 import logging

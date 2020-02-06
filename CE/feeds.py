@@ -1,6 +1,5 @@
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
-from django.utils.feedgenerator import Atom1Feed
 from django.urls import reverse
 
 from CE.models import Text
@@ -9,9 +8,9 @@ from CLAHub.base_settings import BASE_DIR
 import subprocess
 import os
 
-server_url = "http://192.168.0.151:8000/"
-#todo server_url is hardcoded. Must get the host address some way
 
+server_url = "http://192.168.0.100/"
+#todo server_url is hardcoded. Must get the host address somehow
 
 class iTunesFeed(Rss201rev2Feed):
     def rss_attributes(self):

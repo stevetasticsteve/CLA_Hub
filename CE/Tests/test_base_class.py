@@ -159,6 +159,7 @@ class CETestBaseClass(TestCase):
             except OSError:
                 pass
 
+
 class TestBaseClass(CETestBaseClass):
     def test_setup(self):
         self.assertEqual(models.CultureEvent.objects.get(pk=3).title, self.test_data['title'])

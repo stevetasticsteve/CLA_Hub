@@ -105,7 +105,7 @@ class PodcastFeed(Feed):
     def item_enclosure_length(self, item):
         try:
             audio_path = os.path.join(BASE_DIR, 'uploads', str(item.audio))
-            args = ("ffprobe", "-show_entries", "format=duration", "-i", audio_path)
+            args = ("ffprobe", '-loglevel', 'quiet', "-show_entries", "format=duration", "-i", audio_path)
             p = subprocess.Popen(args, stdout=subprocess.PIPE)
             duration_info = p.stdout.read()
             duration = str(duration_info)

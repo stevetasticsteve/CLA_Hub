@@ -65,6 +65,8 @@ class Person(models.Model):
 
         if self.family_plain_text:
             integers = re.findall(integer_regex, self.family_plain_text)
+            print(integers)
+
             self.family = bleach.clean(self.family_plain_text,
                                        tags=CE.settings.bleach_allowed,
                                        strip=True)

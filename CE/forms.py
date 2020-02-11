@@ -49,7 +49,6 @@ class CE_EditForm(forms.Form):
         })
     )
 
-
     differences = forms.CharField(
         required=False,
         label='Variation',
@@ -73,7 +72,6 @@ class CE_EditForm(forms.Form):
         widget=forms.FileInput(attrs={
             'class': 'form-control'
         }))
-
 
     def save(self, request, **kwargs):
         # the instance kwarg is passed in if a prexisting record needs updating
@@ -108,12 +106,12 @@ class CE_EditForm(forms.Form):
 
 def prepopulated_CE_form(ce):
     form = CE_EditForm(initial={
-                                'title': ce.title,
-                                'tags': ce.tags.all(),
-                                'description_plain_text': ce.description_plain_text,
-                                'differences': ce.differences,
-                                'interpretation': ce.interpretation
-                                })
+        'title': ce.title,
+        'tags': ce.tags.all(),
+        'description_plain_text': ce.description_plain_text,
+        'differences': ce.differences,
+        'interpretation': ce.interpretation
+    })
     return form
 
 
@@ -130,21 +128,24 @@ class TextForm(forms.ModelForm):
         model = CE.models.Text
         exclude = ('ce', 'DELETE', 'last_modified_by', 'speaker')
         widgets = {
-                   'audio': forms.ClearableFileInput(attrs={
-                    'class': 'form-control',
-                    'accept': '.mp3, .m4a'})
+            'audio': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': '.mp3, .m4a'}),
+            'speaker_plain_text': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'You can write a person\'s ID number here to create a link'
+            })
         }
         labels = {
             'speaker_plain_text': 'Speaker'
         }
 
-
     def save(self, **kwargs):
         # only save the form if user has entered data. Otherwise default fields will be filled in
         # and an entry made despite no user input
         try:
-            if self.cleaned_data['phonetic_text'] or self.cleaned_data['orthographic_text']\
-            or self.cleaned_data['audio'] or self.cleaned_data['text_title']:
+            if self.cleaned_data['phonetic_text'] or self.cleaned_data['orthographic_text'] \
+                    or self.cleaned_data['audio'] or self.cleaned_data['text_title']:
                 self.instance.last_modified_by = str(kwargs['request'].user)
                 super(TextForm, self).save()
         except KeyError:
@@ -175,7 +176,6 @@ class QuestionForm(forms.ModelForm):
             super(QuestionForm, self).save()
 
 
-
 class VisitsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # init method injects 'form-control' in to enable bootstrap styling
@@ -200,7 +200,3 @@ class VisitsForm(forms.ModelForm):
                 super(VisitsForm, self).save()
         except KeyError:
             pass
-
-
-
-

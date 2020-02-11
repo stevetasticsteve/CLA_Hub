@@ -18,7 +18,8 @@
 
 <p>
     Upon saving a profile CLAHub will read the contents of the family field and replace any numbers with a hyperlink to
-    the profile with that numeric key (if it exists) and display the linked profile's name.
+    the profile with that numeric key (if it exists) and display the linked profile's name. <strong>Numbers must
+    be preceded by a space for CLAHub to accurately detect them.</strong>
 </p>
 <hr>
 <p>
@@ -26,5 +27,11 @@
     <ul>Brother: 1</ul>
     Will become
     <ul>Brother: <a href="#">Brother's name</a></ul>
+</p>
+<br>
+<p>
+    However:
+    <ul>Brother1</ul>
+    Will not work as there is no space before the 1.
 </p>
 {% endblock %}

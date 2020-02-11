@@ -34,15 +34,28 @@ class PeopleModelTest(TestCase):
         person = models.Person.objects.get(pk=2)
         person.family_plain_text = ('Children 2, 12')
         person.save()
-        # self.assertIn('<a href="2"', person.family)
-        # self.assertIn('<a href="12"', person.family)
-        print(person.family)
+        self.assertIn('<a href="2"', person.family)
+        self.assertIn('<a href="12"', person.family)
 
 
         person = models.Person.objects.get(pk=2)
         person.family_plain_text = ('Children 12, 2')
         person.save()
-        print(person.family)
 
         self.assertIn('<a href="2"', person.family)
         self.assertIn('<a href="12"', person.family)
+
+    def test_repeated_pk(self):
+        person2 = models.Person(name='Gerdine', village='1',
+                                family_plain_text='Husband: 1, Bestie: 1')
+        person2.save()
+
+        self.assertEqual(models.Person.objects.get(pk=2).family,
+                         'Husband:<a href="1"> Steve</a>, Bestie:<a href="1"> Steve</a>')
+
+    def test_no_space_no_match(self):
+        person2 = models.Person(name='Gerdine', village='1',
+                                family_plain_text='Husband :1')
+        person2.save()
+
+        self.assertNotIn('<a href', models.Person.objects.get(pk=2).family)

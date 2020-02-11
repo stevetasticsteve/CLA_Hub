@@ -8,7 +8,7 @@ import bleach
 import CE.settings # todo move that out of CE and into general settings
 
 
-integer_regex = re.compile('\d+')
+integer_regex = re.compile(' \d+')
 
 class Person(models.Model):
     def __init__(self, *args, **kwargs):
@@ -65,7 +65,6 @@ class Person(models.Model):
 
         if self.family_plain_text:
             integers = re.findall(integer_regex, self.family_plain_text)
-            print(integers)
 
             self.family = bleach.clean(self.family_plain_text,
                                        tags=CE.settings.bleach_allowed,
@@ -73,7 +72,8 @@ class Person(models.Model):
             for match in integers:
                 try:
                     link = Person.objects.get(pk=match)
-                    self.family = self.family.replace(match, '<a href="' + match + '"> ' + link.name + '</a>')
+
+                    self.family = self.family.replace(match, '<a href="' + match.lstrip() + '"> ' + link.name + '</a>')
                 except ObjectDoesNotExist:
                     pass
 

@@ -24,6 +24,9 @@
 - Improve search
 - Functional tests
 - Make a 2nd level of user so Auth isn't open to them on the admin site
+- A job handling system is needed. The import function won't work as the process takes longer than 30s and apache times
+out. Need to install celery to get that working, and also because if a CE is uploaded with a large picture
+and audio it's possible the POST will fail if the upload takes too long.
 
 ## Deployment improvements
 - Automated install to Raspberry pi script is required

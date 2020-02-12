@@ -22,16 +22,17 @@ class CEModelTest(TestCase):
     def test_auto_hyperlink(self):
         settings.auto_cross_reference = True
         # create 1st CE
-        ce = models.CultureEvent(title='Example CE1',
+        ce = models.CultureEvent(title='Example',
                                  description_plain_text='A first CE')
         ce.save()
         # create 2nd CE with a hyperlink intended
-        description_two = 'A second CE, that references example ce1'
+        description_two = 'A second CE, that references example'
         ce = models.CultureEvent(title='Example CE2',
                                  description_plain_text=description_two)
         ce.save()
         self.assertEqual(description_two, ce.description_plain_text)
-        self.assertIn('href', ce.description)
+        self.assertIn('href', ce.description, 'no href in autolink')
+        self.assertIn('<a href="example">example</a>', ce.description, 'Anchor malformed')
 
         # create 3rd CE with no hyperlinks intended
         description_three = 'A second CE, that references no other CEs'
@@ -39,6 +40,79 @@ class CEModelTest(TestCase):
                                  description_plain_text=description_three)
         self.assertEqual(description_three, ce.description_plain_text)
         self.assertNotIn('href', ce.description)
+
+    def test_auto_hyperlink_multi_word(self):
+        settings.auto_cross_reference = True
+        ce = models.CultureEvent(title='Reef fishing')
+        ce.save()
+
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text='reef fishing')
+        ce.save()
+
+        self.assertIn('href', ce.description, 'No link')
+        self.assertIn('<a href="reef-fishing">reef fishing</a>', ce.description, 'Link malformed')
+
+
+    def test_auto_hyperlink_numbers(self):
+        settings.auto_cross_reference = True
+        ce = models.CultureEvent(title='Reef fishing 2')
+        ce.save()
+
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text='reef fishing 2')
+        ce.save()
+
+        self.assertIn('href', ce.description, 'No link')
+        self.assertIn('<a href="reef-fishing-2">reef fishing 2</a>', ce.description, 'Link malformed')
+
+    def test_hyperlink_case_insensitive(self):
+        settings.auto_cross_reference = True
+        # create 1st CE
+        ce = models.CultureEvent(title='Example CE1',
+                                 description_plain_text='A first CE')
+        ce.save()
+
+        # All lower case
+        # create 2nd CE with a hyperlink intended
+        desc = 'A second CE, that references example ce1'
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text=desc)
+        ce.save()
+
+        self.assertEqual(desc, ce.description_plain_text)
+        self.assertIn('href', ce.description, 'All lower case doesn\'t autolink')
+        ce = models.CultureEvent.objects.get(pk=2)
+        # All upper case
+        desc = 'A SECOND CE, THAT REFERENCES EXAMPLE CE1'
+        ce.description_plain_text = desc
+        ce.save()
+        self.assertEqual(desc, ce.description_plain_text)
+        self.assertIn('href', ce.description, 'All upper case doesn\'t autolink')
+        # Mixed case
+        desc = 'A second CE, that references Example CE1'
+        ce.description_plain_text = desc
+        ce.save()
+        self.assertEqual(desc, ce.description_plain_text)
+        self.assertIn('href', ce.description, 'Mixed case doesn\'t autolink')
+
+    def test_hyperlink_accuracy(self):
+        # Test to make sure auto hyperlink handles similar CE titles correctly
+        ce = models.CultureEvent(title='A CE')
+        ce.save()
+        ce = models.CultureEvent(title='A CE long')
+        ce.save()
+        ce = models.CultureEvent(title='A CE longer')
+        ce.save()
+        ce = models.CultureEvent(title='A CE longer again')
+        ce.save()
+        desc = 'A CE was before a CE long, but after a CE longer and then a CE longer again happened'
+        ce = models.CultureEvent(title='Test',
+                                 description_plain_text=desc)
+        ce.save()
+
+        self.assertIn('href', ce.description, 'no hyperlinks')
+        self.assertEqual(ce.description.count('href'), 4, 'Incorrect number of hyperlinks')
 
     def test_manual_hyperlink(self):
         settings.auto_cross_reference = False
@@ -105,29 +179,6 @@ class TextsModelTest(TestCase):
         text = models.Text(ce=ce, phonetic_text='djaŋɡo', text_title='example text')
         self.assertEqual(str(text), 'example text')
 
-
-
-
-# class PictureModelTest(TestCase):
-    # def test_invalid_file_type(self):
-    #     pic = models.PictureModel(picture='string')
-    #     pic.save()
-    #
-    # def test_valid_upload(self):
-    #     ce = models.CultureEvent(title='Test CE')
-    #     ce.save()
-    #     # image = SimpleUploadedFile('test_image.jpeg', b'file_content',
-    #     #         #                                 content_type='image/jpeg')
-    #     image = 'test_data/pic(1).JPG'  # requires a uploads folder in project dir
-    #     pic = models.PictureModel(ce=ce, picture=image)
-    #     pic.save()
-    #     pic = models.PictureModel.objects.get(ce=ce)
-    #     self.assertEqual(pic.picture, 'test_data/pic(1).JPG')
-
-
-
-    # def test_string_method(self):
-    #     pass
 
 class TagTests(TestCase):
     def test_ocm_slug_dictionary(self):

@@ -53,7 +53,6 @@ class CEModelTest(TestCase):
         self.assertIn('href', ce.description, 'No link')
         self.assertIn('<a href="reef-fishing">reef fishing</a>', ce.description, 'Link malformed')
 
-
     def test_auto_hyperlink_numbers(self):
         settings.auto_cross_reference = True
         ce = models.CultureEvent(title='Reef fishing 2')
@@ -106,13 +105,20 @@ class CEModelTest(TestCase):
         ce.save()
         ce = models.CultureEvent(title='A CE longer again')
         ce.save()
-        desc = 'A CE was before a CE long, but after a CE longer and then a CE longer again happened'
+        desc = 'a ce was before a ce long, but after a ce longer and then a ce longer again happened'
         ce = models.CultureEvent(title='Test',
                                  description_plain_text=desc)
         ce.save()
 
         self.assertIn('href', ce.description, 'no hyperlinks')
         self.assertEqual(ce.description.count('href'), 4, 'Incorrect number of hyperlinks')
+
+        # test for each link
+        self.assertIn('<a href="a-ce">a ce</a> ', ce.description, 'shortest link not present')
+        self.assertIn('<a href="a-ce-long">a ce long</a> ', ce.description, 'length 2 link not present')
+        self.assertIn('<a href="a-ce-longer">a ce longer</a> ', ce.description, 'length 3 link not present')
+        self.assertIn('<a href="a-ce-longer-again">a ce longer again</a> ', ce.description, 'longest link not present')
+
 
     def test_manual_hyperlink(self):
         settings.auto_cross_reference = False

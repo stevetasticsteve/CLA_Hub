@@ -32,7 +32,7 @@ class CEModelTest(TestCase):
         ce.save()
         self.assertEqual(description_two, ce.description_plain_text)
         self.assertIn('href', ce.description, 'no href in autolink')
-        self.assertIn('<a href="example">example</a>', ce.description, 'Anchor malformed')
+        self.assertIn('<a href="example">Example</a>', ce.description, 'Anchor malformed')
 
         # create 3rd CE with no hyperlinks intended
         description_three = 'A second CE, that references no other CEs'
@@ -51,7 +51,7 @@ class CEModelTest(TestCase):
         ce.save()
 
         self.assertIn('href', ce.description, 'No link')
-        self.assertIn('<a href="reef-fishing">reef fishing</a>', ce.description, 'Link malformed')
+        self.assertIn('<a href="reef-fishing">Reef fishing</a>', ce.description, 'Link malformed')
 
     def test_auto_hyperlink_numbers(self):
         settings.auto_cross_reference = True
@@ -63,7 +63,7 @@ class CEModelTest(TestCase):
         ce.save()
 
         self.assertIn('href', ce.description, 'No link')
-        self.assertIn('<a href="reef-fishing-2">reef fishing 2</a>', ce.description, 'Link malformed')
+        self.assertIn('<a href="reef-fishing-2">Reef fishing 2</a>', ce.description, 'Link malformed')
 
     def test_hyperlink_case_insensitive(self):
         settings.auto_cross_reference = True
@@ -99,9 +99,9 @@ class CEModelTest(TestCase):
         # Test to make sure auto hyperlink handles similar CE titles correctly
         ce = models.CultureEvent(title='A CE')
         ce.save()
-        ce = models.CultureEvent(title='A CE long')
-        ce.save()
         ce = models.CultureEvent(title='A CE longer')
+        ce.save()
+        ce = models.CultureEvent(title='A CE long')
         ce.save()
         ce = models.CultureEvent(title='A CE longer again')
         ce.save()
@@ -114,11 +114,35 @@ class CEModelTest(TestCase):
         self.assertEqual(ce.description.count('href'), 4, 'Incorrect number of hyperlinks')
 
         # test for each link
-        self.assertIn('<a href="a-ce">a ce</a> ', ce.description, 'shortest link not present')
-        self.assertIn('<a href="a-ce-long">a ce long</a> ', ce.description, 'length 2 link not present')
-        self.assertIn('<a href="a-ce-longer">a ce longer</a> ', ce.description, 'length 3 link not present')
-        self.assertIn('<a href="a-ce-longer-again">a ce longer again</a> ', ce.description, 'longest link not present')
+        self.assertIn('<a href="a-ce">A CE</a>', ce.description, 'shortest link not present')
+        self.assertIn('<a href="a-ce-long">A CE long</a>', ce.description, 'length 2 link not present')
+        self.assertIn('<a href="a-ce-longer">A CE longer</a>', ce.description, 'length 3 link not present')
+        self.assertIn('<a href="a-ce-longer-again">A CE longer again</a>', ce.description, 'longest link not present')
 
+        # reverse the order stored in the .db
+        desc = 'a ce longer again was before a ce longer, but not a long ce and certainly not a ce.'
+        ce.description_plain_text = desc
+        ce.save()
+        # test for each link
+        self.assertIn('<a href="a-ce">A CE</a>', ce.description, 'shortest link not present')
+        self.assertIn('<a href="a-ce-long">A CE long</a>', ce.description, 'length 2 link not present')
+        self.assertIn('<a href="a-ce-longer">A CE longer</a>', ce.description, 'length 3 link not present')
+        self.assertIn('<a href="a-ce-longer-again">A CE longer again</a>', ce.description, 'longest link not present')
+
+    def test_repeated_hyperlink(self):
+        settings.auto_cross_reference = True
+        # create 1st CE
+        ce = models.CultureEvent(title='Test CE',
+                                 description_plain_text='A first CE')
+        ce.save()
+        ce = models.CultureEvent(title='Example CE2',
+                                 description_plain_text='I\'m linking test CE twice by saying test CE again')
+        ce.save()
+
+        self.assertEqual(ce.description.count('href'), 2, 'Incorrect number of hyperlinks')
+        self.assertEqual(ce.description, 'I\'m linking <a href="test-ce">Test CE1</a> twice by saying '
+                                         '<a href="test-ce1">Test CE</a> again',
+                         'Repeated hyperlink not displaying correctly')
 
     def test_manual_hyperlink(self):
         settings.auto_cross_reference = False
@@ -161,22 +185,22 @@ class CEModelTest(TestCase):
         settings.auto_cross_reference = True
         # create 1st CE
         ce = models.CultureEvent(title='First CE',
-                                 description_plain_text='<strong>Example CE1</strong>'
+                                 description_plain_text='<strong>Some text</strong>'
                                                         '<a href="Dodgywebsite.come">Click here</a>'
                                                         '<script>Nasty JS</script>')
         ce.save()
         # <script> removed
         self.assertIn('<script>', ce.description_plain_text)
-        self.assertNotIn('<script>', ce.description)
+        self.assertNotIn('<script>', ce.description, '<scripts> were not removed')
 
         # <a> removed
         self.assertIn('<a href', ce.description_plain_text)
-        self.assertNotIn('<a href', ce.description)
+        self.assertNotIn('<a href', ce.description, 'An anchor tag was allowed, it shouldn\'t have been')
 
         # <strong> allowed
         settings.bleach_allowed = ['strong']
         self.assertIn('<strong>', ce.description_plain_text)
-        self.assertIn('<strong>', ce.description)
+        self.assertIn('<strong>', ce.description, 'Allowable HTML was removed')
 
 
 class TextsModelTest(TestCase):

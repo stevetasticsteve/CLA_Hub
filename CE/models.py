@@ -71,16 +71,22 @@ class CultureEvent(models.Model):
 
 
     def auto_cross_ref(self):
-        # todo Will miss cases where user uses a capital. Currently only works with lower case.
         # search the plain text description for slugs and replace them with hyperlinks if found
         # only triggers if auto_cross_reference is True
         slugged_description = slugify(self.description_plain_text)
         ce_slugs = self.list_slugs()
+        ce_slugs.sort(key=len) # order shortest to longest
         for title_slug in ce_slugs:
             if title_slug in slugged_description:
-                title_deslug = title_slug.replace('-', ' ')
-                slug_href = '<a href="' + title_slug + '">' + title_deslug + '</a>'
-                self.description = self.description.replace(title_deslug, slug_href)
+                # retrieve the title so a string can be returned that matches the case
+                ce_title = CultureEvent.objects.get(slug=title_slug).title
+                slug_href = '<a href="' + title_slug + '">' + ce_title + '</a>' # slug to insert
+                # find the index of the match, then replace with the slug. Need to keep the case of self.description
+                # intact and hence some manual insertion is needed. Can't just use self.description.lower()
+                position = self.description.lower().find(ce_title.lower())
+                part1 = self.description[:position]
+                part2 = self.description[position + len(ce_title):]
+                self.description = slug_href.join([part1, part2])
 
     def list_slugs(self):
         ce_objects = CultureEvent.objects.all()

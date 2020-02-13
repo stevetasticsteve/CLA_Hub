@@ -12,6 +12,19 @@ import people.models
 from CLAHub import tools
 
 integer_regex = re.compile('\d+')
+anchor_regex = re.compile('<a.*?</a>')
+
+
+def check_if_index_within_html_anchor(string, index):
+    # Returns true if the index provided sits within an <a></a> tag in the provided string
+    num_anchors = len(re.findall(anchor_regex, string))
+    for anchor in range(num_anchors):
+        match = re.search(anchor_regex, string)
+        if index >= match.start():
+            if index <= match.end():
+                return True
+        string = string[match.end():]
+        index = index - match.end()
 
 
 class CultureEvent(models.Model):
@@ -69,24 +82,43 @@ class CultureEvent(models.Model):
                 elif i == len(ce_slugs) - 1:
                     self.description = self.description.replace(tag, content)
 
-
     def auto_cross_ref(self):
         # search the plain text description for slugs and replace them with hyperlinks if found
         # only triggers if auto_cross_reference is True
+
+        # turn user entered data into a slug and search it for slugs that represent CEs
         slugged_description = slugify(self.description_plain_text)
         ce_slugs = self.list_slugs()
-        ce_slugs.sort(key=len) # order shortest to longest
+        ce_slugs.sort(key=len)
+        ce_slugs.reverse() # order longest to shortest = greedy matching
+        # check the slugged description for each ce title starting longest, going to shortest
         for title_slug in ce_slugs:
             if title_slug in slugged_description:
-                # retrieve the title so a string can be returned that matches the case
-                ce_title = CultureEvent.objects.get(slug=title_slug).title
-                slug_href = '<a href="' + title_slug + '">' + ce_title + '</a>' # slug to insert
-                # find the index of the match, then replace with the slug. Need to keep the case of self.description
-                # intact and hence some manual insertion is needed. Can't just use self.description.lower()
-                position = self.description.lower().find(ce_title.lower())
-                part1 = self.description[:position]
-                part2 = self.description[position + len(ce_title):]
-                self.description = slug_href.join([part1, part2])
+                # Loop variables to track when to move on
+                i = 0
+                start_next_search = 0
+                # progressively work through text to find all occurrences of slug
+                while i < slugged_description.count(title_slug):
+                    i += 1
+                    # retrieve the title so a string can be returned that matches the case
+                    ce_title = CultureEvent.objects.get(slug=title_slug).title
+                    slug_href = '<a href="' + title_slug + '">' + ce_title + '</a>'  # anchor to insert
+
+                    # find the index of the match. Set start point for next loop
+                    position = self.description.lower().find(ce_title.lower(), start_next_search)
+                    start_next_search = position + len(slug_href)
+
+                    # if the match is in a preexisting anchor move the loop on
+                    if check_if_index_within_html_anchor(self.description, position):
+                        continue
+
+                    # insert the anchor at the desired position, replacing the found match
+                    # Can't just use replace as it will replace things within anchors we already inserted
+                    # Can't modify self.description outside of the link position - must maintain user formatting.
+                    part1 = self.description[:position]
+                    part2 = self.description[position + len(ce_title):]
+                    self.description = slug_href.join([part1, part2])
+                    # start the next loop searching after the anchor we just inserted
 
     def list_slugs(self):
         ce_objects = CultureEvent.objects.all()

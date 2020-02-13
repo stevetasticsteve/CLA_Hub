@@ -109,7 +109,6 @@ class CEModelTest(TestCase):
         ce = models.CultureEvent(title='Test',
                                  description_plain_text=desc)
         ce.save()
-
         self.assertIn('href', ce.description, 'no hyperlinks')
         self.assertEqual(ce.description.count('href'), 4, 'Incorrect number of hyperlinks')
 
@@ -136,12 +135,11 @@ class CEModelTest(TestCase):
                                  description_plain_text='A first CE')
         ce.save()
         ce = models.CultureEvent(title='Example CE2',
-                                 description_plain_text='I\'m linking test CE twice by saying test CE again')
+                                 description_plain_text='I\'m linking test CE twice by saying test CE again. test CE')
         ce.save()
-
-        self.assertEqual(ce.description.count('href'), 2, 'Incorrect number of hyperlinks')
-        self.assertEqual(ce.description, 'I\'m linking <a href="test-ce">Test CE1</a> twice by saying '
-                                         '<a href="test-ce1">Test CE</a> again',
+        self.assertEqual(ce.description.count('href'), 3, 'Incorrect number of hyperlinks')
+        self.assertEqual(ce.description, 'I\'m linking <a href="test-ce">Test CE</a> twice by saying '
+                                         '<a href="test-ce">Test CE</a> again. <a href="test-ce">Test CE</a>',
                          'Repeated hyperlink not displaying correctly')
 
     def test_manual_hyperlink(self):

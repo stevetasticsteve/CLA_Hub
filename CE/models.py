@@ -48,6 +48,7 @@ class CultureEvent(models.Model):
         # uses bleach to remove potentially harmful HTML code
         self.description = bleach.clean(str(self.description_plain_text),
                                         tags=CE.settings.bleach_allowed,
+                                        attributes=CE.settings.bleach_attributes_allowed,
                                         strip=True)
         if CE.settings.auto_cross_reference:
             self.auto_cross_ref()
@@ -198,7 +199,7 @@ class Text(models.Model):
         if self.audio:
             if tools.check_already_imported(self.audio):
                 # don't duplicate audio in uploads during tests
-                self.audio.upload_to = None # todo duplicates still added
+                self.audio.upload_to = 'temp' # todo duplicates still added
         # search for integers in speaker field and provide link to profile if found
         if self.speaker_plain_text:
             integers = re.findall(integer_regex, self.speaker_plain_text)

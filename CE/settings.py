@@ -4,4 +4,6 @@ culture_events_shown_on_home_page = 10
 # If False hyperlinks will only be added to valid slugs within curly brackets {}
 auto_cross_reference = True
 # A list of allowed HTML tags the user can enter to HTML escaped fields.
-bleach_allowed = ['strong', 'p', 'h2', 'li', 'ul']
+bleach_allowed = ['strong', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' 'li', 'ul',
+                  'tr', 'th', 'td', 'thead', 'tbody', 'table', 'div']
+bleach_attributes_allowed = {'table' : 'class', 'div': 'class'}

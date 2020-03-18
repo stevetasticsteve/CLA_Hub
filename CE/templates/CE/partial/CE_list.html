@@ -4,6 +4,9 @@
         <h5><a href="{% url 'CE:view' ce.pk %}"> {{ ce.title }} </a></h5>
         <h6 class="card-subtitle mb-2 text-muted">Edited {{ce.last_modified}} by {{ce.last_modified_by}}</h6>
         <p class="card-text">{% autoescape off %}{{ce.description|slice:300}}...{% endautoescape %}</p>
+        {% if "<table" in ce.description|slice:300 %}
+        </table>
+        {% endif %}
         <div>
             {% for tag in ce.tags.all %}
             {% if tag.slug %}
@@ -14,5 +17,6 @@
         </div>
     </div>
 </ul>
+
 {% endfor %}
 

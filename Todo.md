@@ -41,8 +41,10 @@ get it to pass the request through to the Feed class so it can pull the host fro
 - Tags can potentially produce None as the slug. django.slugify is used on the tag and '==' will become ''
 Added if loops in templates to catch this bug and stop a server error, but the tag will still exit - being
 visible on the tags page but unaccessible as it has no slug.
-- Can't add a question to the Example CE for some reason (can edit)
 - Audio is replicated on save during tests
-- Can't save more than one question when there is more than one text
 - Editing a CE means your user overwrites the last edited by information for texts too,
 even if you didn't edit them.
+
+## Testing
+- Functional tests need to be written, especially as bugs with the JS and complex form factories used in
+the CE form tend to be overlooked in Django test cases.

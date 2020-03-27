@@ -22,23 +22,25 @@
 <div id="questions-form-container">
     <div id="question-server-items">
         {% for question in QuestionForm %}
-        <div class="form-row" id="question-{{ forloop.counter0 }}">
-            {{ question.id }}
-            <div class="col">
-            <strong>Question {{forloop.counter}}</strong>
+        <div>
+            <div class="form-row" id="question-{{ forloop.counter0 }}">
+                {{ question.id }}
+                <div class="col">
+                <strong>Question {{forloop.counter}}</strong>
+                </div>
             </div>
+            <div class="form-row">
+                <div class="col">
+                    {{ question.question.label_tag }}
+                    {{ question.question }}
+                </div>
+                <div class="col">
+                    {{ question.answer.label_tag }}
+                    {{ question.answer }}
+                </div>
+            </div>
+            <br>
         </div>
-        <div class="form-row">
-            <div class="col">
-                {{ question.question.label_tag }}
-                {{ question.question }}
-            </div>
-            <div class="col">
-                {{ question.answer.label_tag }}
-                {{ question.answer }}
-            </div>
-        </div>
-        <br>
         {% endfor %}
     </div>
 </div>
@@ -52,7 +54,7 @@
 $(document).ready(function() {
     $('.add-question').click(function(ev) {
         ev.preventDefault();
-        var count = $('#questions-form-container').children().length;
+        var count = $('#questions-form-container').children().length + $('#question-server-items').children().length - 1;
         var tmplMarkup = $('#question-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
         $('div#questions-form-container').append(compiledTmpl);

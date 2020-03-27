@@ -102,10 +102,12 @@
 $(document).ready(function() {
     $('.add-text').click(function(ev) {
         ev.preventDefault();
-        var count = $('#text-server-items').children().length;
+        var count = $('#text-form-container').children().length + $('#text-server-items').children().length -1;
+<!--        Div made up of <div>server</div> <div>new</div> <div>new2</div>. Hence count what's in server div and minus 1  -->
+
         var tmplMarkup = $('#text-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-        $('div#text-server-items').append(compiledTmpl);
+        $('div#text-form-container').append(compiledTmpl);
 
         // update form count
         $('#id_text-TOTAL_FORMS').attr('value', count+1);

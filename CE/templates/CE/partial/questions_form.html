@@ -55,6 +55,7 @@ $(document).ready(function() {
     $('.add-question').click(function(ev) {
         ev.preventDefault();
         var count = $('#questions-form-container').children().length + $('#question-server-items').children().length - 1;
+        <!--        Div made up of <div>server</div> <div>new</div> <div>new2</div>. Hence count what's in server div and minus 1  -->
         var tmplMarkup = $('#question-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
         $('div#questions-form-container').append(compiledTmpl);

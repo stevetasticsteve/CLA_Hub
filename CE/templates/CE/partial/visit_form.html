@@ -69,7 +69,8 @@
 $(document).ready(function() {
     $('.add-visit').click(function(ev) {
         ev.preventDefault();
-        var count = $('#visit-form-container').children().length;
+        var count = $('#visit-form-container').children().length + $('#visit-server-items').children().length -1;
+        <!--        Div made up of <div>server</div> <div>new</div> <div>new2</div>. Hence count what's in server div and minus 1  -->
         var tmplMarkup = $('#visit-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
         $('div#visit-form-container').append(compiledTmpl);

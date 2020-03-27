@@ -67,15 +67,15 @@
       <a class="nav-item nav-link" href="{% url 'tools' %}">Tools <span class="sr-only"></span></a>
     </div>
 
-      <div class="navbar-item ml-md-auto" >
+      <div class="navbar-item ml-md-auto">
       {% if user.is_authenticated %}
-        <p>Logged in as <strong>{{ user.username }}</strong></p>
+        <p id="login-status">Logged in as <strong>{{ user.username }}</strong></p>
         <a href="{% url 'admin:index' %}" class="btn btn-light">Admin</a>
         <a href="{% url 'logout' %}" class="btn btn-light" >Logout</a>
 
       </div>
       {% else %}
-      <p>You are not logged in</p>
+      <p id="login-status">You are not logged in</p>
       <p>
       <a href="{% url 'login' %}" class="btn btn-light" >Login</a>
         </p>

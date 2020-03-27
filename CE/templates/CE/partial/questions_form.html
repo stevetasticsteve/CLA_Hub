@@ -2,7 +2,7 @@
 <h2>Questions</h2>
 
 <script type="text/html" id="question-template">
-<div id="question-__prefix__" class="container-fluid border bg-light" value="__prefix__">
+<div id="question-__prefix__" class="container-fluid border bg-light">
     <h3>New Question</h3>
         <div class="form-row">
             <div class="col">
@@ -55,7 +55,7 @@ $(document).ready(function() {
         var count = $('#questions-form-container').children().length;
         var tmplMarkup = $('#question-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-        $('div#question-server-items').append(compiledTmpl);
+        $('div#questions-form-container').append(compiledTmpl);
 
         // update form count
         $('#id_question-TOTAL_FORMS').attr('value', count+1);

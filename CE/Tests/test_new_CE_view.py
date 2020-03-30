@@ -107,7 +107,7 @@ class NewCEPageTest(CETestBaseClass):
             # check image displayed on view page
             response = self.client.get(reverse('CE:view', args=self.new_ce_pk))
             self.assertContains(response, 'Test CE')
-            self.assertContains(response, '<div id="carouselExampleIndicators"')
+            self.assertContains(response, '<div id="CE_pictures"')
             self.assertContains(response, '<img src="/uploads/CultureEventFiles/%s/images/test_pic1.jpg' % self.new_ce_pk)
         finally:
             self.cleanup_test_files(int(self.new_ce_pk))

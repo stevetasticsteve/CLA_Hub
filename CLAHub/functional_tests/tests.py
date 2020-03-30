@@ -101,7 +101,7 @@ class SeleniumTests(StaticLiveServerTestCase):
         self.assertEqual(self.selenium.current_url, self.live_server_url + '/CE/')
         self.assertIn('user1', self.selenium.find_element_by_id('login-status').get_attribute('innerHTML'))
 
-    def test_add_CE(self):
+    def test_add_and_edit_CE(self):
         try:
             self.login()
             self.selenium.get((self.live_server_url + '/CE/new'))
@@ -110,15 +110,10 @@ class SeleniumTests(StaticLiveServerTestCase):
     
             # Fill in CE form
             self.selenium.find_element_by_id("id_title").send_keys(self.test_data['title'])
-            self.wait()
             self.selenium.find_element_by_id("id_description_plain_text").send_keys(self.test_data['description'])
-            self.wait()
             self.selenium.find_element_by_id("id_differences").send_keys(self.test_data['differences'])
-            self.wait()
             self.selenium.find_element_by_id("id_interpretation").send_keys(self.test_data['interpretation'])
-            self.wait()
             self.selenium.find_element_by_id("id_picture").send_keys(self.test_pic)
-            self.wait()
             # Fill in visits form
             self.selenium.find_element_by_id('add-visit-button').click()
             self.selenium.find_element_by_id("id_visit-0-team_present").send_keys(self.test_data['team'])
@@ -211,10 +206,52 @@ class SeleniumTests(StaticLiveServerTestCase):
             self.assertTrue(os.path.exists(os.path.join(upload_path, 'audio', os.path.basename(self.test_audio1))),
                             'Audio not found in upload folder')
             # test page contents
-            title = self.selenium.find_element_by_id('title').get_attribute('innerHTML')
-            self.assertEqual(ce.title, title, 'HTML no working right - title')
+            self.assertEqual(ce.title, self.selenium.find_element_by_id('title').get_attribute('innerHTML'),
+            'HTML no working right - title')
             self.assertTrue(self.selenium.find_element_by_id('CE_pictures').is_displayed()
                             , 'HTMl not working right - CE picture')
+
+
+            # Test edit page
+            self.selenium.get((self.live_server_url + '/CE/%d/edit' % self.new_ce_pk))
+            self.wait()
+            # 1. Test initial contents
+            self.assertEqual( self.selenium.find_element_by_id("id_title").get_attribute('value'),
+                              self.test_data['title'], 'Edit page displaying wrong info: CE title')
+            self.assertEqual( self.selenium.find_element_by_id("id_description_plain_text").get_attribute('value'),
+                              self.test_data['description'], 'Edit page displaying wrong info: CE description')
+            self.assertEqual( self.selenium.find_element_by_id("id_differences").get_attribute('value'),
+                              self.test_data['differences'], 'Edit page displaying wrong info: CE differences')
+            self.assertEqual( self.selenium.find_element_by_id("id_interpretation").get_attribute('value'),
+                              self.test_data['interpretation'], 'Edit page displaying wrong info: CE interpretation')
+            # todo examine the picture
+            self.assertEqual(self.selenium.find_element_by_id("id_visit-0-team_present").get_attribute('value'),
+                             self.test_data['team'], 'Edit page displaying wrong info: Visits, team')
+            self.assertEqual(self.selenium.find_element_by_id("id_visit-0-nationals_present").get_attribute('value'),
+                             self.test_data['nationals'], 'Edit page displaying wrong info: Visits, nationals')
+            self.assertEqual(self.selenium.find_element_by_id("id_visit-1-team_present").get_attribute('value'),
+                             self.test_data['team'], 'Edit page displaying wrong info: Visits, team')
+            self.assertEqual(self.selenium.find_element_by_id("id_visit-1-nationals_present").get_attribute('value'),
+                             self.test_data['nationals'], 'Edit page displaying wrong info: Visits, nationals')
+
+            self.assertEqual(self.selenium.find_element_by_id("id_text-0-text_title").get_attribute('value'),
+                             self.test_data['text_title1'], 'Edit page displaying wrong info: text title')
+            self.assertEqual(self.selenium.find_element_by_id("id_text-1-text_title").get_attribute('value'),
+                             self.test_data['text_title2'], 'Edit page displaying wrong info: text title')
+            self.assertEqual(self.selenium.find_element_by_id("id_text-0-phonetic_text").get_attribute('value'),
+                             self.test_data['phonetic_text'], 'Edit page displaying wrong info: phonetic text')
+            self.assertEqual(self.selenium.find_element_by_id("id_text-0-orthographic_text").get_attribute('value'),
+                             self.test_data['orthographic_text'], 'Edit page displaying wrong info: orthographic txt')
+            self.assertEqual(self.selenium.find_element_by_id("id_text-0-speaker_plain_text").get_attribute('value'),
+                             self.test_data['speaker'], 'Edit page displaying wrong info: speaker')
+            self.assertEqual(self.selenium.find_element_by_id("id_text-0-discourse_type").get_attribute('value'),
+                             self.test_data['discourse_type'], 'Edit page displaying wrong info: discourse type')
+            self.assertEqual(self.selenium.find_element_by_id("id_text-0-phonetic_standard").get_attribute('value'),
+                             self.test_data['phonetic_standard'], 'Edit page displaying wrong info: phonetic standard')
+            # self.assertEqual(self.selenium.find_element_by_id("id_text-0-audio").get_attribute('value'),
+            #                  os.path.join('uploads', 'CultureEventFiles', str(self.new_ce_pk), 'audio',
+            #                               os.path.basename(self.test_audio1)), 'Edit page displaying wrong info: audio')
+            # todo Find a way to identify audio currently: xxx.mp3
 
         finally:
             self.cleanup_test_files(self.new_ce_pk)

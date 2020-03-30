@@ -56,8 +56,17 @@ class SeleniumTests(StaticLiveServerTestCase):
             'interpretation': 'I think this is a test',
             'team': 'Steve',
             'nationals': 'Ulumo',
+            'text_title1': 'New text 1',
+            'text_title2': 'New text 2',
+            'speaker': 'Steve', # todo change to an integer to test the auto link. Add a person fixture
+            'phonetic_text': 'foᵘnɛtɪks',
+            'orthographic_text': 'phonetics',
+            'discourse_type': '1',
+            'phonetic_standard': '2',
         }
         self.test_pic = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
+        self.test_audio1 = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_audio1.mp3')
+        self.test_audio2 = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_audio2.mp3')
 
     @staticmethod
     def cleanup_test_files(ce):
@@ -113,6 +122,25 @@ class SeleniumTests(StaticLiveServerTestCase):
             self.selenium.find_element_by_id('add-visit-button').click()
             self.selenium.find_element_by_id("id_visit-1-team_present").send_keys(self.test_data['team'])
             self.selenium.find_element_by_id("id_visit-1-nationals_present").send_keys(self.test_data['nationals'])
+            # Fill in texts form
+            self.selenium.find_element_by_id('add-text-button').click()
+            self.selenium.find_element_by_id("id_text-0-text_title").send_keys(self.test_data['text_title1'])
+            self.selenium.find_element_by_id("id_text-0-speaker_plain_text").send_keys(self.test_data['speaker'])
+            self.selenium.find_element_by_id("id_text-0-phonetic_text").send_keys(self.test_data['phonetic_text'])
+            self.selenium.find_element_by_id("id_text-0-orthographic_text").send_keys(self.test_data['orthographic_text'])
+            self.selenium.find_element_by_id("id_text-0-discourse_type").send_keys(self.test_data['discourse_type'])
+            self.selenium.find_element_by_id("id_text-0-phonetic_standard").send_keys(self.test_data['phonetic_standard'])
+            self.selenium.find_element_by_id("id_text-0-audio").send_keys(self.test_audio1)
+
+            self.selenium.find_element_by_id('add-text-button').click()
+            self.selenium.find_element_by_id("id_text-1-text_title").send_keys(self.test_data['text_title2'])
+            self.selenium.find_element_by_id("id_text-1-speaker_plain_text").send_keys(self.test_data['speaker'])
+            self.selenium.find_element_by_id("id_text-1-phonetic_text").send_keys(self.test_data['phonetic_text'])
+            self.selenium.find_element_by_id("id_text-1-orthographic_text").send_keys(self.test_data['orthographic_text'])
+            self.selenium.find_element_by_id("id_text-1-discourse_type").send_keys(self.test_data['discourse_type'])
+            self.selenium.find_element_by_id("id_text-1-phonetic_standard").send_keys(
+                self.test_data['phonetic_standard'])
+            self.selenium.find_element_by_id("id_text-1-audio").send_keys(self.test_audio2)
             # submit
             self.selenium.find_element_by_id('submit-btn').click()
             self.wait()
@@ -122,8 +150,10 @@ class SeleniumTests(StaticLiveServerTestCase):
             # test .db contents
             ce = models.CultureEvent.objects.get(pk=self.new_ce_pk)
             self.assertEqual(ce.title, self.test_data['title'], 'CE form not working on new page - title')
-            self.assertEqual(ce.description_plain_text, self.test_data['description'], 'CE form not working on new page - desc')
-            self.assertEqual(ce.differences, self.test_data['differences'], 'CE form not working on new page - differences')
+            self.assertEqual(ce.description_plain_text, self.test_data['description'],
+                             'CE form not working on new page - desc')
+            self.assertEqual(ce.differences, self.test_data['differences'],
+                             'CE form not working on new page - differences')
             self.assertEqual(ce.interpretation, self.test_data['interpretation'],
                              'CE form not working on new page - interpretation')
             visits = models.Visit.objects.filter(ce=ce)
@@ -133,10 +163,30 @@ class SeleniumTests(StaticLiveServerTestCase):
             pictures = models.Picture.objects.filter(ce=ce)
             self.assertEqual(len(pictures), 1, 'CE picture not in .db')
             self.assertIn(os.path.basename(self.test_pic), str(pictures[0].picture))
+            texts = models. Text.objects.filter(ce=ce)
+            self.assertEqual(len(texts), 2, 'Too few texts in .db')
+            self.assertEqual(texts[0].text_title, self.test_data['text_title1'],
+                             ' Texts form not working - incorrect .db entry text_title')
+            self.assertEqual(texts[1].text_title, self.test_data['text_title2'],
+                             ' Texts form not working - incorrect .db entry text_title')
+            self.assertEqual(texts[0].speaker, self.test_data['speaker'],
+                             'Texts form not working - incorrect .db entry speaker')
+            self.assertEqual(texts[0].phonetic_text, self.test_data['phonetic_text'],
+                             'Texts form not working - incorrect .db entry phonetic_text')
+            self.assertEqual(texts[0].orthographic_text, self.test_data['orthographic_text'],
+                             'Texts form not working - incorrect .db entry orthographic_text')
+            self.assertIn(os.path.basename(self.test_audio1), str(texts[0].audio),
+                          'Texts form not working - incorrect .db entry audio')
+            self.assertIn(os.path.basename(self.test_audio2), str(texts[1].audio),
+                          'Texts form not working - incorrect .db entry audio')
             # test upload folder contents
             upload_path = os.path.join(base_settings.BASE_DIR, 'uploads', 'CultureEventFiles', str(self.new_ce_pk))
             self.assertTrue(os.path.exists(os.path.join(upload_path, 'images', os.path.basename(self.test_pic))),
                             'Picture not found in upload folder')
+            self.assertTrue(os.path.exists(os.path.join(upload_path, 'audio', os.path.basename(self.test_audio2))),
+                            'Audio not found in upload folder')
+            self.assertTrue(os.path.exists(os.path.join(upload_path, 'audio', os.path.basename(self.test_audio1))),
+                            'Audio not found in upload folder')
             # test page contents
             title = self.selenium.find_element_by_id('title').get_attribute('innerHTML')
             self.assertEqual(ce.title, title, 'HTML no working right - title')

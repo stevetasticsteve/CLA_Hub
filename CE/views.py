@@ -29,7 +29,8 @@ def home_page(request):
     most_recent_ces = CultureEvent.objects.all().order_by(
         '-last_modified')[:culture_events_shown_on_home_page]
     context = {
-        'CEs': most_recent_ces
+        'CEs': most_recent_ces,
+        'title': 'CE home'
     }
     return render(request, 'CE/home_page.html', context)
 
@@ -38,7 +39,8 @@ def home_page(request):
 def alphabetical(request):
     ces = CultureEvent.objects.all().order_by(Lower('title'))
     context = {
-        'CEs': ces
+        'CEs': ces,
+        'title': 'CEs alphabetically'
     }
     return render(request, 'CE/alphabetical.html', context)
 
@@ -58,6 +60,7 @@ def view(request, pk):
         'Visits' : visits,
         'Questions': questions,
         'Tags': tags,
+        'title': ce.title
     }
     return render(request, 'CE/view_CE.html', context)
 
@@ -70,10 +73,11 @@ def view_slug(request, slug):
     pictures = Picture.objects.filter(ce=pk)
     visits = Visit.objects.filter(ce=ce)
     context = {
-        'CE' : ce,
-        'Texts' : texts,
-        'Pics' : pictures,
-        'Visits' : visits
+        'CE': ce,
+        'Texts': texts,
+        'Pics': pictures,
+        'Visits': visits,
+        'title': ce.title
     }
     return render(request, 'CE/view_CE.html', context)
 
@@ -122,7 +126,8 @@ def edit(request, pk):
         'QuestionForm': question_form,
         'Errors': errors,
         'CE': ce,
-        'button_text': 'Update CE'
+        'button_text': 'Update CE',
+        'title': 'Edit ' + str(ce.title)
     }
     return render(request, template, context)
 # todo upload multiple files at once
@@ -180,7 +185,8 @@ def new(request):
             'QuestionForm': question_form,
             'VisitForm': visit_form,
             'Errors': errors,
-            'button_text': 'Create CE'
+            'button_text': 'Create CE',
+            'title': 'new_CE'
         }
 
     return render(request, template, context)
@@ -204,7 +210,8 @@ def questions_alph(request):
     set_ces = sorted(set_ces, key=lambda x: x.title.lower())
     context = {
         'Questions': q,
-        'CEs': set_ces
+        'CEs': set_ces,
+        'title': 'Questions'
     }
     return render(request, 'CE/questions_alph.html', context)
 
@@ -215,7 +222,8 @@ def questions_unanswered(request):
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,
-        'CEs': set_ces
+        'CEs': set_ces,
+        'title': 'Questions'
     }
     return render(request, 'CE/questions_unanswered.html', context)
 
@@ -226,7 +234,8 @@ def questions_recent(request):
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,
-        'CEs': set_ces
+        'CEs': set_ces,
+        'title': 'Questions'
     }
     return render(request, 'CE/questions_recent.html', context)
 
@@ -242,7 +251,8 @@ def OCM_home(request):
     context = {
         'OCM': OCM_categories.OCM,
         'Sections': OCM_categories.OCM_categories,
-        'Tags': tagged_OCM
+        'Tags': tagged_OCM,
+        'title': 'OCM tags'
     }
     return render(request, template, context)
 
@@ -253,6 +263,7 @@ def OCM_ref(request):
     context = {
         'OCM': OCM_categories.OCM,
         'Sections': OCM_categories.OCM_categories,
+        'title': 'OCM reference'
     }
     return render(request, template, context)
 
@@ -273,6 +284,7 @@ def tag_detail_page(request, slug):
     context = {
         'tag':tag,
         'CEs':CEs,
+        'title': tag
     }
 
     return render(request, template, context)
@@ -283,7 +295,8 @@ def tag_list_page(request):
     template = 'CE/tag_list_page.html'
     tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-num')
     context = {
-        'Tags': tags
+        'Tags': tags,
+        'title': 'Tags'
     }
     return render(request, template, context)
 
@@ -295,7 +308,8 @@ def search_CE(request):
     results = CultureEvent.objects.filter(Q(title__icontains=search))
     context = {
         'search': search,
-        'CEs': results
+        'CEs': results,
+        'title': 'CE search'
     }
     return render(request, template, context)
 
@@ -305,7 +319,8 @@ def texts_home(request):
     template = 'CE/texts.html'
     texts = Text.objects.all().order_by('-last_modified')
     context = {
-        'Texts': texts
+        'Texts': texts,
+        'title': 'Texts'
     }
     return render(request, template, context)
 
@@ -323,6 +338,7 @@ def text_genre(request, genre):
 
     context = {
         'Texts': texts,
-        'Genre': genre
+        'Genre': genre,
+        'title': genre + ' texts'
     }
     return render(request, template, context)

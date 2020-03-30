@@ -10,13 +10,18 @@ logger = logging.getLogger('CLAHub')
 
 
 def home(request):
-    logger.info('Home page called')
-    return render(request, 'CLAHub_home.html')
+    context = {
+        'title': 'CLAHub'
+    }
+    return render(request, 'CLAHub_home.html', context)
 
 
 @login_required
 def tools(request):
-    return render(request, 'tools.html')
+    context = {
+        'title', 'Tools'
+    }
+    return render(request, 'tools.html', context)
 
 
 @login_required
@@ -42,6 +47,7 @@ def import_profiles(request):
 
     form = forms.ProfileUploadForm()
     context = {
-        'form': form
+        'form': form,
+        'title': 'Import profiles'
     }
     return render(request, 'import_profiles.html', context)

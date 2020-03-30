@@ -16,7 +16,6 @@
 - User friendliness testing
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
-- html title. Code an if into base template so a view can pass a title, otherwise read CLAHub
 
 ## Server improvements
 - Paginate texts, alphabetical CEs and tags pages
@@ -30,7 +29,7 @@ and audio it's possible the POST will fail if the upload takes too long.
 - Check through the generated HTML for unclosed tags or extra closing tags
 
 ## Deployment improvements
-- Automated install to Raspberry pi script is required
+- Automated install to Raspberry pi script is required or Docker
 - Villages in people app are hardcoded to Kovol
 - server_url in PodcastFeed is hardcoded to 192.168.0.100. Spent days trying to figure out how to get Django to give me the host.
 It's possible through a request but the django Feeds seems to ditch the request. Some magic is happening in url.paths, but I can't

@@ -16,7 +16,8 @@ def people_home(request):
     villages = dict(models.Person.villages)
     context = {
         'recent': recently_edited,
-        'villages': villages
+        'villages': villages,
+        'title': 'CLAHub People'
     }
     return render(request, template, context)
 
@@ -26,6 +27,7 @@ def village(request, village):
     residents = models.Person.objects.filter(village=village).order_by('name')
     context = {
         'village_residents': residents,
+        'title': 'Village overview'
     }
     # pull the villages display name from the model and 404 if out of range
     try:
@@ -41,7 +43,8 @@ def alphabetically(request):
     people = models.Person.objects.all().order_by(
         'name')
     context = {
-        'People': people
+        'People': people,
+        'title': 'People alphabetically'
     }
     return render(request, template, context)
 
@@ -59,7 +62,8 @@ def people_detail(request, pk):
 
     context = {
         'person': person,
-        'age': age
+        'age': age,
+        'title': person.name
     }
     return render(request, template, context)
 
@@ -84,7 +88,8 @@ def new(request):
 
     context = {
         'Form': form,
-        'Errors': errors
+        'Errors': errors,
+        'title': 'New person'
     }
     return render(request, template, context)
 
@@ -108,7 +113,8 @@ def edit(request, pk):
 
     context = {
         'Form': form,
-        'Errors': errors
+        'Errors': errors,
+        'title': 'Edit ' + person.name
     }
     return render(request, template, context)
 

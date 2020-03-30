@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import Select
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.contrib.auth import get_user_model
 
@@ -63,6 +64,10 @@ class SeleniumTests(StaticLiveServerTestCase):
             'orthographic_text': 'phonetics',
             'discourse_type': '1',
             'phonetic_standard': '2',
+            'Q1': 'Q1',
+            'A1': 'A1',
+            'Q2': 'Q2',
+            'A2': 'A2',
         }
         self.test_pic = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
         self.test_audio1 = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_audio1.mp3')
@@ -128,8 +133,9 @@ class SeleniumTests(StaticLiveServerTestCase):
             self.selenium.find_element_by_id("id_text-0-speaker_plain_text").send_keys(self.test_data['speaker'])
             self.selenium.find_element_by_id("id_text-0-phonetic_text").send_keys(self.test_data['phonetic_text'])
             self.selenium.find_element_by_id("id_text-0-orthographic_text").send_keys(self.test_data['orthographic_text'])
-            self.selenium.find_element_by_id("id_text-0-discourse_type").send_keys(self.test_data['discourse_type'])
-            self.selenium.find_element_by_id("id_text-0-phonetic_standard").send_keys(self.test_data['phonetic_standard'])
+            Select(self.selenium.find_element_by_id("id_text-0-discourse_type")).select_by_visible_text('Narrative')
+            Select(self.selenium.find_element_by_id("id_text-0-phonetic_standard")).\
+                select_by_visible_text('Double checked by author')
             self.selenium.find_element_by_id("id_text-0-audio").send_keys(self.test_audio1)
 
             self.selenium.find_element_by_id('add-text-button').click()
@@ -137,10 +143,17 @@ class SeleniumTests(StaticLiveServerTestCase):
             self.selenium.find_element_by_id("id_text-1-speaker_plain_text").send_keys(self.test_data['speaker'])
             self.selenium.find_element_by_id("id_text-1-phonetic_text").send_keys(self.test_data['phonetic_text'])
             self.selenium.find_element_by_id("id_text-1-orthographic_text").send_keys(self.test_data['orthographic_text'])
-            self.selenium.find_element_by_id("id_text-1-discourse_type").send_keys(self.test_data['discourse_type'])
-            self.selenium.find_element_by_id("id_text-1-phonetic_standard").send_keys(
-                self.test_data['phonetic_standard'])
+            Select(self.selenium.find_element_by_id("id_text-1-discourse_type")).select_by_visible_text('Narrative')
+            Select(self.selenium.find_element_by_id("id_text-1-phonetic_standard")). \
+                select_by_visible_text('Double checked by author')
             self.selenium.find_element_by_id("id_text-1-audio").send_keys(self.test_audio2)
+            # Fill in Q form
+            self.selenium.find_element_by_id('add-question-button').click()
+            self.selenium.find_element_by_id("id_question-0-question").send_keys(self.test_data['Q1'])
+            self.selenium.find_element_by_id("id_question-0-answer").send_keys(self.test_data['A1'])
+            self.selenium.find_element_by_id('add-question-button').click()
+            self.selenium.find_element_by_id("id_question-1-question").send_keys(self.test_data['Q2'])
+            self.selenium.find_element_by_id("id_question-1-answer").send_keys(self.test_data['A2'])
             # submit
             self.selenium.find_element_by_id('submit-btn').click()
             self.wait()
@@ -175,10 +188,20 @@ class SeleniumTests(StaticLiveServerTestCase):
                              'Texts form not working - incorrect .db entry phonetic_text')
             self.assertEqual(texts[0].orthographic_text, self.test_data['orthographic_text'],
                              'Texts form not working - incorrect .db entry orthographic_text')
+            self.assertEqual(texts[0].phonetic_standard, self.test_data['phonetic_standard'],
+                             'Texts form not working - incorrect .db entry phonetic_standard')
+            self.assertEqual(texts[0].discourse_type, self.test_data['discourse_type'],
+                             'Texts form not working - incorrect .db entry discourse_type')
             self.assertIn(os.path.basename(self.test_audio1), str(texts[0].audio),
                           'Texts form not working - incorrect .db entry audio')
             self.assertIn(os.path.basename(self.test_audio2), str(texts[1].audio),
                           'Texts form not working - incorrect .db entry audio')
+            questions = models.Question.objects.filter(ce=ce)
+            self.assertEqual(len(questions), 2, 'Questions form not working - too few questions')
+            self.assertEqual(questions[0].question, self.test_data['Q1'],
+                             'Questions form not working - incorrect .db entry: Q')
+            self.assertEqual(questions[0].answer, self.test_data['A1'],
+                             'Questions form not working - incorrect .db entry: A')
             # test upload folder contents
             upload_path = os.path.join(base_settings.BASE_DIR, 'uploads', 'CultureEventFiles', str(self.new_ce_pk))
             self.assertTrue(os.path.exists(os.path.join(upload_path, 'images', os.path.basename(self.test_pic))),

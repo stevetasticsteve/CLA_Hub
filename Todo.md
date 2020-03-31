@@ -9,7 +9,6 @@
 - Search people
 - Hardcode in CLAHubDev admin login
 - label and value tags - enables user extensions without coding - users can add their own fields
-- tests for imports
 
 ## UI improvements
 - Editing or removing uploaded pictures (Ajax drag and drop?)
@@ -45,5 +44,4 @@ visible on the tags page but unaccessible as it has no slug.
 even if you didn't edit them.
 
 ## Testing
-- Functional tests need to be written, especially as bugs with the JS and complex form factories used in
-the CE form tend to be overlooked in Django test cases.
+- Functional tests need to be completed.

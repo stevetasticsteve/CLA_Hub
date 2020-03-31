@@ -253,6 +253,17 @@ class SeleniumTests(StaticLiveServerTestCase):
             #                               os.path.basename(self.test_audio1)), 'Edit page displaying wrong info: audio')
             # todo Find a way to identify audio currently: xxx.mp3
 
+            self.assertEqual(self.selenium.find_element_by_id("id_question-0-question").get_attribute('value'),
+                             self.test_data['Q1'], 'Edit page displaying wrong info: question')
+            self.assertEqual(self.selenium.find_element_by_id("id_question-0-answer").get_attribute('value'),
+                             self.test_data['A1'], 'Edit page displaying wrong info: question')
+            self.assertEqual(self.selenium.find_element_by_id("id_question-1-question").get_attribute('value'),
+                             self.test_data['Q2'], 'Edit page displaying wrong info: question')
+            self.assertEqual(self.selenium.find_element_by_id("id_question-1-answer").get_attribute('value'),
+                             self.test_data['A2'], 'Edit page displaying wrong info: question')
+
+            # 2 Edit contents
+
         finally:
             self.cleanup_test_files(self.new_ce_pk)
 

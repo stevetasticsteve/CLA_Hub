@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core import exceptions
+from django.db.models import Q
+
 
 import datetime
 
@@ -15,9 +17,10 @@ def people_home(request):
         '-last_modified')[:24]
     villages = dict(models.Person.villages)
     context = {
-        'recent': recently_edited,
+        'profiles': recently_edited,
         'villages': villages,
-        'title': 'CLAHub People'
+        'title': 'CLAHub People',
+        'search_context': 'people',
     }
     return render(request, template, context)
 
@@ -121,3 +124,16 @@ def edit(request, pk):
 
 def help_family(request):
     return render(request, 'people/help/family_help.html')
+
+
+def search_people(request):
+    template = 'search_results.html'
+    search = request.GET.get('search')
+    results = models.Person.objects.filter(Q(name__icontains=search))
+    context = {
+        'search': search,
+        'profiles': results,
+        'title': 'People search',
+        'search_context': 'people'
+    }
+    return render(request, template, context)

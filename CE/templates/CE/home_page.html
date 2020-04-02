@@ -12,14 +12,7 @@
                 <a href="{% url 'CE:new' %}" class="btn btn-primary btn-lg active" role="button" id="create_CE" aria-pressed="true">Create CE</a>
             </div>
             <div class="col">
-                <form method="get" action="/CE/search/"}>
-                    <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
-                    <div class="input-group">
-                    <input class="form-control border-0 bg-light" id="search" type="text" name="search" placeholder="Search CEs">
-                    <button class="btn btn-link text-primary" id="search_submit" type="submit">Search</button>
-                    </div>
-                    </div>
-                </form>
+                {% include 'partial/search_bar.html' %}
             </div>
         </div>
     </div>

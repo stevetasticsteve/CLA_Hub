@@ -6,7 +6,6 @@
 - Way to link institutes to realm of reality write up
 - Search tags
 - Search texts
-- Search people
 - Hardcode in CLAHubDev admin login
 - label and value tags - enables user extensions without coding - users can add their own fields
 
@@ -20,7 +19,6 @@
 - Paginate texts, alphabetical CEs and tags pages
 - Think of 'background' information that can be stored by server that might be helpful for queries
 - Improve search
-- Functional tests
 - Make a 2nd level of user so Auth isn't open to them on the admin site
 - A job handling system is needed. The import function won't work as the process takes longer than 30s and apache times
 out. Need to install celery to get that working, and also because if a CE is uploaded with a large picture

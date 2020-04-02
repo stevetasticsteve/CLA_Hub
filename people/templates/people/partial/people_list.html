@@ -1,0 +1,9 @@
+{% for person in profiles %}
+        {% if forloop.first %}
+        <div class="row">
+            {% endif %}
+            {% include 'people/partial/person_card.html' %}
+            {% if forloop.counter|divisibleby:"8" %} </div><div class="row"> {% endif %}
+            {% if forloop.last %} </div> {% endif %}
+            {% endfor %}
+        </div>

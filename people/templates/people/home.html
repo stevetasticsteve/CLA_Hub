@@ -13,17 +13,10 @@
     </div>
 
     <div class="col-sm-10">
+        {% include 'partial/search_bar.html' %}
         <br>
         <h2>Recently edited profiles</h2>
-        {% for person in recent %}
-        {% if forloop.first %}
-        <div class="row">
-            {% endif %}
-            {% include 'people/partial/person_card.html' %}
-            {% if forloop.counter|divisibleby:"8" %} </div><div class="row"> {% endif %}
-            {% if forloop.last %} </div> {% endif %}
-            {% endfor %}
-        </div>
+        {% include 'people/partial/people_list.html' %}
     </div>
 </div>
 

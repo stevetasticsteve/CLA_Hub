@@ -30,7 +30,8 @@ def home_page(request):
         '-last_modified')[:culture_events_shown_on_home_page]
     context = {
         'CEs': most_recent_ces,
-        'title': 'CE home'
+        'title': 'CE home',
+        'search_context': 'CE'
     }
     return render(request, 'CE/home_page.html', context)
 
@@ -303,13 +304,14 @@ def tag_list_page(request):
 
 @CE.utilities.conditional_login
 def search_CE(request):
-    template = 'CE/search.html'
+    template = 'search_results.html'
     search = request.GET.get('search')
     results = CultureEvent.objects.filter(Q(title__icontains=search))
     context = {
         'search': search,
         'CEs': results,
-        'title': 'CE search'
+        'title': 'CE search',
+        'search_context': 'CE'
     }
     return render(request, template, context)
 

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="container fluid">
+    <br>
+    {% include 'partial/search_bar.html' %}
+    <h1>Search results for {{search}}</h1>
+    {% if search_context == 'CE' %}
+        {% if CEs %}
+            {% include 'CE/partial/CE_list.html' %}
+        {% else %}
+            <p>No search results</p>
+        {% endif %}
+    {% elif search_context == 'people' %}
+        {% if profiles %}
+            {% include 'people/partial/people_list.html' %}
+        {% else %}
+            <p>No search results</p>
+        {% endif %}
+
+    {% endif %}
+</div>
+
+
+{% endblock %}

@@ -386,3 +386,13 @@ class EditPersonTest(PeopleTest):
 
         finally:
             self.cleanup_test_files()
+
+    def test_search(self):
+        response = self.client.get(reverse('people:search') + '?search=Test')
+
+        self.assertEqual(response.status_code, 200, 'People search GET request failed')
+        self.assertContains(response, 'Test person 1')
+        response = self.client.get(reverse('people:search') + '?search=Bad')
+        self.assertContains(response, 'No search results')
+
+

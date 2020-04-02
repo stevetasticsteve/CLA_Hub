@@ -204,6 +204,14 @@ class OCMHomePageTest(TestCase):
         response = self.client.get(reverse('CE:OCM_home'))
         self.assertNotContains(response, '<a href="tag/1-2-settlements-communities">')
 
+    def test_search(self):
+        response = self.client.get(reverse('CE:search_CE') + '?search=Example')
+
+        self.assertEqual(response.status_code, 200, 'CE search GET request failed')
+        self.assertContains(response, 'Example CE1')
+        response = self.client.get(reverse('CE:search_CE') + '?search=Bad')
+        self.assertContains(response, 'No search results')
+
 
 class TagSummaryPageTest(TestCase):
     def setUp(self):
@@ -326,3 +334,5 @@ class TextViewAndGenreTest(TestCase):
     def test_text_genre_outOfRange_response(self):
         self.client.get(reverse('CE:text_genre', args='9'))
         self.assertTemplateUsed('404.html')
+
+

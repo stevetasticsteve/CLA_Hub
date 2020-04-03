@@ -14,11 +14,30 @@ See deployment for installing on a server where CLAHub can be accessed by multip
 - [Git](https://git-scm.com/downloads)
 
 ### Installing
-1. Create a CLAHub folder
+1. Download the CLAHub code by cloning the repository with Git:
+
+    Open a Powershell window (Windows), or terminal (Linux) and type:
+    git clone https://github.com/stevetasticsteve/CLA_Hub /path/to/new_folder
+    
+    *Replace /path/to/new_folder with where you want the new folder to be!*
+
 2. Create a python virtual environment within the new folder
-Windows | Linux
---- | ---
-Open a Powershell winodow in the folder, type: python -m venv venv | Open a terminal in the folder, type: python3 venv venv
+
+    Windows | Linux
+    ------- | -----
+    Open a Powershell window in the folder, type: | Open a terminal in the folder, type: 
+    python -m venv venv | python3 venv venv
+
+
+3. Activate the virtual environment
+
+    Windows | Linux
+    ------- | -----
+    In the Powershell window type: | In the terminal i, type: 
+    venv\Scripts\activate.bat | source venv/bin/activate
+    
+4. Install the Python dependencies
+In Powershell/terminal type pip install -r requirements.txt
 
 ## Running the tests
 ...

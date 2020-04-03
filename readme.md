@@ -1,14 +1,16 @@
 # CLA Hub
-A Django project to give bush teams a way to collaboratively create and maintain a culture file for learning tribal language and culture.
-The software is intended to be run on a Raspberry pi 3 on an internal team network and accessed through a desktop web browser.
+A [webapp](https://en.wikipedia.org/wiki/Web_application) project to give bush teams a way to collaboratively create 
+and maintain a culture file for learning tribal language and culture.
+The software is intended to be run on a Raspberry pi 3 on an internal team network and accessed through a desktop web 
+browser.
 
 Check out http://stevetasticsteve.pythonanywhere.com to see a showcase version.
 
 ![Screenshot](https://raw.githubusercontent.com/stevetasticsteve/CLA_Hub/master/CLAHub/assets/example_data/CLAHub_screenshot.png)
 
 ## Getting started
-Setting up CLAHub on your machine to test it out, or to work on the code can be achieved in the following steps.
-See deployment for installing on a server where CLAHub can be accessed by multiple machines on a LAN. 
+To set up a local version of CLAHub on your machine to test it out, or to work on the code follow these steps.
+See the deployment section for installing on a server where CLAHub can be accessed by multiple machines on a LAN. 
 ### Prerequisites
 - [Python3](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)
@@ -17,7 +19,10 @@ See deployment for installing on a server where CLAHub can be accessed by multip
 ### Installing
 1. Download the CLAHub code by cloning the repository with Git (roughly a 10Mb download):
 
-    Open a Powershell window (Windows), or terminal (Linux) and type:
+    Open a [Powershell](https://www.tenforums.com/tutorials/25581-open-windows-powershell-windows-10-a.html) window 
+    (Windows), or [terminal](https://www.howtogeek.com/140679/beginner-geek-how-to-start-using-the-linux-terminal/) 
+    (Linux) and type:
+    
     **git clone https://github.com/stevetasticsteve/CLA_Hub /path/to/new_folder**
     
     *Replace /path/to/new_folder with where you want the new folder to be!*
@@ -90,7 +95,7 @@ See deployment for installing on a server where CLAHub can be accessed by multip
  Automated deployment tools and proper documentation haven't been developed yet, manual installation is necessary.
 Currently there's only [this list](https://github.com/stevetasticsteve/CLA_Hub/blob/master/deployment_tools/Deployment%20steps_Linux.txt)
 of steps I took in deploying to our Raspberry pi.
-If anyone is intersted in installing CLAHub themselves and that list makes no sense to them feel free to contact me and 
+If anyone is interested in installing CLAHub themselves and that list makes no sense to them feel free to contact me and 
 I'll make easier installation options a higher priority.
 
 ### Deployment requirements
@@ -104,8 +109,8 @@ I'll make easier installation options a higher priority.
  [Django](https://www.djangoproject.com/) - the web framework used
  
  ## Contributing
- ...
+ Contributions are very welcome. See [Contributing](CONTRIBUTING.md) for details.
  
  ## License
- This project is licensed under [GPL 3.0 ](https://github.com/stevetasticsteve/CLA_Hub/blob/master/LICENSE).
+ This project is licensed under [GPL 3.0 ](https://github.com/stevetasticsteve/CLA_Hub/blob/master/LICENSE.md).
  

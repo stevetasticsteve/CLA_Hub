@@ -1,16 +1,18 @@
 {% if search_context == 'CE' %}
 <form method="get" action="/CE/search/">
-{% endif %}
-{% if search_context == 'people' %}
+{% elif search_context == 'people' %}
 <form method="get" action="/people/search/">
+{% elif search_context == 'tags' %}
+<form method="get" action="/CE/tag/search/">
 {% endif %}
     <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
         <div class="input-group">
         {% if search_context == 'CE' %}
         <input class="form-control border-0 bg-light" id="search" type="text" name="search" placeholder="Search CEs">
-        {% endif %}
-        {% if search_context == 'people' %}
+        {% elif search_context == 'people' %}
         <input class="form-control border-0 bg-light" id="search" type="text" name="search" placeholder="Search People">
+        {% elif search_context == 'tags' %}
+        <input class="form-control border-0 bg-light" id="search" type="text" name="search" placeholder="Search Tags">
         {% endif %}
         <button class="btn btn-link text-primary" id="search_submit" type="submit">Search</button>
         </div>

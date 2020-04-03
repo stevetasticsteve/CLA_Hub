@@ -260,7 +260,7 @@ class TagListViewTest(TestCase):
     def test_tag_list_response(self):
         response = self.client.get(reverse('CE:list_tags'))
         self.assertEqual(response.status_code, 200, 'No response')
-        self.assertTemplateUsed(response, 'CE/tag_list_page.html')
+        self.assertTemplateUsed(response, 'CE/all_tags.html')
 
     def test_tags_in_content(self):
         response = self.client.get(reverse('CE:list_tags'))
@@ -275,6 +275,14 @@ class TagListViewTest(TestCase):
         pos1 = html.find('Culture')
         pos2 = html.find('1-16')
         self.assertGreater(pos2, pos1)
+
+    def test_tag_search(self):
+        response = self.client.get(reverse('CE:tags_search') + '?search=1-1')
+
+        self.assertEqual(response.status_code, 200, 'CE search GET request failed')
+        self.assertContains(response, '1-1 Geography')
+        response = self.client.get(reverse('CE:tags_search') + '?search=Bad')
+        self.assertContains(response, 'No search results')
 
 
 class TextViewAndGenreTest(TestCase):

@@ -293,11 +293,24 @@ def tag_detail_page(request, slug):
 
 @CE.utilities.conditional_login
 def tag_list_page(request):
-    template = 'CE/tag_list_page.html'
+    template = 'CE/all_tags.html'
     tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-num')
     context = {
         'Tags': tags,
-        'title': 'Tags'
+        'title': 'Tags',
+        'search_context': 'tags'
+    }
+    return render(request, template, context)
+
+def tags_search(request):
+    template = 'search_results.html'
+    search = request.GET.get('search')
+    results = Tag.objects.filter(Q(name__icontains=search))
+    context = {
+        'search': search,
+        'Tags': results,
+        'title': 'CE search',
+        'search_context': 'tags'
     }
     return render(request, template, context)
 

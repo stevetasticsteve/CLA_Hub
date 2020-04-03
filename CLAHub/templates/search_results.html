@@ -4,16 +4,26 @@
 <div class="container fluid">
     <br>
     {% include 'partial/search_bar.html' %}
-    <h1>Search results for {{search}}</h1>
     {% if search_context == 'CE' %}
+        <h1>Culture Event search results for {{search}}</h1>
         {% if CEs %}
             {% include 'CE/partial/CE_list.html' %}
         {% else %}
             <p>No search results</p>
         {% endif %}
+
     {% elif search_context == 'people' %}
+        <h1>People search results for {{search}}</h1>
         {% if profiles %}
             {% include 'people/partial/people_list.html' %}
+        {% else %}
+            <p>No search results</p>
+        {% endif %}
+
+    {% elif search_context == 'tags' %}
+        <h1>Tag search results for {{search}}</h1>
+        {% if Tags %}
+            {% include 'CE/partial/tag_list.html' %}
         {% else %}
             <p>No search results</p>
         {% endif %}

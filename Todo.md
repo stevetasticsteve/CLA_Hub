@@ -4,7 +4,6 @@
 - User section to see what everyone's worked on
 - Export features
 - Way to link institutes to realm of reality write up
-- Search tags
 - Search texts
 - Hardcode in CLAHubDev admin login
 - label and value tags - enables user extensions without coding - users can add their own fields

@@ -1,10 +1,22 @@
 # CLA Hub
-
 A Django project to give bush teams a way to collaboratively create and maintain a culture file for learning tribal language and culture.
 The software is intended to be run on a Raspberry pi 3 on an internal team network and accessed through a desktop web browser.
 
-PythonAnywhere are hosting an example instance of CLAHub: http://stevetasticsteve.pythonanywhere.com
-Feel free to check it out. Pythonanywhere are hosting it for free which is amazing, but of course performance might suffer.
+Check out http://stevetasticsteve.pythonanywhere.com to see a showcase version.
+
+![Screenshot](https://raw.githubusercontent.com/stevetasticsteve/CLA_Hub/master/CLAHub/assets/example_data/CLAHub_screenshot.png)
+
+## Getting started
+Automated deployment tools and proper documentation haven't been developed yet, manual installation is necessary.
+Currently there's only [this list](https://github.com/stevetasticsteve/CLA_Hub/blob/master/deployment_tools/Deployment%20steps_Linux.txt)
+of steps I took in deploying to our Raspberry pi.
+If anyone is intersted in installing CLAHub themselves and that list makes no sense to them feel free to contact me and 
+I'll make easier installation options a higher priority.
+
+### Prerequisites
+* A server running Linux
+  * Apache or Nginx
+  * Python modules [Requirements](https://github.com/stevetasticsteve/CLA_Hub/blob/master/requirements.txt)
 
 ## Core features
 - Create web pages to document culture events (CEs)

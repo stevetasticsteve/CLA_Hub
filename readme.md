@@ -12,12 +12,13 @@ See deployment for installing on a server where CLAHub can be accessed by multip
 ### Prerequisites
 - [Python3](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)
+- Python3-venv (Linux)
 
 ### Installing
-1. Download the CLAHub code by cloning the repository with Git:
+1. Download the CLAHub code by cloning the repository with Git (roughly a 10Mb download):
 
     Open a Powershell window (Windows), or terminal (Linux) and type:
-    git clone https://github.com/stevetasticsteve/CLA_Hub /path/to/new_folder
+    **git clone https://github.com/stevetasticsteve/CLA_Hub /path/to/new_folder**
     
     *Replace /path/to/new_folder with where you want the new folder to be!*
 
@@ -26,7 +27,7 @@ See deployment for installing on a server where CLAHub can be accessed by multip
     Windows | Linux
     ------- | -----
     Open a Powershell window in the folder, type: | Open a terminal in the folder, type: 
-    python -m venv venv | python3 venv venv
+    **python -m venv venv** | **python3 -m venv venv**
 
 
 3. Activate the virtual environment
@@ -34,10 +35,53 @@ See deployment for installing on a server where CLAHub can be accessed by multip
     Windows | Linux
     ------- | -----
     In the Powershell window type: | In the terminal i, type: 
-    venv\Scripts\activate.bat | source venv/bin/activate
+    **venv\Scripts\activate.bat** | **source venv/bin/activate**
     
-4. Install the Python dependencies
-In Powershell/terminal type pip install -r requirements.txt
+4. Change from production to development settings
+    - go to CLAHub/settings folder
+    - open __init__.py in a text editor (like notepad)
+    - change __from .production import *__ to __from .development import *__
+    - save __init__.py
+    
+5. Install the Python dependencies (roughly a 12Mb download)
+
+    In Powershell/terminal type: **pip install -r requirements.txt**
+    
+6. Create (or copy over) the database
+
+    ##### Creating a new database
+    - In Powershell/terminal type: **python manage.py migrate**
+    - Create at least one new user, type: **python manage.py createsuperuser**
+     - Follow the prompts to create a user. Repeat as necessary. 
+    ##### Importing an existing database
+    If a team has already been working with CLAHub a database can be imported. This can be used so individuals have a 
+    (non synced) copy of contents of CLAHub to view when not connected to the team's network - or if the server is
+    migrating to a new machine.
+    - Copy the old CLAHub_database.db into the new folder (the same place as manage.py). *This copies over all users,
+    passwords and data that has been entered.*
+    - Replace the uploads folder in the new installation (which is mostly empty) with your old uploads folder. *This 
+    copies over all uploaded audio and pictures.*
+    
+7. Launch the server
+
+    In Powershell/terminal type: **python manage.py runserver**
+    *You need to leave this terminal open, if you close it the server will close*
+    
+    **An error will be displayed if the virtual environment isn't enabled. If your terminal doesn't say (venv) then do
+    stage 3 again to activate the venv. This needs to be done every time you launch** 
+    
+8. Use CLAHub
+
+    Open a web browser and navigate to localhost:8000
+    
+    *CLAHub is running on your computer until you close the terminal, or shut down the computer. It is available only 
+    from your computer, other computers are unable to access CLAHub in this run mode. If you want other computers to 
+    access CLAHub you need to deploy it properly, see Deployment below*
+    
+    There is a quick and dirty way to enable access on the LAN for other machines. Use the command 
+    **python manage.py runserver 0.0.0.0:8000** for stage 7. This isn't the best way to do it, but it will work for a 
+    small team if you don't mind leaving your computer on and/or manually starting CLAHub often.
+    
 
 ## Running the tests
 ...

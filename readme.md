@@ -7,16 +7,44 @@ Check out http://stevetasticsteve.pythonanywhere.com to see a showcase version.
 ![Screenshot](https://raw.githubusercontent.com/stevetasticsteve/CLA_Hub/master/CLAHub/assets/example_data/CLAHub_screenshot.png)
 
 ## Getting started
-Automated deployment tools and proper documentation haven't been developed yet, manual installation is necessary.
+Setting up CLAHub on your machine to test it out, or to work on the code can be achieved in the following steps.
+See deployment for installing on a server where CLAHub can be accessed by multiple machines on a LAN. 
+### Prerequisites
+- [Python3](https://www.python.org/downloads/)
+- [Git](https://git-scm.com/downloads)
+
+### Installing
+1. Create a CLAHub folder
+2. Create a python virtual environment within the new folder
+Windows | Linux
+--- | ---
+Open a Powershell winodow in the folder, type: python -m venv venv | Open a terminal in the folder, type: python3 venv venv
+
+## Running the tests
+...
+  
+ ## Deployment
+ Automated deployment tools and proper documentation haven't been developed yet, manual installation is necessary.
 Currently there's only [this list](https://github.com/stevetasticsteve/CLA_Hub/blob/master/deployment_tools/Deployment%20steps_Linux.txt)
 of steps I took in deploying to our Raspberry pi.
 If anyone is intersted in installing CLAHub themselves and that list makes no sense to them feel free to contact me and 
 I'll make easier installation options a higher priority.
 
-### Prerequisites
+### Deployment requirements
 * A server running Linux
   * Apache or Nginx
-  * Python modules [Requirements](https://github.com/stevetasticsteve/CLA_Hub/blob/master/requirements.txt)
+  * Python 3
+  * Python modules [(requirements.txt)](https://github.com/stevetasticsteve/CLA_Hub/blob/master/requirements.txt)
+  * ffmpeg (for the podcast feed)
+  
+ ## Built with
+ [Django](https://www.djangoproject.com/) - the web framework used
+ 
+ ## Contributing
+ ...
+ 
+ ## License
+ This project is licensed under [GPL 3.0 ](https://github.com/stevetasticsteve/CLA_Hub/blob/master/LICENSE).
 
 ## Core features
 - Create web pages to document culture events (CEs)

@@ -22,7 +22,7 @@ See deployment for installing on a server where CLAHub can be accessed by multip
     
     *Replace /path/to/new_folder with where you want the new folder to be!*
 
-2. Create a python virtual environment within the new folder
+2. Create a python virtual environment **in** the new folder
 
     Windows | Linux
     ------- | -----
@@ -39,15 +39,15 @@ See deployment for installing on a server where CLAHub can be accessed by multip
     
 4. Change from production to development settings
     - go to CLAHub/settings folder
-    - open __init__.py in a text editor (like notepad)
+    - open \_\__init\_\_.py in a text editor (like notepad)
     - change __from .production import *__ to __from .development import *__
-    - save __init__.py
+    - save \_\__init\_\_.py
     
 5. Install the Python dependencies (roughly a 12Mb download)
 
     In Powershell/terminal type: **pip install -r requirements.txt**
     
-6. Create (or copy over) the database
+6. Create (or copy over) the database *f*
 
     ##### Creating a new database
     - In Powershell/terminal type: **python manage.py migrate**
@@ -68,7 +68,7 @@ See deployment for installing on a server where CLAHub can be accessed by multip
     *You need to leave this terminal open, if you close it the server will close*
     
     **An error will be displayed if the virtual environment isn't enabled. If your terminal doesn't say (venv) then do
-    stage 3 again to activate the venv. This needs to be done every time you launch** 
+    stage 3 again to activate the venv. This needs to be done every time you launch.** 
     
 8. Use CLAHub
 
@@ -108,58 +108,4 @@ I'll make easier installation options a higher priority.
  
  ## License
  This project is licensed under [GPL 3.0 ](https://github.com/stevetasticsteve/CLA_Hub/blob/master/LICENSE).
-
-## Core features
-- Create web pages to document culture events (CEs)
-    - Allow cross linking to other CEs
-    - Provides a template for documenting CEs
-    - Fields for phonetic and orthographic text
-    - Label phonetic text with different levels of accuracy enabling exports of thoroughly checked
-      phonetic data to other tools
-    - Able to tag phonetic/orthographic texts as valid for discourse analysis
-    - Able to attach/embed audio recordings of vernacular texts
-    - Able to attach/embed photos of CEs. Auto compression of pictures for low storage needs.
-    - Store CE data in a database format allowing for retrieval and other processing
-    -- Be able to tag vernacular text with outline of cultural materials (OCM) tags
-    - Unanswered questions regarding individual CE that can be gathered summarised
-
-- CE index page
-    - Displays most recently modified CEs
-    -- Able to show alphabetical list of CEs
-
-- OCM summaries
-    -- Lift tagged vernacular text from CEs and generate summaries of all tags related to that cultural area
-    -- Be able to export OCM summaries
-
-- Needs team input tag
-    -- Be able to tag something as needing to be discussed among the team, a page will be generated keeping track
-      of all these things. During a team meeting the team can work through the page and edit and tick off items.
-
-- Login and authorisation
-    - Team members login with unique accounts that track contributions
-
-- Backups
-    - Culture file must be easy to back up and retrieve
-
-- Exportable
-    -- Tools to export all data in useful formats. Particularly .docx format (missionaries love MS Word)
-
-- Transferable
-    - Team members leaving for home assignment need to be able to take a copy home for study
-
-
-## Possible add-on tools
-- Phonetic to orthographic text auto convert
-- Listening collection
-- Support for mobile devices
-- Meeting minutes and action points
-- Lexicon
-- List of language activities for each CE (TPR, photobook etc.)
-- Auto create anki decks.
-- Deployment tools to help non techie missionaries set up Raspi web server
-
-## Request features from team mates
-- OCM Guide
-- Text accent tag
-- Texts added to navbar - search and filter texts
-- Caption to picture
+ 

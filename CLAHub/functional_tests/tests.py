@@ -59,7 +59,7 @@ class SeleniumTests(StaticLiveServerTestCase):
             'nationals': 'Ulumo',
             'text_title1': 'New text 1',
             'text_title2': 'New text 2',
-            'speaker': 'Steve', # todo change to an integer to test the auto link. Add a person fixture
+            'speaker': 'Steve',  # todo change to an integer to test the auto link. Add a person fixture
             'phonetic_text': 'foᵘnɛtɪks',
             'orthographic_text': 'phonetics',
             'discourse_type': '1',
@@ -69,6 +69,9 @@ class SeleniumTests(StaticLiveServerTestCase):
             'Q2': 'Q2',
             'A2': 'A2',
         }
+        self.edited_data = self.test_data.copy()
+        for key in self.edited_data:
+            self.edited_data[key] = 'Changed ' + self.edited_data[key]
         self.test_pic = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
         self.test_audio1 = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_audio1.mp3')
         self.test_audio2 = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_audio2.mp3')
@@ -107,7 +110,7 @@ class SeleniumTests(StaticLiveServerTestCase):
             self.selenium.get((self.live_server_url + '/CE/new'))
             # check we've not been redirected to login
             self.assertNotEqual(self.selenium.current_url, self.live_server_url + '/accounts/login/?next=/CE/new')
-    
+
             # Fill in CE form
             self.selenium.find_element_by_id("id_title").send_keys(self.test_data['title'])
             self.selenium.find_element_by_id("id_description_plain_text").send_keys(self.test_data['description'])
@@ -127,9 +130,10 @@ class SeleniumTests(StaticLiveServerTestCase):
             self.selenium.find_element_by_id("id_text-0-text_title").send_keys(self.test_data['text_title1'])
             self.selenium.find_element_by_id("id_text-0-speaker_plain_text").send_keys(self.test_data['speaker'])
             self.selenium.find_element_by_id("id_text-0-phonetic_text").send_keys(self.test_data['phonetic_text'])
-            self.selenium.find_element_by_id("id_text-0-orthographic_text").send_keys(self.test_data['orthographic_text'])
+            self.selenium.find_element_by_id("id_text-0-orthographic_text").send_keys(
+                self.test_data['orthographic_text'])
             Select(self.selenium.find_element_by_id("id_text-0-discourse_type")).select_by_visible_text('Narrative')
-            Select(self.selenium.find_element_by_id("id_text-0-phonetic_standard")).\
+            Select(self.selenium.find_element_by_id("id_text-0-phonetic_standard")). \
                 select_by_visible_text('Double checked by author')
             self.selenium.find_element_by_id("id_text-0-audio").send_keys(self.test_audio1)
 
@@ -137,7 +141,8 @@ class SeleniumTests(StaticLiveServerTestCase):
             self.selenium.find_element_by_id("id_text-1-text_title").send_keys(self.test_data['text_title2'])
             self.selenium.find_element_by_id("id_text-1-speaker_plain_text").send_keys(self.test_data['speaker'])
             self.selenium.find_element_by_id("id_text-1-phonetic_text").send_keys(self.test_data['phonetic_text'])
-            self.selenium.find_element_by_id("id_text-1-orthographic_text").send_keys(self.test_data['orthographic_text'])
+            self.selenium.find_element_by_id("id_text-1-orthographic_text").send_keys(
+                self.test_data['orthographic_text'])
             Select(self.selenium.find_element_by_id("id_text-1-discourse_type")).select_by_visible_text('Narrative')
             Select(self.selenium.find_element_by_id("id_text-1-phonetic_standard")). \
                 select_by_visible_text('Double checked by author')
@@ -152,7 +157,7 @@ class SeleniumTests(StaticLiveServerTestCase):
             # submit
             self.selenium.find_element_by_id('submit-btn').click()
             self.wait()
-    
+
             # test redirect
             self.assertEqual(self.selenium.current_url, self.live_server_url + '/CE/%d' % self.new_ce_pk)
             # test .db contents
@@ -171,7 +176,7 @@ class SeleniumTests(StaticLiveServerTestCase):
             pictures = models.Picture.objects.filter(ce=ce)
             self.assertEqual(len(pictures), 1, 'CE picture not in .db')
             self.assertIn(os.path.basename(self.test_pic), str(pictures[0].picture))
-            texts = models. Text.objects.filter(ce=ce)
+            texts = models.Text.objects.filter(ce=ce)
             self.assertEqual(len(texts), 2, 'Too few texts in .db')
             self.assertEqual(texts[0].text_title, self.test_data['text_title1'],
                              ' Texts form not working - incorrect .db entry text_title')
@@ -207,23 +212,22 @@ class SeleniumTests(StaticLiveServerTestCase):
                             'Audio not found in upload folder')
             # test page contents
             self.assertEqual(ce.title, self.selenium.find_element_by_id('title').get_attribute('innerHTML'),
-            'HTML no working right - title')
+                             'HTML no working right - title')
             self.assertTrue(self.selenium.find_element_by_id('CE_pictures').is_displayed()
                             , 'HTMl not working right - CE picture')
-
 
             # Test edit page
             self.selenium.get((self.live_server_url + '/CE/%d/edit' % self.new_ce_pk))
             self.wait()
             # 1. Test initial contents
-            self.assertEqual( self.selenium.find_element_by_id("id_title").get_attribute('value'),
-                              self.test_data['title'], 'Edit page displaying wrong info: CE title')
-            self.assertEqual( self.selenium.find_element_by_id("id_description_plain_text").get_attribute('value'),
-                              self.test_data['description'], 'Edit page displaying wrong info: CE description')
-            self.assertEqual( self.selenium.find_element_by_id("id_differences").get_attribute('value'),
-                              self.test_data['differences'], 'Edit page displaying wrong info: CE differences')
-            self.assertEqual( self.selenium.find_element_by_id("id_interpretation").get_attribute('value'),
-                              self.test_data['interpretation'], 'Edit page displaying wrong info: CE interpretation')
+            self.assertEqual(self.selenium.find_element_by_id("id_title").get_attribute('value'),
+                             self.test_data['title'], 'Edit page displaying wrong info: CE title')
+            self.assertEqual(self.selenium.find_element_by_id("id_description_plain_text").get_attribute('value'),
+                             self.test_data['description'], 'Edit page displaying wrong info: CE description')
+            self.assertEqual(self.selenium.find_element_by_id("id_differences").get_attribute('value'),
+                             self.test_data['differences'], 'Edit page displaying wrong info: CE differences')
+            self.assertEqual(self.selenium.find_element_by_id("id_interpretation").get_attribute('value'),
+                             self.test_data['interpretation'], 'Edit page displaying wrong info: CE interpretation')
             # todo examine the picture
             self.assertEqual(self.selenium.find_element_by_id("id_visit-0-team_present").get_attribute('value'),
                              self.test_data['team'], 'Edit page displaying wrong info: Visits, team')
@@ -263,7 +267,77 @@ class SeleniumTests(StaticLiveServerTestCase):
                              self.test_data['A2'], 'Edit page displaying wrong info: question')
 
             # 2 Edit contents
+            # Edit CE form
+            self.selenium.find_element_by_id("id_title").clear()
+            self.selenium.find_element_by_id("id_title").send_keys(self.edited_data['title'])
+            self.selenium.find_element_by_id("id_description_plain_text").clear()
+            self.selenium.find_element_by_id("id_description_plain_text").send_keys(self.edited_data['description'])
+            self.selenium.find_element_by_id("id_differences").clear()
+            self.selenium.find_element_by_id("id_differences").send_keys(self.edited_data['differences'])
+            self.selenium.find_element_by_id("id_interpretation").clear()
+            self.selenium.find_element_by_id("id_interpretation").send_keys(self.edited_data['interpretation'])
+            # todo picture
+            # Edit visits form - changed half the fields, leave half the same
+            self.selenium.find_element_by_id("id_visit-0-team_present").clear()
+            self.selenium.find_element_by_id("id_visit-0-team_present").send_keys(self.edited_data['team'])
+            self.selenium.find_element_by_id("id_visit-1-nationals_present").clear()
+            self.selenium.find_element_by_id("id_visit-1-nationals_present").send_keys(self.edited_data['nationals'])
+            # Edit questions form - change half the fields, leave half the same
+            self.selenium.find_element_by_id("id_question-0-question").clear()
+            self.selenium.find_element_by_id("id_question-0-question").send_keys(self.edited_data['Q1'])
+            self.selenium.find_element_by_id("id_question-1-answer").clear()
+            self.selenium.find_element_by_id("id_question-1-answer").send_keys(self.edited_data['A2'])
+            # Edit text form - change title of one of the texts, change one of the audio files
+            self.selenium.find_element_by_id("id_text-0-text_title").clear()
+            self.selenium.find_element_by_id("id_text-0-text_title").send_keys(self.edited_data['text_title1'])
+            self.selenium.find_element_by_id("id_text-1-audio").clear()
+            self.selenium.find_element_by_id("id_text-1-audio").send_keys(self.test_audio1)
+            # Submit
+            self.selenium.find_element_by_id('submit-btn').click()
+            self.wait()
+
+            # test redirect
+            self.assertEqual(self.selenium.current_url, self.live_server_url + '/CE/%d' % self.new_ce_pk)
+            # test edited .db contents
+            ce = models.CultureEvent.objects.get(pk=self.new_ce_pk)
+            self.assertEqual(ce.title, self.edited_data['title'], 'CE form not working on edit page - title')
+            self.assertNotEqual(ce.title, self.test_data['title'], 'CE form not working on edit page - title')
+            self.assertEqual(ce.description_plain_text, self.edited_data['description'],
+                             'CE form not working on edit page - desc')
+            self.assertEqual(ce.differences, self.edited_data['differences'],
+                             'CE form not working on edit page - differences')
+            self.assertEqual(ce.interpretation, self.edited_data['interpretation'],
+                             'CE form not working on edit page - interpretation')
+            # test visits
+            visits = models.Visit.objects.filter(ce=ce)
+            self.assertEqual(len(visits), 2, 'Visits form not working on edit page - too few visits')
+            self.assertEqual(visits[0].team_present, self.edited_data['team'],
+                             'Visits form not working on edit page - incorrect .db entry')
+            self.assertEqual(visits[1].team_present, self.test_data['team'],
+                             'Visits form not working on edit page - incorrect .db entry')
+            self.assertEqual(visits[0].nationals_present, self.test_data['nationals'],
+                             'Visits form not working on edit page - incorrect .db entry')
+            self.assertEqual(visits[1].nationals_present, self.edited_data['nationals'],
+                             'Visits form not working on edit page - incorrect .db entry')
+            # test questions
+            questions = models.Question.objects.filter(ce=ce)
+            self.assertEqual(len(questions), 2, 'Questions form not working - too few questions')
+            self.assertEqual(questions[0].question, self.edited_data['Q1'],
+                             'Questions form not working on edit page - incorrect .db entry: Q')
+            self.assertEqual(questions[1].question, self.test_data['Q2'],
+                             'Questions form not working on edit page - incorrect .db entry: Q')
+            self.assertEqual(questions[0].answer, self.test_data['A1'],
+                             'Questions form not working on edit page - incorrect .db entry: A')
+            self.assertEqual(questions[1].answer, self.edited_data['A2'],
+                             'Questions form not working on edit page - incorrect .db entry: A')
+            # test texts
+            texts = models.Text.objects.filter(ce=ce)
+            self.assertEqual(len(texts), 2, 'Too few texts in .db')
+            self.assertEqual(texts[0].text_title, self.edited_data['text_title1'],
+                             ' Texts form on edit page not working - incorrect .db entry text_title')
+            self.assertIn(os.path.basename(self.test_audio1), str(texts[1].audio),
+                          'Texts form not on edit page working - incorrect .db entry audio')
+
 
         finally:
             self.cleanup_test_files(self.new_ce_pk)
-

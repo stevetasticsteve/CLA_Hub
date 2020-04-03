@@ -2,6 +2,9 @@
 
 {% block page_content %}
 <div class="container-fluid">
+    {% include 'partial/search_bar.html' %}
+    <br>
+
     <h1>Recently edited texts</h1>
 
     {% include 'CE/partial/text_list.html' %}

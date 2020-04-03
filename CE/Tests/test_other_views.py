@@ -343,4 +343,12 @@ class TextViewAndGenreTest(TestCase):
         self.client.get(reverse('CE:text_genre', args='9'))
         self.assertTemplateUsed('404.html')
 
+    def test_text_search(self):
+        response = self.client.get(reverse('CE:text_search') + '?search=t')
+
+        self.assertEqual(response.status_code, 200, 'CE search GET request failed')
+        self.assertContains(response, 'Text 1')
+        response = self.client.get(reverse('CE:text_search') + '?search=Bad')
+        self.assertContains(response, 'No search results')
+
 

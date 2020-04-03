@@ -11,6 +11,7 @@ urlpatterns = [
     path('ocm', views.OCM_home, name='OCM_home'),
     path('ocm/reference', views.OCM_ref, name='OCM_ref'),
     path('texts/genre/<int:genre>', views.text_genre, name='text_genre'),
+    path('texts/search/', views.text_search, name='text_search'),
     path('texts', views.texts_home, name='texts_home'),
     path('tag/search/', views.tags_search, name='tags_search'),
     path('tag/<slug:slug>', views.tag_detail_page, name='view_tag'),

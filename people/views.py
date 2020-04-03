@@ -125,7 +125,7 @@ def edit(request, pk):
 def help_family(request):
     return render(request, 'people/help/family_help.html')
 
-
+@login_required
 def search_people(request):
     template = 'search_results.html'
     search = request.GET.get('search')

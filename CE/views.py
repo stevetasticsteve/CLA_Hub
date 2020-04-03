@@ -302,6 +302,7 @@ def tag_list_page(request):
     }
     return render(request, template, context)
 
+@CE.utilities.conditional_login
 def tags_search(request):
     template = 'search_results.html'
     search = request.GET.get('search')
@@ -335,7 +336,8 @@ def texts_home(request):
     texts = Text.objects.all().order_by('-last_modified')
     context = {
         'Texts': texts,
-        'title': 'Texts'
+        'title': 'Texts',
+        'search_context': 'texts'
     }
     return render(request, template, context)
 
@@ -355,5 +357,19 @@ def text_genre(request, genre):
         'Texts': texts,
         'Genre': genre,
         'title': genre + ' texts'
+    }
+    return render(request, template, context)
+
+
+@CE.utilities.conditional_login
+def text_search(request):
+    template = 'search_results.html'
+    search = request.GET.get('search')
+    results = Text.objects.filter(Q(text_title__icontains=search))
+    context = {
+        'search': search,
+        'Texts': results,
+        'title': 'Text search',
+        'search_context': 'texts'
     }
     return render(request, template, context)

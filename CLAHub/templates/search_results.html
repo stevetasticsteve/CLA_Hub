@@ -28,6 +28,14 @@
             <p>No search results</p>
         {% endif %}
 
+    {% elif search_context == 'texts' %}
+        <h1>Text search results for {{search}}</h1>
+        {% if Texts %}
+            {% include 'CE/partial/text_list.html' %}
+        {% else %}
+            <p>No search results</p>
+        {% endif %}
+
     {% endif %}
 </div>
 

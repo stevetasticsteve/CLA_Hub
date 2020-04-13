@@ -214,7 +214,7 @@ class TagTests(TestCase):
         self.assertIn('1-1', slug_list)
         self.assertEqual('Geography & Weather', slug_list['1-1'])
         self.assertIn('1-15', slug_list)
-        self.assertEqual('Sky, Land & Water', slug_list['1-15'])
+        self.assertEqual('Sky; Land & Water', slug_list['1-15'])
         self.assertIn('9-10', slug_list)
         self.assertNotIn('9-11', slug_list)
 

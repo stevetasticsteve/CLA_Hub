@@ -28,7 +28,7 @@ OCM_sub_categories = [
     '1-12 Vehicles & Machines',
     '1-13 Tools & Instruments',
     '1-14 Plants & Animals',
-    '1-15 Sky Land & Water'],
+    '1-15 Sky; Land & Water'],
     ['2-1 Terminology & Relationships',
     '2-2 Family & Clan',
     '2-3 Grandparents & Grandchildren',

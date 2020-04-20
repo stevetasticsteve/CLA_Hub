@@ -10,8 +10,9 @@
     {% load static from staticfiles %}
       <link rel="stylesheet" href="{% static 'bootstrap-4.3.1-dist/css/bootstrap.min.css' %}" type="text/css">
       <link rel="stylesheet" href="{% static 'bootstrap-4.3.1-dist/css/tagsinput.css' %}" type="text/css">
+  </head>
+  <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <!--<a class="navbar-brand" href="#">CLA Hub</a>-->
   <!-- Image and text -->
   <a class="navbar-brand" href="{% url 'home' %}">
     <img src="{% static 'logo/CLAHub_logo_Large.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -86,10 +87,8 @@
       <!--<a class="nav-item nav-link" href="#">Pricing</a>-->
       <!--<a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
 </nav>
-    <link rel="shortcut icon" type="image/png" href="{% static '/logo/CLAHub_logo_Favicon.png'   %}"/>
-  </head>
+    <link rel="shortcut icon" type="image/png" href="{% static '/logo/CLAHub_logo_Favicon.png'   %}">
 
-<body>
   {% include 'messages.html' %}
 
     <!-- Optional JavaScript -->

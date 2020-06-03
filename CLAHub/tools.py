@@ -9,7 +9,7 @@ import os
 import sys
 import logging
 
-logger = logging.getLogger('debug')
+logger = logging.getLogger('root')
 
 
 def import_profiles_from_csv(file_upload):
@@ -100,9 +100,11 @@ def compress_picture(picture, compressed_size):
     try:
         im = ImageOps.exif_transpose(im)
     except TypeError:
-        logging.error('PIL error %s - image rotated manually' % str(picture))
+        logger.error('PIL error %s - image rotated manually' % str(picture))
         im = im.rotate(270, expand=True)
-        pass
+    except IndexError:
+        logger.error('PIL IndexError - {image} not rotated. May need to check it manually'.format(image=str(picture)))
+
 
     output = BytesIO()
     im.thumbnail(compressed_size)

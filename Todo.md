@@ -21,7 +21,6 @@
 - A job handling system is needed. The import function won't work as the process takes longer than 30s and apache times
 out. Need to install celery to get that working, and also because if a CE is uploaded with a large picture
 and audio it's possible the POST will fail if the upload takes too long.
-- Check through the generated HTML for unclosed tags or extra closing tags
 
 ## Deployment improvements
 - Automated install to Raspberry pi script is required or Docker

@@ -122,7 +122,7 @@ MESSAGE_TAGS = {
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
 
     'formatters': {
         'simple': {
@@ -154,7 +154,7 @@ LOGGING = {
     },
 
     'loggers': {
-        'CLAHub': {
+        'root': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True,

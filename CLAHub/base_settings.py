@@ -127,7 +127,7 @@ LOGGING = {
     'formatters': {
         'simple': {
             'format': '%(message)s'
-                    },
+        },
         'complex': {
             'format': '%(levelname)s %(asctime)s %(message)s'
         }
@@ -150,6 +150,12 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'Logs', 'debug_log.txt'),
             'formatter': 'simple'
+        },
+        'request_log': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'Logs', 'request_log.txt'),
+            'formatter': 'complex'
         }
     },
 
@@ -165,6 +171,12 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
             'formatter': 'simple'
+        },
+        'django.request': {
+            'handlers': ['request_log'],
+            'level': 'INFO',
+            'propagate': True,
+            'formatter': 'complex'
         }
     },
 }

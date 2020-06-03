@@ -104,6 +104,7 @@ def compress_picture(picture, compressed_size):
         im = im.rotate(270, expand=True)
     except IndexError:
         logger.error('PIL IndexError - {image} not rotated. May need to check it manually'.format(image=str(picture)))
+        im = im.rotate(180, expand=True)
 
 
     output = BytesIO()

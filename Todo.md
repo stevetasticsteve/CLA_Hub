@@ -41,3 +41,7 @@ even if you didn't edit them.
 
 ## Testing
 - Functional tests need to be completed.
+
+## Upgrades
+- Django to 3.x
+- Pillow to 7.1.0

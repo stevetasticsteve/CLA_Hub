@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from people import models
 
 
@@ -37,9 +38,8 @@ class PeopleModelTest(TestCase):
         self.assertIn('<a href="2"', person.family)
         self.assertIn('<a href="12"', person.family)
 
-
         person = models.Person.objects.get(pk=2)
-        person.family_plain_text = ('Children 12, 2')
+        person.family_plain_text = 'Children 12, 2'
         person.save()
 
         self.assertIn('<a href="2"', person.family)
@@ -59,3 +59,20 @@ class PeopleModelTest(TestCase):
         person2.save()
 
         self.assertNotIn('<a href', models.Person.objects.get(pk=2).family)
+
+    def test_repeated_integer_correct_match(self):
+        """If family had both 2 and 22 as intended links the 2 in 22 was being replaced"""
+        for i in range(30):
+            person = models.Person(name='Person %d' % i, village='1')
+            person.save()
+        person = models.Person.objects.get(pk=2)
+
+        person.family_plain_text = 'Children 22, 2'
+        person.save()
+        self.assertIn('<a href="2"', person.family, 'family hyperlinks aren\'t working (largest first)')
+        self.assertIn('<a href="22"', person.family, 'family hyperlinks aren\'t working (largest first)')
+
+        person.family_plain_text = 'Children 2, 22'
+        person.save()
+        self.assertIn('<a href="2"', person.family, 'family hyperlinks aren\'t working (smallest first)')
+        self.assertIn('<a href="22"', person.family, 'family hyperlinks aren\'t working (smallest first)')

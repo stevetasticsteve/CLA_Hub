@@ -1,14 +1,14 @@
-from django.db import models
+import re
+
+import bleach
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+
+import CE.settings  # todo move that out of CE and into general settings
 from CLAHub import tools
 
-import re
-import bleach
-
-import CE.settings # todo move that out of CE and into general settings
-
-
 integer_regex = re.compile(' \d+')
+
 
 class Person(models.Model):
     def __init__(self, *args, **kwargs):
@@ -54,26 +54,30 @@ class Person(models.Model):
     thumbnail = models.ImageField(upload_to=thumbnail_folder, blank=True)
 
     def save(self):
+        # don't re-upload the same image
         if self.picture:
             if tools.check_already_imported(self.picture):
                 self.picture = self.original_picture
             else:
-                thumbnail = self.picture # do this if changing picture
+                thumbnail = self.picture  # do this if changing picture
                 self.picture = tools.compress_picture(self.picture, (1200, 1200))
                 # save an even smaller thumbnail
                 self.thumbnail = tools.compress_picture(thumbnail, (300, 300))
 
+        # search the family field for integers that indicate the user intends to add a hyperlink
         if self.family_plain_text:
             integers = re.findall(integer_regex, self.family_plain_text)
+            integers.sort(reverse=True)  # start with the biggest number so 5 doesn't replace a single 5 in 55
 
             self.family = bleach.clean(self.family_plain_text,
                                        tags=CE.settings.bleach_allowed,
                                        strip=True)
             for match in integers:
                 try:
-                    link = Person.objects.get(pk=match)
-
-                    self.family = self.family.replace(match, '<a href="' + match.lstrip() + '"> ' + link.name + '</a>')
+                    name = Person.objects.get(pk=match.lstrip()).name
+                    # replace ' ##' with a hyperlink. Using lstrip() to remove the space precents being matched twice
+                    self.family = self.family.replace(match, '<a href="{i}"> {display}</a>'.format(i=match.lstrip(),
+                                                                                                   display=name))
                 except ObjectDoesNotExist:
                     pass
 

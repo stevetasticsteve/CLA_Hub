@@ -1,9 +1,11 @@
-import os
-import unittest
-import shutil
 import datetime
-from django.urls import reverse
+import os
+import shutil
+import unittest
+
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.urls import reverse
+
 from CE import models
 from CE.Tests.test_base_class import CETestBaseClass
 
@@ -197,7 +199,7 @@ class TestEditPage(CETestBaseClass):
                                        'uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
             try:
                 os.makedirs(test_folder)
-            except FileExistsError: # don't need to create it
+            except FileExistsError:  # don't need to create it
                 pass
             shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
             # add audio to test text
@@ -224,7 +226,8 @@ class TestEditPage(CETestBaseClass):
                              'CultureEventFiles/%s/audio/test_audio2.mp3' % self.test_ce1_pk)
 
             # test mp3 in uploads
-            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk), 'upload folder doesn\'t exist')
+            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk),
+                            'upload folder doesn\'t exist')
             folder_contents = os.listdir('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
             self.assertIn('test_audio2.mp3', folder_contents, 'Uploaded audio not in upload folder')
 
@@ -357,7 +360,6 @@ class TestEditPage(CETestBaseClass):
         self.assertEqual(questions[0].answer, 'NewAnswer')
         self.assertEqual(len(questions), 1)
 
-
     def test_can_add_unanswered_question(self):
         post_data = self.standard_post
         post_data['question-1-question'] = 'NewQuestion'
@@ -386,7 +388,7 @@ class TestEditPage(CETestBaseClass):
         post_data['question-1-answer'] = ''
         post_data['question-TOTAL_FORMS'] = 2
         self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
-                                    data=post_data, follow=True)
+                         data=post_data, follow=True)
 
         question = models.Question.objects.filter(ce_id=self.test_ce1_pk)[1]
         self.assertEqual(question.last_modified_by, 'Tester')
@@ -395,12 +397,8 @@ class TestEditPage(CETestBaseClass):
         self.client.login(username='Tester', password='secure_password')
         post_data['question-1-question'] = 'ChangedQuestion'
         response = self.client.post(reverse('CE:edit', args=self.test_ce1_pk),
-                         data=post_data, follow=True)
+                                    data=post_data, follow=True)
         question = models.Question.objects.filter(ce_id=self.test_ce1_pk)[1]
         self.assertEqual(question.question, 'ChangedQuestion')
         self.assertEqual(question.last_modified_by, 'Tester2')
         self.assertEqual(question.asked_by, 'Tester')
-
-
-
-

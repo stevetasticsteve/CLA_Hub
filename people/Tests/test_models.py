@@ -33,7 +33,7 @@ class PeopleModelTest(TestCase):
             person.save()
 
         person = models.Person.objects.get(pk=2)
-        person.family_plain_text = ('Children 2, 12')
+        person.family_plain_text = 'Children 2, 12'
         person.save()
         self.assertIn('<a href="2"', person.family)
         self.assertIn('<a href="12"', person.family)

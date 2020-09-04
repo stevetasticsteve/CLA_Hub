@@ -1,6 +1,10 @@
+import logging
+
 from django.core.management.base import BaseCommand
 
 from CE.models import CultureEvent
+
+logger = logging.getLogger('root')
 
 
 class Command(BaseCommand):
@@ -14,3 +18,4 @@ class Command(BaseCommand):
         for event in CultureEvent.objects.all():
             event.save()
         self.stdout.write(self.style.SUCCESS('All Culture events updated'))
+        logger.info('All Culture events updated via management command')

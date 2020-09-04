@@ -1,6 +1,10 @@
+import logging
+
 from django.core.management.base import BaseCommand
 
 from people.models import Person
+
+logger = logging.getLogger('root')
 
 
 class Command(BaseCommand):
@@ -14,3 +18,4 @@ class Command(BaseCommand):
         for profile in Person.objects.all():
             profile.save()
         self.stdout.write(self.style.SUCCESS('All profiles updated'))
+        logger.info('All Person profiles updated via management command')

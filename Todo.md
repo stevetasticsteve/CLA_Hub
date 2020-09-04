@@ -37,6 +37,8 @@ visible on the tags page but unaccessible as it has no slug.
 - Audio is replicated on save during tests
 - Editing a CE means your user overwrites the last edited by information for texts too,
 even if you didn't edit them.
+- You can't reuse a picture say for a profile pic and a CE pic.
+- Dramat's record is failing to display his wife. 56 is being cut to 5.
 
 ## Testing
 - Functional tests need to be completed.

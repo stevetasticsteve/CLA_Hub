@@ -19,7 +19,7 @@ def home(request):
 @login_required
 def tools(request):
     context = {
-        'title', 'Tools'
+        'title': 'Tools'
     }
     return render(request, 'tools.html', context)
 

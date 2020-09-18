@@ -7,6 +7,9 @@
 - Hardcode in CLAHubDev admin login
 - label and value tags - enables user extensions without coding - users can add their own fields
 
+## Removing features
+- Consider removing tools if more aren't added. CLI jobs could be used instead
+
 ## UI improvements
 - Editing or removing uploaded pictures (Ajax drag and drop?)
 - User friendliness testing

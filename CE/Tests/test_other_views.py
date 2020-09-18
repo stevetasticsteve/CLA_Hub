@@ -68,6 +68,27 @@ class TestViewPage(TestCase):
         self.assertContains(response, 'foᵘnɛtɪks')
         self.assertContains(response, 'musicFile.ogg')
 
+    def test_markdown_enabled(self):
+        markdown_text = '''
+# This is markdown text
+* list item 1
+* list item 2
+* list item 3
+
+**text in bold**'''
+        ce = models.CultureEvent.objects.get(pk=1)
+        ce.description_plain_text = markdown_text
+        ce.interpretation = '## Markdown'
+        ce.save()
+        response = self.client.get(reverse('CE:view', args='1'))
+
+        self.assertContains(response, '<h1>This is markdown text</h1>')
+        self.assertContains(response, '<ul>\n<li>list item 1</li>\n<li>list item 2</li>\n<li>list item 3</li>\n</ul>')
+        self.assertContains(response, '<p><strong>text in bold</strong></p>')
+        self.assertContains(response, '<h2>Markdown</h2>')
+
+
+
     def test_404(self):
         # test an out of range index
         response = self.client.get(reverse('CE:view', args='9'))

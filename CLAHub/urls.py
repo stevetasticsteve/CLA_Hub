@@ -23,7 +23,6 @@ urlpatterns = [
     path('tools/', views.tools, name='tools'),
     path('tools/import-profiles', views.import_profiles, name='import_profiles'),
     path('CE/', include('CE.urls')),
-    path('ror/', include('realmsofreality.urls')),
     path('people/', include('people.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', views.home, name='home')

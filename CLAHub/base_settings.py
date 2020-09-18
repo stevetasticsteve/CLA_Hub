@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'CE',
     'people',
     'taggit',
-    'realmsofreality',
 ]
 
 MIDDLEWARE = [

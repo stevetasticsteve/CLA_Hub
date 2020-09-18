@@ -103,7 +103,6 @@ I'll make easier installation options a higher priority.
   * Apache or Nginx
   * Python 3
   * Python modules [(requirements.txt)](https://github.com/stevetasticsteve/CLA_Hub/blob/master/requirements.txt)
-  * ffmpeg (for the podcast feed)
   
  ## Built with
  [Django](https://www.djangoproject.com/) - the web framework used

@@ -24,13 +24,13 @@
         {% include 'CE/partial/visit_form.html' %}
     <div class="form-row">
         <div class="col">
-            {{Form.description_plain_text.label_tag}}
+            {{Form.description_plain_text.label_tag}} <small>This field supports <a href="{% url 'markdown' %}">markdown</a></small>
             {{Form.description_plain_text}}
         </div>
         <div class="col">
-            {{Form.differences.label_tag}}
+            {{Form.differences.label_tag}} <small>This field supports <a href="{% url 'markdown' %}">markdown</a></small>
             {{Form.differences}}
-            {{Form.interpretation.label_tag}}
+            {{Form.interpretation.label_tag}} <small>This field supports <a href="{% url 'markdown' %}">markdown</a></small>
             {{Form.interpretation}}
             Add a picture:
             {{Form.picture}}

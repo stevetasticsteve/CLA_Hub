@@ -15,6 +15,12 @@ def home(request):
     }
     return render(request, 'CLAHub_home.html', context)
 
+def markdown(request):
+    context = {
+        'title': 'Markdown help'
+    }
+    return render(request, 'markdown.html', context)
+
 
 @login_required
 def tools(request):

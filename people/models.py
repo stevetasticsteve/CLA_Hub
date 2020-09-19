@@ -4,7 +4,6 @@ import bleach
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
-import CE.settings  # todo move that out of CE and into general settings
 from CLAHub import tools
 
 integer_regex = re.compile(' \d+')
@@ -69,9 +68,7 @@ class Person(models.Model):
             integers = re.findall(integer_regex, self.family_plain_text)
             integers.sort(reverse=True)  # start with the biggest number so 5 doesn't replace a single 5 in 55
 
-            self.family = bleach.clean(self.family_plain_text,
-                                       tags=CE.settings.bleach_allowed,
-                                       strip=True)
+            self.family = bleach.clean(self.family_plain_text)
             for match in integers:
                 try:
                     name = Person.objects.get(pk=match.lstrip()).name

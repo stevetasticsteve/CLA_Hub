@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import datetime
+
+import bleach
+import markdown
 from django.contrib.auth.decorators import login_required
 from django.core import exceptions
 from django.db.models import Q
-
-
-import datetime
+from django.shortcuts import render, redirect, get_object_or_404
 
 from people import forms
 from people import models
@@ -23,6 +24,7 @@ def people_home(request):
         'search_context': 'people',
     }
     return render(request, template, context)
+
 
 @login_required
 def village(request, village):
@@ -63,6 +65,10 @@ def people_detail(request, pk):
         today = datetime.date.today()
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
+    person.team_contact = markdown.markdown(bleach.clean(person.team_contact))
+    person.family = markdown.markdown(person.family) # already clean
+
+
     context = {
         'person': person,
         'age': age,
@@ -96,6 +102,7 @@ def new(request):
     }
     return render(request, template, context)
 
+
 @login_required
 def edit(request, pk):
     template = 'people/edit.html'
@@ -124,6 +131,7 @@ def edit(request, pk):
 
 def help_family(request):
     return render(request, 'people/help/family_help.html')
+
 
 @login_required
 def search_people(request):

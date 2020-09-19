@@ -1,14 +1,14 @@
+import re
+
+import bleach
+from django.core import exceptions
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.text import slugify
-from django.core import exceptions
 from taggit.managers import TaggableManager
-from django.core.exceptions import ObjectDoesNotExist
 
 import CE.settings
-import re
-import bleach
 import people.models
-
 from CLAHub import tools
 
 integer_regex = re.compile('\d+')
@@ -39,14 +39,14 @@ class CultureEvent(models.Model):
 
     differences = models.TextField(blank=True)
     interpretation = models.TextField(blank=True)
-    slug = models.SlugField(unique=True) # set in save function, form doesn't need to validate it
+    slug = models.SlugField(unique=True)  # set in save function, form doesn't need to validate it
     tags = TaggableManager()
 
     def save(self, *args, **kwargs):
         self.check_unique_title()
         # copy the user's input from plain text to description to be processed
         # uses bleach to remove potentially harmful HTML code
-        self.description = CE.settings.clean_html(self.description_plain_text)
+        self.description = bleach.clean(self.description_plain_text)
 
         if CE.settings.auto_cross_reference:
             self.auto_cross_ref()
@@ -76,7 +76,7 @@ class CultureEvent(models.Model):
                 if title_slug in slugify(content):
                     title_deslug = title_slug.replace('-', ' ')
                     slug_href = '<a href="' + title_slug + '">' + title_deslug + '</a>'
-                    self.description = self.description.replace('{'+ title_deslug + '}', slug_href)
+                    self.description = self.description.replace('{' + title_deslug + '}', slug_href)
                 # if none of the title slugs are found remove the {}
                 elif i == len(ce_slugs) - 1:
                     self.description = self.description.replace(tag, content)
@@ -89,7 +89,7 @@ class CultureEvent(models.Model):
         slugged_description = slugify(self.description_plain_text)
         ce_slugs = self.list_slugs()
         ce_slugs.sort(key=len)
-        ce_slugs.reverse() # order longest to shortest = greedy matching
+        ce_slugs.reverse()  # order longest to shortest = greedy matching
         # check the slugged description for each ce title starting longest, going to shortest
         for title_slug in ce_slugs:
             if title_slug in slugged_description:
@@ -150,6 +150,7 @@ def audio_folder(instance, filename):
 class Picture(models.Model):
     ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
     picture = models.ImageField(upload_to=picture_folder, blank=True)
+
     # blank=True is a fudge. Trying to display multiple models in a single form and it wont'
     # submit if there is validation. The view function makes sure blank entries aren't saved though
 
@@ -159,7 +160,7 @@ class Picture(models.Model):
     def save(self):
         if self.picture:
             if tools.check_already_imported(self.picture):
-                return None # exit function, don't save anything
+                return None  # exit function, don't save anything
             self.picture = tools.compress_picture(self.picture, (1200, 1200))
         super(Picture, self).save()
 
@@ -197,13 +198,11 @@ class Text(models.Model):
         if self.audio:
             if tools.check_already_imported(self.audio):
                 # don't duplicate audio in uploads during tests
-                self.audio.upload_to = 'temp' # todo duplicates still added
+                self.audio.upload_to = 'temp'  # todo duplicates still added
         # search for integers in speaker field and provide link to profile if found
         if self.speaker_plain_text:
             integers = re.findall(integer_regex, self.speaker_plain_text)
-            self.speaker = bleach.clean(self.speaker_plain_text,
-                                        tags=CE.settings.bleach_allowed,
-                                        strip=True)
+            self.speaker = bleach.clean(self.speaker_plain_text)
             for match in integers:
                 try:
                     link = people.models.Person.objects.get(pk=match)

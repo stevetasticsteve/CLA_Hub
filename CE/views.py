@@ -1,3 +1,4 @@
+import bleach
 import markdown
 from django import forms
 from django.contrib.auth.decorators import login_required
@@ -12,7 +13,7 @@ import CE.forms
 import CE.utilities
 from CE import OCM_categories
 from CE.models import CultureEvent, Text, Picture, Visit, Question
-from CE.settings import culture_events_shown_on_home_page, clean_html
+from CE.settings import culture_events_shown_on_home_page
 
 text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Text,
                                                 form=CE.forms.TextForm, extra=0)
@@ -56,8 +57,8 @@ def view(request, pk):
     tags = ce.tags.all()
 
     ce.description = markdown.markdown(ce.description)  # don't need to clean it since model handles that
-    ce.interpretation = markdown.markdown(clean_html(ce.interpretation))
-    ce.differences = markdown.markdown(clean_html(ce.differences))
+    ce.interpretation = markdown.markdown(bleach.clean(ce.interpretation))
+    ce.differences = markdown.markdown(bleach.clean(ce.differences))
 
     context = {
         'CE': ce,

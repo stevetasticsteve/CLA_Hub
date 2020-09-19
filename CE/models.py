@@ -46,10 +46,8 @@ class CultureEvent(models.Model):
         self.check_unique_title()
         # copy the user's input from plain text to description to be processed
         # uses bleach to remove potentially harmful HTML code
-        self.description = bleach.clean(str(self.description_plain_text),
-                                        tags=CE.settings.bleach_allowed,
-                                        attributes=CE.settings.bleach_attributes_allowed,
-                                        strip=True)
+        self.description = CE.settings.clean_html(self.description_plain_text)
+
         if CE.settings.auto_cross_reference:
             self.auto_cross_ref()
         else:

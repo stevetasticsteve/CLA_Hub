@@ -33,15 +33,13 @@
             {% if Visits %}
             {% include 'CE/partial/visits_table.html' %}
             {% endif %}
-
+            {% autoescape off %}
             <div class="container-fluid bg-light">
                 <h3>Description</h3>
                 {% if not CE.description %}
                 <p>No description, why don't you add something?</p>
                 {% else %}
-                {% autoescape off %}
                 <p>{{ CE.description }}</p>
-                {% endautoescape %}
                 {% endif %}
             </div>
 
@@ -53,6 +51,7 @@
             <h3>Interpretation</h3>
             <p> {{ CE.interpretation }}</p>
             {% endif %}
+            {% endautoescape %}
         </div>
 
         <div class="col-sm-4">

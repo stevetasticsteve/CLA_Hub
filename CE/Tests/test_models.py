@@ -191,10 +191,6 @@ class CEModelTest(TestCase):
         self.assertIn('<script>', ce.description_plain_text)
         self.assertNotIn('<script>', ce.description, '<scripts> were not removed')
 
-        # <a> removed
-        self.assertIn('<a href', ce.description_plain_text)
-        self.assertNotIn('<a href', ce.description, 'An anchor tag was allowed, it shouldn\'t have been')
-
         # <strong> allowed
         settings.bleach_allowed = ['strong']
         self.assertIn('<strong>', ce.description_plain_text)

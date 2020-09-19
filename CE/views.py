@@ -1,17 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Q
-from django.core import exceptions
-from CE.models import CultureEvent, Text, Picture, Visit, Question
-from taggit.models import Tag
-from CE.settings import culture_events_shown_on_home_page
-from CE import OCM_categories
+import markdown
 from django import forms
-from django.template.defaulttags import register
+from django.contrib.auth.decorators import login_required
+from django.core import exceptions
+from django.db.models import Count, Q
 from django.db.models.functions import Lower
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.defaulttags import register
+from taggit.models import Tag
 
 import CE.forms
 import CE.utilities
+from CE import OCM_categories
+from CE.models import CultureEvent, Text, Picture, Visit, Question
+from CE.settings import culture_events_shown_on_home_page, clean_html
 
 text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Text,
                                                 form=CE.forms.TextForm, extra=0)
@@ -53,11 +54,16 @@ def view(request, pk):
     visits = Visit.objects.filter(ce=ce)
     questions = Question.objects.filter(ce=ce)
     tags = ce.tags.all()
+
+    ce.description = markdown.markdown(ce.description)  # don't need to clean it since model handles that
+    ce.interpretation = markdown.markdown(clean_html(ce.interpretation))
+    ce.differences = markdown.markdown(clean_html(ce.differences))
+
     context = {
-        'CE' : ce,
-        'Texts' : texts,
-        'Pics' : pictures,
-        'Visits' : visits,
+        'CE': ce,
+        'Texts': texts,
+        'Pics': pictures,
+        'Visits': visits,
         'Questions': questions,
         'Tags': tags,
         'title': ce.title
@@ -68,18 +74,7 @@ def view(request, pk):
 @CE.utilities.conditional_login
 def view_slug(request, slug):
     ce = get_object_or_404(CultureEvent, slug=slug)
-    pk = ce.pk
-    texts = Text.objects.filter(ce=pk)
-    pictures = Picture.objects.filter(ce=pk)
-    visits = Visit.objects.filter(ce=ce)
-    context = {
-        'CE': ce,
-        'Texts': texts,
-        'Pics': pictures,
-        'Visits': visits,
-        'title': ce.title
-    }
-    return render(request, 'CE/view_CE.html', context)
+    return view(request, ce.pk)
 
 
 @login_required
@@ -130,6 +125,8 @@ def edit(request, pk):
         'title': 'Edit ' + str(ce.title)
     }
     return render(request, template, context)
+
+
 # todo upload multiple files at once
 # todo changing pictures
 # todo rotating pictures
@@ -168,26 +165,25 @@ def new(request):
             except exceptions.ValidationError as e:
                 # return a validation error in event of valid form,
                 # but CE already existing, show form to user again
-                errors = e # todo any user added text info will disappear on form resubmission
+                errors = e  # todo any user added text info will disappear on form resubmission
 
         else:
             # return form for user to try again showing incorrect fields
             errors = form.errors
 
     # GET request
-    if not errors: # don't overwrite the user's failed form
+    if not errors:  # don't overwrite the user's failed form
         form = CE.forms.CE_EditForm()
 
-
     context = {
-            'Form': form,
-            'TextForm': text_form,
-            'QuestionForm': question_form,
-            'VisitForm': visit_form,
-            'Errors': errors,
-            'button_text': 'Create CE',
-            'title': 'new_CE'
-        }
+        'Form': form,
+        'TextForm': text_form,
+        'QuestionForm': question_form,
+        'VisitForm': visit_form,
+        'Errors': errors,
+        'button_text': 'Create CE',
+        'title': 'new_CE'
+    }
 
     return render(request, template, context)
 
@@ -267,6 +263,7 @@ def OCM_ref(request):
     }
     return render(request, template, context)
 
+
 @register.filter
 # a filter so that templates can use something in it's loop
 # as a lookup in a dictionary
@@ -282,8 +279,8 @@ def tag_detail_page(request, slug):
     CEs = CultureEvent.objects.filter(tags=tag)
 
     context = {
-        'tag':tag,
-        'CEs':CEs,
+        'tag': tag,
+        'CEs': CEs,
         'title': tag
     }
 
@@ -300,6 +297,7 @@ def tag_list_page(request):
         'search_context': 'tags'
     }
     return render(request, template, context)
+
 
 @CE.utilities.conditional_login
 def tags_search(request):
@@ -348,7 +346,7 @@ def text_genre(request, genre):
     # Find the genre that goes to the number
     # if out of range return 404
     if int(genre) <= len(Text.genres):
-        genre = Text.genres[int(genre)-1][1]
+        genre = Text.genres[int(genre) - 1][1]
     else:
         return render(request, '404.html')
 

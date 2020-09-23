@@ -21,7 +21,6 @@
 - Think of 'background' information that can be stored by server that might be helpful for queries
 - Improve search
 - Submit button on top as well as down below for forms
-- Person ID number visible in profile and in list views
 - Make a 2nd level of user so Auth isn't open to them on the admin site
 - A job handling system is needed. The import function won't work as the process takes longer than 30s and apache times
 out. Need to install celery to get that working, and also because if a CE is uploaded with a large picture

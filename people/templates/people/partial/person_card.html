@@ -9,6 +9,6 @@
         </a>
         {% endif %}
         <div class="card-body">
-            <p class="card-text">{{person.name}} {% if person.death %} (Deceased) {% endif %}</p>
+            <p class="card-text">{{person.name}} <small>ID:{{person.pk}}</small>  {% if person.death %} (Deceased) {% endif %}</p>
         </div>
     </div>

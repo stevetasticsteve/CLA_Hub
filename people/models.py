@@ -42,6 +42,7 @@ class Person(models.Model):
     death = models.DateField(auto_now=False, blank=True, null=True)
     family_plain_text = models.TextField(blank=True)
     family = models.TextField(blank=True)
+    gender = models.CharField(max_length=1, blank=True, choices=([('M', 'Male'), ('F', 'Female')]))
 
     medical = models.TextField(blank=True)
     team_contact = models.TextField(blank=True)

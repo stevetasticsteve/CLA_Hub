@@ -28,11 +28,16 @@
                 {% else %}
                 <strong>born: </strong>Unknown
                 {% endif %}
-            </ul><ul>
+            </ul>
+            <ul>
+                <strong>gender: </strong>
+                {{ person.gender }}
+            </ul>
+            <ul>
                 <strong>clan: </strong>
                 {{ person.clan }}
             </ul>
-            </ul><ul>
+            <ul>
                 <strong>education: </strong>
                 {{ person.get_education_display }}
             </ul><ul>

@@ -17,7 +17,7 @@
 - Bilas 404 and 500 pages
 
 ## Server improvements
-- Paginate texts, alphabetical CEs and tags pages
+- Paginate the pages that need it. Currently home page only
 - Think of 'background' information that can be stored by server that might be helpful for queries
 - Improve search
 - Make a 2nd level of user so Auth isn't open to them on the admin site
@@ -38,10 +38,7 @@ visible on the tags page but unaccessible as it has no slug.
 - Editing a CE means your user overwrites the last edited by information for texts too,
 even if you didn't edit them.
 - You can't reuse a picture say for a profile pic and a CE pic.
+- Pagination doesn't handle lots and lots of pages elegantly
 
 ## Testing
 - Functional tests need to be completed.
-
-## Upgrades
-- Django to 3.x
-- Pillow to 7.1.0

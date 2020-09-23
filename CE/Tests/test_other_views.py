@@ -1,9 +1,11 @@
+import time
+
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
-from CE import models, settings, OCM_categories
 
-import time
+from CE import models, OCM_categories
+
 
 # A separate test class for each model or view
 # a separate test method for each set of conditions you want to test
@@ -12,8 +14,8 @@ import time
 
 class CEHomeAndAlphabeticalTest(TestCase):
     def setUp(self):
-        self.total_CEs = settings.culture_events_shown_on_home_page + 3
-        for i in range(settings.culture_events_shown_on_home_page + 1):
+        self.total_CEs = 24  # create dummy CEs
+        for i in range(22):
             Ces = models.CultureEvent(title=('Example culture event ' + str(i)),
                                       last_modified_by='Tester')
             Ces.save()
@@ -27,7 +29,7 @@ class CEHomeAndAlphabeticalTest(TestCase):
     def test_home_page_contents(self):
         response = self.client.get(reverse('CE:home_page'))
 
-        self.assertContains(response, '<!doctype html>') # checks base template used
+        self.assertContains(response, '<!doctype html>')  # checks base template used
         self.assertContains(response, 'CE Home')
         # test CE's loaded
         self.assertContains(response, 'Example culture event 2')
@@ -86,8 +88,6 @@ class TestViewPage(TestCase):
         self.assertContains(response, '<ul>\n<li>list item 1</li>\n<li>list item 2</li>\n<li>list item 3</li>\n</ul>')
         self.assertContains(response, '<p><strong>text in bold</strong></p>')
         self.assertContains(response, '<h2>Markdown</h2>')
-
-
 
     def test_404(self):
         # test an out of range index
@@ -155,7 +155,6 @@ class QuestionPageTest(TestCase):
                               ce=ce)
         visits.save()
 
-
     def test_chron_question_page(self):
         response = self.client.get(reverse('CE:questions_chron'))
         self.assertEqual(response.status_code, 200)
@@ -201,7 +200,6 @@ class QuestionPageTest(TestCase):
         self.assertGreater(ce3_pos, ce2_pos)
 
 
-
 class OCMHomePageTest(TestCase):
     def setUp(self):
         ce = models.CultureEvent(title='Example CE1',
@@ -244,7 +242,7 @@ class TagSummaryPageTest(TestCase):
             ce.tags.add(tag)
 
     def test_tag_summary_response(self):
-        response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'1-1-geography-weather'}))
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug': '1-1-geography-weather'}))
         self.assertTemplateUsed('CE/tag_detail_page.html')
         self.assertEqual(response.status_code, 200, 'No response')
 
@@ -254,7 +252,7 @@ class TagSummaryPageTest(TestCase):
         self.assertEqual(response.status_code, 200, 'No response')
 
     def test_tag_summary_content(self):
-        response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'1-1-geography-weather'}))
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug': '1-1-geography-weather'}))
         self.assertContains(response, 'A first CE')
 
     def test_404_response(self):
@@ -286,7 +284,7 @@ class TagListViewTest(TestCase):
     def test_tags_in_content(self):
         response = self.client.get(reverse('CE:list_tags'))
         self.assertContains(response, 'Culture')
-        self.assertContains(response, '1-1 Geography') # avoid dealing with the &
+        self.assertContains(response, '1-1 Geography')  # avoid dealing with the &
         self.assertContains(response, '1-16')
 
     def test_most_recent_tags_at_top(self):
@@ -371,5 +369,3 @@ class TextViewAndGenreTest(TestCase):
         self.assertContains(response, 'Text 1')
         response = self.client.get(reverse('CE:text_search') + '?search=Bad')
         self.assertContains(response, 'No search results')
-
-

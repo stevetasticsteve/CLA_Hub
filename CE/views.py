@@ -7,13 +7,13 @@ from django.db.models import Count, Q
 from django.db.models.functions import Lower
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaulttags import register
+from django.core.paginator import Paginator
 from taggit.models import Tag
 
 import CE.forms
 import CE.utilities
 from CE import OCM_categories
 from CE.models import CultureEvent, Text, Picture, Visit, Question
-from CE.settings import culture_events_shown_on_home_page
 
 text_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.models.Text,
                                                 form=CE.forms.TextForm, extra=0)
@@ -27,10 +27,12 @@ visits_form_factory = forms.inlineformset_factory(CE.models.CultureEvent, CE.mod
 
 @CE.utilities.conditional_login
 def home_page(request):
-    most_recent_ces = CultureEvent.objects.all().order_by(
-        '-last_modified')[:culture_events_shown_on_home_page]
+    most_recent_ces = CultureEvent.objects.all().order_by('-last_modified')
+    paginator = Paginator(most_recent_ces, 25)
+    CEs = paginator.get_page(request.GET.get('page'))
     context = {
-        'CEs': most_recent_ces,
+        'CEs': CEs,
+        'paginator': CEs,
         'title': 'CE home',
         'search_context': 'CE'
     }

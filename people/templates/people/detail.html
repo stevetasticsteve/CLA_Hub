@@ -29,24 +29,39 @@
                 <strong>born: </strong>Unknown
                 {% endif %}
             </ul>
+
+            {% if person.gender %}
             <ul>
                 <strong>gender: </strong>
                 {{ person.gender }}
             </ul>
+            {% endif %}
+
+           {% if person.originally_from %}
+            <ul>
+            <strong>originally from:</strong>
+            {{ person.originally_from }}
+            </ul>
+            {% endif %}
+
+            {% if person.clan %}
             <ul>
                 <strong>clan: </strong>
                 {{ person.clan }}
             </ul>
+            {% endif %}
+
+            {% if person.education %}
             <ul>
                 <strong>education: </strong>
                 {{ person.get_education_display }}
-            </ul><ul>
-            <strong>originally from:</strong>
-            {{ person.originally_from }}
-        </ul>
+            </ul>
+            {% endif %}
         </div>
     </div>
+
     <br>
+
     <div class="container">
         <h4>Notes</h4>
         {{ person.team_contact }}

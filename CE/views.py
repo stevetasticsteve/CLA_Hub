@@ -210,7 +210,7 @@ def questions_chron(request):
 
 @CE.utilities.conditional_login
 def questions_alph(request):
-    q = Question.objects.all()
+    q = Question.objects.all().order_by('question')
     paginator = Paginator(q, 25)
     q = paginator.get_page(request.GET.get('page'))
     set_ces = set([i.ce for i in q])
@@ -294,10 +294,13 @@ def tag_detail_page(request, slug):
     template = 'CE/tag_detail_page.html'
     tag = get_object_or_404(Tag, slug=slug)
     # filter CEs by tag name
-    CEs = CultureEvent.objects.filter(tags=tag)
+    CEs = CultureEvent.objects.filter(tags=tag).order_by('title')
+    paginator = Paginator(CEs, 25)
+    CEs = paginator.get_page(request.GET.get('page'))
 
     context = {
         'tag': tag,
+        'paginator': CEs,
         'CEs': CEs,
         'title': tag
     }
@@ -308,9 +311,12 @@ def tag_detail_page(request, slug):
 @CE.utilities.conditional_login
 def tag_list_page(request):
     template = 'CE/all_tags.html'
-    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-num')
+    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('name')
+    paginator = Paginator(tags, 25)
+    tags = paginator.get_page(request.GET.get('page'))
     context = {
         'Tags': tags,
+        'paginator': tags,
         'title': 'Tags',
         'search_context': 'tags'
     }
@@ -321,9 +327,12 @@ def tag_list_page(request):
 def tags_search(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = Tag.objects.filter(Q(name__icontains=search))
+    results = Tag.objects.filter(Q(name__icontains=search)).order_by('name')
+    paginator = Paginator(results, 25)
+    results = paginator.get_page(request.GET.get('page'))
     context = {
         'search': search,
+        'paginator': results,
         'Tags': results,
         'title': 'CE search',
         'search_context': 'tags'
@@ -335,10 +344,13 @@ def tags_search(request):
 def search_CE(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = CultureEvent.objects.filter(Q(title__icontains=search))
+    results = CultureEvent.objects.filter(Q(title__icontains=search)).order_by('title')
+    paginator = Paginator(results, 25)
+    results = paginator.get_page(request.GET.get('page'))
     context = {
         'search': search,
         'CEs': results,
+        'paginator': results,
         'title': 'CE search',
         'search_context': 'CE'
     }
@@ -348,9 +360,12 @@ def search_CE(request):
 @CE.utilities.conditional_login
 def texts_home(request):
     template = 'CE/texts.html'
-    texts = Text.objects.all().order_by('-last_modified')
+    texts = Text.objects.all().order_by('text_title')
+    paginator = Paginator(texts, 25)
+    texts = paginator.get_page(request.GET.get('page'))
     context = {
         'Texts': texts,
+        'paginator': texts,
         'title': 'Texts',
         'search_context': 'texts'
     }
@@ -360,16 +375,19 @@ def texts_home(request):
 @CE.utilities.conditional_login
 def text_genre(request, genre):
     template = 'CE/texts_genre.html'
-    texts = Text.objects.filter(discourse_type=genre).order_by('-last_modified')
+    texts = Text.objects.filter(discourse_type=genre).order_by('text_title')
     # Find the genre that goes to the number
     # if out of range return 404
     if int(genre) <= len(Text.genres):
         genre = Text.genres[int(genre) - 1][1]
     else:
         return render(request, '404.html')
+    paginator = Paginator(texts, 25)
+    texts = paginator.get_page(request.GET.get('page'))
 
     context = {
         'Texts': texts,
+        'paginator': texts,
         'Genre': genre,
         'title': genre + ' texts'
     }
@@ -380,10 +398,13 @@ def text_genre(request, genre):
 def text_search(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = Text.objects.filter(Q(text_title__icontains=search))
+    results = Text.objects.filter(Q(text_title__icontains=search)).order_by('text_title')
+    paginator = Paginator(results, 25)
+    results = paginator.get_page(request.GET.get('page'))
     context = {
         'search': search,
         'Texts': results,
+        'pagniator': results,
         'title': 'Text search',
         'search_context': 'texts'
     }

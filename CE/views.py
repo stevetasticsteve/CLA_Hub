@@ -42,8 +42,11 @@ def home_page(request):
 @CE.utilities.conditional_login
 def alphabetical(request):
     ces = CultureEvent.objects.all().order_by(Lower('title'))
+    paginator = Paginator(ces, 25)
+    ces = paginator.get_page(request.GET.get('page'))
     context = {
         'CEs': ces,
+        'paginator': ces,
         'title': 'CEs alphabetically'
     }
     return render(request, 'CE/alphabetical.html', context)
@@ -195,8 +198,11 @@ def new(request):
 def questions_chron(request):
     questions = Question.objects.order_by('-date_created')
     set_ces = set([i.ce for i in questions])
+    paginator = Paginator(questions, 25)
+    questions = paginator.get_page(request.GET.get('page'))
     context = {
         'Questions': questions,
+        'paginator': questions,
         'CEs': set_ces
     }
     return render(request, 'CE/questions_chron.html', context)
@@ -205,10 +211,13 @@ def questions_chron(request):
 @CE.utilities.conditional_login
 def questions_alph(request):
     q = Question.objects.all()
+    paginator = Paginator(q, 25)
+    q = paginator.get_page(request.GET.get('page'))
     set_ces = set([i.ce for i in q])
     set_ces = sorted(set_ces, key=lambda x: x.title.lower())
     context = {
         'Questions': q,
+        'paginator': q,
         'CEs': set_ces,
         'title': 'Questions'
     }
@@ -218,9 +227,12 @@ def questions_alph(request):
 @CE.utilities.conditional_login
 def questions_unanswered(request):
     questions = Question.objects.filter(answer='').order_by('ce', '-last_modified')
+    paginator = Paginator(questions, 25)
+    questions = paginator.get_page(request.GET.get('page'))
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,
+        'paginator': questions,
         'CEs': set_ces,
         'title': 'Questions'
     }
@@ -230,9 +242,12 @@ def questions_unanswered(request):
 @CE.utilities.conditional_login
 def questions_recent(request):
     questions = Question.objects.all().exclude(answer='').order_by('ce', '-last_modified')
+    paginator = Paginator(questions, 25)
+    questions = paginator.get_page(request.GET.get('page'))
     set_ces = set([i.ce for i in questions])
     context = {
         'Questions': questions,
+        'paginator': questions,
         'CEs': set_ces,
         'title': 'Questions'
     }

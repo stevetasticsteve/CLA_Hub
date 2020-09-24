@@ -7,7 +7,7 @@
         <a href="{% url 'CE:questions_alph' %}" role="button" class="btn btn-secondary">Alphabetically</a>
         <button type="button" class="btn btn-primary">Chronologically</button>
         <a href="{% url 'CE:questions_unanswered' %}" role="button" class="btn btn-secondary">Unanswered</a>
-        <a href="{% url 'CE:questions_recent' %}" role="button" class="btn btn-secondary">Recently edited</a>
+        <a href="{% url 'CE:questions_recent' %}" role="button" class="btn btn-secondary">Recently answered</a>
     </div>
     <p>Ordered most recently asked question first</p>
 </div>
@@ -41,5 +41,6 @@
 </div>
 <p></p>
 
+{% include 'partial/pagination.html' %}
 
 {% endblock %}

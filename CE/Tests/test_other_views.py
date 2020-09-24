@@ -14,8 +14,8 @@ from CE import models, OCM_categories
 
 class CEHomeAndAlphabeticalTest(TestCase):
     def setUp(self):
-        self.total_CEs = 24  # create dummy CEs
-        for i in range(22):
+        self.total_CEs = 48  # create dummy CEs
+        for i in range(50):
             Ces = models.CultureEvent(title=('Example culture event ' + str(i)),
                                       last_modified_by='Tester')
             Ces.save()
@@ -32,10 +32,14 @@ class CEHomeAndAlphabeticalTest(TestCase):
         self.assertContains(response, '<!doctype html>')  # checks base template used
         self.assertContains(response, 'CE Home')
         # test CE's loaded
-        self.assertContains(response, 'Example culture event 2')
-        # test not more loaded than settings allow
-        self.assertNotContains(response, 'Example culture event ' + str(self.total_CEs))
+        self.assertContains(response, 'Example culture event 25 ')
         self.assertContains(response, 'by Tester')
+
+    def test_home_page_paginate(self):
+        response = self.client.get(reverse('CE:home_page'))
+
+        self.assertContains(response, '<ul class="pagination')
+        self.assertNotContains(response, 'Example culture event 1 ')
 
     def test_CE_alphabetical_page_response(self):
         response = self.client.get(reverse('CE:alphabetical'))
@@ -46,7 +50,8 @@ class CEHomeAndAlphabeticalTest(TestCase):
     def test_CE_alphabetical_page_contents(self):
         response = self.client.get(reverse('CE:alphabetical'))
 
-        self.assertEqual(len(response.context['CEs']), self.total_CEs)
+        self.assertEqual(len(response.context['CEs']), 25)  # set to paginate at 25
+        self.assertContains(response, '<ul class="pagination')
 
 
 class TestViewPage(TestCase):

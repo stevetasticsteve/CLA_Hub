@@ -4,6 +4,7 @@ import bleach
 import markdown
 from django.contrib.auth.decorators import login_required
 from django.core import exceptions
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -30,8 +31,11 @@ def people_home(request):
 def village(request, village):
     template = 'people/village.html'
     residents = models.Person.objects.filter(village=village).order_by('name')
+    paginator = Paginator(residents, 25)
+    residents = paginator.get_page(request.GET.get('page'))
     context = {
         'village_residents': residents,
+        'paginator': residents,
         'title': 'Village overview'
     }
     # pull the villages display name from the model and 404 if out of range
@@ -47,8 +51,11 @@ def alphabetically(request):
     template = 'people/alphabetical.html'
     people = models.Person.objects.all().order_by(
         'name')
+    paginator = Paginator(people, 25)
+    people = paginator.get_page(request.GET.get('page'))
     context = {
         'People': people,
+        'paginator': people,
         'title': 'People alphabetically'
     }
     return render(request, template, context)
@@ -66,8 +73,7 @@ def people_detail(request, pk):
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
     person.team_contact = markdown.markdown(bleach.clean(person.team_contact))
-    person.family = markdown.markdown(person.family) # already clean
-
+    person.family = markdown.markdown(person.family)  # already clean
 
     context = {
         'person': person,
@@ -137,10 +143,13 @@ def help_family(request):
 def search_people(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = models.Person.objects.filter(Q(name__icontains=search))
+    results = models.Person.objects.filter(Q(name__icontains=search)).order_by('name')
+    paginator = Paginator(results, 25)
+    results = paginator.get_page(request.GET.get('page'))
     context = {
         'search': search,
         'profiles': results,
+        'paginator': results,
         'title': 'People search',
         'search_context': 'people'
     }

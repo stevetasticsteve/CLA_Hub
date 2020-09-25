@@ -3,9 +3,7 @@
 ## New features
 - User section to see what everyone's worked on
 - Export features
-- Way to link institutes to realm of reality write up
 - Hardcode in CLAHubDev admin login
-- label and value tags - enables user extensions without coding - users can add their own fields
 
 ## Removing features
 - Consider removing tools if more aren't added. CLI jobs could be used instead
@@ -17,7 +15,6 @@
 - Bilas 404 and 500 pages
 
 ## Server improvements
-- Paginate the pages that need it. Currently home page only
 - Think of 'background' information that can be stored by server that might be helpful for queries
 - Improve search
 - Submit button on top as well as down below for forms

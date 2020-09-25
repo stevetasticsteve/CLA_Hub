@@ -88,3 +88,16 @@ class Person(models.Model):
 
     def __str__(self):
         return self.name + '- ' + Person.villages[int(self.village) - 1][1]
+
+
+class MedicalAssessment(models.Model):
+    person = models.ForeignKey('Person', on_delete=models.CASCADE)
+
+    subjective = models.TextField(blank=False)
+    objective = models.TextField(blank=False)
+    assessment = models.TextField(blank=False)
+    plan = models.TextField(blank=False)
+    date = models.DateField(auto_now_add=True)
+    short = models.CharField(max_length=25, blank=False)
+    image = models.ImageField(upload_to='people/medical', blank=True)
+    comment = models.TextField(blank=True)

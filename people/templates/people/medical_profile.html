@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block page_content %}
+<br>
+<div class="container-fluid" id="medical_profile">
+    <div class="row">
+        <div class="col-sm-3 border" id="SOAP sidebar">
+            <h4>Medical Assessments</h4>
+            {% if assessments %}
+            <ul class="list-group">
+                {% for event in assessments %}
+                <a href="#" class="list-group-item list-group-item-action">{{event.date}}: {{event.short}}</a>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No medical visits recorded</p>
+            {% endif %}
+
+        </div>
+        <div class="col-sm-8" id="details">
+            <div class="container" id="top_bar">
+                <h3>{{ person.name }}</h3>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <img src="{{person.picture.url}}" height="300" alt="profile_pic">
+                    </div>
+                    <div class="col-sm>">
+                        <h5>Medical notes</h5>
+                        <p>{{person.medical}}</p>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <div class="container" id="event_details">
+                <p>SOAP details go here</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

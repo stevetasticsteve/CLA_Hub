@@ -154,3 +154,16 @@ def search_people(request):
         'search_context': 'people'
     }
     return render(request, template, context)
+
+
+@login_required
+def medical_profile(request, pk):
+    template = 'people/medical_profile.html'
+    person = get_object_or_404(models.Person, pk=pk)
+    assessments = models.MedicalAssessment.objects.filter(person=person)
+    context = {
+        'title': '{name} medical'.format(name=person.name),
+        'person': person,
+        'assessments': assessments
+    }
+    return render(request, template, context)

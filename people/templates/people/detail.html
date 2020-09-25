@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% block page_content %}
 <div class="container">
-    <a href="{% url 'people:edit' person.pk %}">Edit</a>
+    <div class="btn=group" role="group" aria-label="Filter options" >
+    <a href="{% url 'people:edit' person.pk %}" role="button" class="btn btn-primary">Edit Profile</a>
+    <a href="#" role="button" class="btn btn-success">Edit Medical</a>
+
     <div class="row">
         <div class="col-4">
             {% if person.picture %}

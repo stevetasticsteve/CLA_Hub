@@ -99,8 +99,4 @@ python manage.py collectstatic
 python manage.py migrate
 python manage.py createsuperuser
 
-14. Install ffmpeg
-suod apt install ffmpeg
-
-
 

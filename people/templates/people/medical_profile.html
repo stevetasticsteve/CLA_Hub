@@ -6,11 +6,15 @@
         <div class="col-sm-3 border" id="SOAP sidebar">
             <h4>Medical Assessments</h4>
             {% if assessments %}
-            <ul class="list-group">
+            <div class="list-group" role="tablist">
                 {% for event in assessments %}
-                <a href="#" class="list-group-item list-group-item-action">{{event.date}}: {{event.short}}</a>
+                {% if forloop.counter == 1 %}
+                <a href="#tab-item-{{ forloop.counter }}" class="list-group-item list-group-item-action active" data-toggle="list" role="tab">{{event.date}}: {{event.short}}</a>
+                {% else %}
+                <a href="#tab-item-{{ forloop.counter }}" class="list-group-item list-group-item-action" data-toggle="list" role="tab">{{event.date}}: {{event.short}}</a>
+                {% endif %}
                 {% endfor %}
-            </ul>
+            </div>
             {% else %}
             <p>No medical visits recorded</p>
             {% endif %}
@@ -30,11 +34,18 @@
                 </div>
                 <hr>
             </div>
-            <div class="container" id="event_details">
-                <p>SOAP details go here</p>
+            <div class="tab-content" id="nav-tabContent">
+                {% for event in assessments %}
+                {% if forloop.counter == 1 %}
+                <div class="tab-pane active" id="tab-item-{{forloop.counter}}" role="tabpanel">Content area {{forloop.counter}}</div>
+                {% else %}
+                <div class="tab-pane" id="tab-item-{{forloop.counter}}" role="tabpanel">Content area {{forloop.counter}}</div>
+                {% endif %}
+                {% endfor %}
             </div>
         </div>
 
     </div>
 </div>
+
 {% endblock %}

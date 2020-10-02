@@ -22,24 +22,34 @@
         </div>
         <div class="col-sm-8" id="details">
             <div class="container" id="top_bar">
-                <h3>{{ person.name }}</h3>
+                <h3><a href="{% url 'people:detail' person.pk%}">{{ person.name }}</a></h3>
                 <div class="row">
                     <div class="col-sm-3">
-                        <img src="{{person.picture.url}}" height="300" alt="profile_pic">
+                        {% if person.picture %}
+                        <img src="{{person.picture.url}}" class="img-thumbnail" alt="profile_pic">
+                        {% else %}
+                        <br>
+                        <img src="..." class="img-thumbnail" alt="Missing profile pic">
+                        {% endif %}
                     </div>
                     <div class="col-sm>">
                         <h5>Medical notes</h5>
                         <p>{{person.medical}}</p>
+                        <div class="btn=group" role="group" aria-label="Filter options">
+                        <a href="{% url 'people:edit' person.pk %}" role="button" class="btn btn-primary">Edit Medical notes</a>
+                        <a href="{% url 'people:new_assessment' person.pk %}" role="button" class="btn btn-success">Add Assessment</a>
+                        </div>
                     </div>
+
                 </div>
                 <hr>
             </div>
             <div class="tab-content" id="nav-tabContent">
                 {% for event in assessments %}
                 {% if forloop.counter == 1 %}
-                <div class="tab-pane active" id="tab-item-{{forloop.counter}}" role="tabpanel">Content area {{forloop.counter}}</div>
+                <div class="tab-pane active" id="tab-item-{{forloop.counter}}" role="tabpanel">{% include 'people/partial/soap_report.html' %}</div>
                 {% else %}
-                <div class="tab-pane" id="tab-item-{{forloop.counter}}" role="tabpanel">Content area {{forloop.counter}}</div>
+                <div class="tab-pane" id="tab-item-{{forloop.counter}}" role="tabpanel">{% include 'people/partial/soap_report.html' %}</div>
                 {% endif %}
                 {% endfor %}
             </div>

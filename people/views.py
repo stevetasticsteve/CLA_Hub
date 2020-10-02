@@ -167,3 +167,28 @@ def medical_profile(request, pk):
         'assessments': assessments
     }
     return render(request, template, context)
+
+@login_required
+def medical_assessment_add(request, pk):
+    template = 'people/soap_new.html'
+    errors = None
+
+    if request.method == 'POST':
+        form = forms.SoapForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save(request=request)
+                return redirect('people:medical', pk=pk)
+            except exceptions.ValidationError as e:
+                errors = e
+
+    # GET request
+    if not errors:  # don't overwrite the user's failed form
+        form = forms.SoapForm()
+
+    context = {
+        'Form': form,
+        'Errors': errors,
+        'title': 'New assessment'
+    }
+    return render(request, template, context)

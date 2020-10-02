@@ -39,3 +39,16 @@ class PeopleForm(forms.ModelForm):
         if kwargs.get('request').POST.get('picture-clear'):
             self.instance.clear_picture()
         return super(PeopleForm, self).save()
+
+class SoapForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # init method injects 'form-control' in to enable bootstrap styling
+        super(SoapForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
+    class Meta:
+        model = people.models.MedicalAssessment
+        exclude = ['person']

@@ -1,8 +1,15 @@
 from django.contrib import admin
 
-from people.models import Person
+import people.models
+
 
 class PersonAdmin(admin.ModelAdmin):
     pass
 
-admin.site.register(Person, PersonAdmin)
+
+class MedicalAssessmentAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(people.models.Person, PersonAdmin)
+admin.site.register(people.models.MedicalAssessment, MedicalAssessmentAdmin)

@@ -168,16 +168,19 @@ def medical_profile(request, pk):
     }
     return render(request, template, context)
 
+
 @login_required
 def medical_assessment_add(request, pk):
     template = 'people/soap_new.html'
     errors = None
+    person = get_object_or_404(models.Person, pk=pk)
 
     if request.method == 'POST':
-        form = forms.SoapForm(request.POST)
+        form = forms.SoapForm(request.POST, request.FILES)
+        form.person = person
         if form.is_valid():
             try:
-                form.save(request=request)
+                form.save(person=person)
                 return redirect('people:medical', pk=pk)
             except exceptions.ValidationError as e:
                 errors = e

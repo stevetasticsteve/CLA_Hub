@@ -92,7 +92,6 @@ class Person(models.Model):
 
 class MedicalAssessment(models.Model):
     person = models.ForeignKey('Person', on_delete=models.CASCADE)
-
     subjective = models.TextField(blank=False)
     objective = models.TextField(blank=False)
     assessment = models.TextField(blank=False)
@@ -101,3 +100,6 @@ class MedicalAssessment(models.Model):
     short = models.CharField(max_length=25, blank=False)
     image = models.ImageField(upload_to='people/medical', blank=True)
     comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return str(self.date) + ': ' + self.person.name

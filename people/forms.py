@@ -40,6 +40,7 @@ class PeopleForm(forms.ModelForm):
             self.instance.clear_picture()
         return super(PeopleForm, self).save()
 
+
 class SoapForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         # init method injects 'form-control' in to enable bootstrap styling
@@ -52,3 +53,7 @@ class SoapForm(forms.ModelForm):
     class Meta:
         model = people.models.MedicalAssessment
         exclude = ['person']
+
+    def save(self, **kwargs):
+        self.instance.person = kwargs['person']
+        super(SoapForm, self).save()

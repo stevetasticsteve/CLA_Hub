@@ -8,4 +8,7 @@
     <p>{{event.assessment}}</p>
     <h4>P</h4>
     <p>{{event.plan}}</p>
+    {% if event.image %}
+    <img src="{{event.image.url}}" class="img-thumbnail" alt="medical_pic">
+    {% endif %}
 </div>

@@ -3,4 +3,18 @@
 
 <h1>Edit medical notes for {{Person.name}}</h1>
 
+<form action="" method="post">
+    {% csrf_token %}
+    {% if Errors %}
+    <div class="form-group has-error">
+        {% for error in Errors %}
+            <div class="alert alert-danger">{{error}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {{Form}}
+
+    <button type="input" class="btn btn-primary">Submit</button>
+</form>
+
 {% endblock %}

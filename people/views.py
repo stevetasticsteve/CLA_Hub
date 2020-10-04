@@ -231,9 +231,25 @@ def medical_assessment_edit(request, pk, event_pk):
 def edit_medical_notes(request, pk):
     template = 'people/medical_edit.html'
     person = get_object_or_404(models.Person, pk=pk)
+    errors = None
+
+    # POST Request
+    if request.method == 'POST':
+        form = forms.MedicalNotesForm(request.POST, instance=person)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('people:medical', pk=pk)
+            except exceptions.ValidationError as e:
+                errors = e
+    # GET request
+    if not errors:
+        form = forms.MedicalNotesForm(instance=person)
 
     context = {
+        'Form': form,
         'Person': person,
-        'title': 'Edit medical notes'
+        'Errors': errors,
+        'title': 'Edit medical Notes'
     }
     return render(request, template, context)

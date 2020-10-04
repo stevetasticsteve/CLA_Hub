@@ -1,9 +1,11 @@
 from django import forms
+
 import people.models
 
 
 class DateInput(forms.DateInput):
     input_type = 'date'
+
 
 class PeopleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -16,7 +18,7 @@ class PeopleForm(forms.ModelForm):
 
     class Meta:
         model = people.models.Person
-        exclude = ('DELETE', 'last_modified_by', 'thumbnail', 'family')
+        exclude = ('DELETE', 'last_modified_by', 'thumbnail', 'family', 'medical')
         widgets = {
             'born': DateInput(),
             'death': DateInput(),
@@ -57,3 +59,18 @@ class SoapForm(forms.ModelForm):
     def save(self, **kwargs):
         self.instance.person = kwargs['person']
         super(SoapForm, self).save()
+
+
+class MedicalNotesForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # init method injects 'form-control' in to enable bootstrap styling
+        super(MedicalNotesForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
+    class Meta:
+        model = people.models.Person
+        fields = ['medical']
+

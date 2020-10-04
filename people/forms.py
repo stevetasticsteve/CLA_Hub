@@ -73,4 +73,3 @@ class MedicalNotesForm(forms.ModelForm):
     class Meta:
         model = people.models.Person
         fields = ['medical']
-

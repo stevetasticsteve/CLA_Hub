@@ -1,5 +1,5 @@
 <div class="container">
-    <h3>{{event.date}}: {{event.short}}</h3>
+    <h3>{{event.date}}: {{event.short}} <a href="{% url 'people:edit_assessment' Person.pk event.pk %}"><small>Edit</small></a></h3>
     <h4>S</h4>
     <p>{{event.subjective}}</p>
     <h4>O</h4>

@@ -22,11 +22,11 @@
         </div>
         <div class="col-sm-8" id="details">
             <div class="container" id="top_bar">
-                <h3><a href="{% url 'people:detail' person.pk%}">{{ person.name }}</a></h3>
+                <h3><a href="{% url 'people:detail' Person.pk%}">{{ Person.name }}</a></h3>
                 <div class="row">
                     <div class="col-sm-3">
-                        {% if person.picture %}
-                        <img src="{{person.picture.url}}" class="img-thumbnail" alt="profile_pic">
+                        {% if Person.picture %}
+                        <img src="{{Person.picture.url}}" class="img-thumbnail" alt="profile_pic">
                         {% else %}
                         <br>
                         <img src="..." class="img-thumbnail" alt="Missing profile pic">
@@ -34,10 +34,10 @@
                     </div>
                     <div class="col-sm>">
                         <h5>Medical notes</h5>
-                        <p>{{person.medical}}</p>
+                        <p>{{Person.medical}}</p>
                         <div class="btn=group" role="group" aria-label="Filter options">
-                        <a href="{% url 'people:edit' person.pk %}" role="button" class="btn btn-primary">Edit Medical notes</a>
-                        <a href="{% url 'people:new_assessment' person.pk %}" role="button" class="btn btn-success">Add Assessment</a>
+                        <a href="{% url 'people:edit_medical_notes' Person.pk %}" role="button" class="btn btn-primary">Edit Medical notes</a>
+                        <a href="{% url 'people:new_assessment' Person.pk %}" role="button" class="btn btn-success">Add Assessment</a>
                         </div>
                     </div>
 

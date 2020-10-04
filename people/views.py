@@ -160,10 +160,10 @@ def search_people(request):
 def medical_profile(request, pk):
     template = 'people/medical_profile.html'
     person = get_object_or_404(models.Person, pk=pk)
-    assessments = models.MedicalAssessment.objects.filter(person=person)
+    assessments = models.MedicalAssessment.objects.filter(person=person).order_by('-date')
     context = {
         'title': '{name} medical'.format(name=person.name),
-        'person': person,
+        'Person': person,
         'assessments': assessments
     }
     return render(request, template, context)
@@ -186,12 +186,54 @@ def medical_assessment_add(request, pk):
                 errors = e
 
     # GET request
-    if not errors:  # don't overwrite the user's failed form
+    if not errors:
         form = forms.SoapForm()
 
     context = {
         'Form': form,
+        'Person': person,
         'Errors': errors,
         'title': 'New assessment'
+    }
+    return render(request, template, context)
+
+
+@login_required
+def medical_assessment_edit(request, pk, event_pk):
+    template = 'people/soap_edit.html'
+    person = get_object_or_404(models.Person, pk=pk)
+    event = get_object_or_404(models.MedicalAssessment, pk=event_pk)
+    errors = None
+    # POST Request
+    if request.method == 'POST':
+        form = forms.SoapForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            try:
+                form.save(person=person)
+                return redirect('people:medical', pk=pk)
+            except exceptions.ValidationError as e:
+                errors = e
+    # GET request
+    if not errors:
+        form = forms.SoapForm(instance=event)
+
+    context = {
+        'Form': form,
+        'Person': person,
+        'event': event,
+        'Errors': errors,
+        'title': 'Edit assessment'
+    }
+    return render(request, template, context)
+
+
+@login_required
+def edit_medical_notes(request, pk):
+    template = 'people/medical_edit.html'
+    person = get_object_or_404(models.Person, pk=pk)
+
+    context = {
+        'Person': person,
+        'title': 'Edit medical notes'
     }
     return render(request, template, context)

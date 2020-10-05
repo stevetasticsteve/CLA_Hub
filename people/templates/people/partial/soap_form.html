@@ -1,4 +1,5 @@
 <form action="" method="post" enctype="multipart/form-data">
+    <button type="input" class="btn btn-primary">Submit</button><br><br>
     {% csrf_token %}
     {% if Errors %}
     <div class="form-group has-error">
@@ -7,7 +8,38 @@
         {% endfor %}
     </div>
     {% endif %}
-    {{Form}}
+    <div class="row">
+        <div class="col-sm-3">
+            <h4>{{Form.short.label_tag}}</h4>
+            {{Form.short}}
+        </div>
+        <div class="col-sm-3">
+            <h4>Upload image</h4>
+            {{Form.image}}
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>{{Form.subjective.label_tag}}</h4> <small>This field supports <a href="{% url 'markdown' %}">markdown</a></small>
+            {{Form.subjective}}
+            <br>
+            <h4>{{Form.objective.label_tag}}</h4> <small>This field supports <a href="{% url 'markdown' %}">markdown</a></small>
+            {{Form.objective}}
+        </div>
+        <div class="col-sm-6">
+            <h4>{{Form.assessment.label_tag}}</h4> <small>This field supports <a href="{% url 'markdown' %}">markdown</a></small>
+            {{Form.assessment}}
+            <br>
+            <h4>{{Form.plan.label_tag}}</h4> <small>This field supports <a href="{% url 'markdown' %}">markdown</a></small>
+            {{Form.plan}}
+        </div>
+    </div>
+
+    {{Form.comment.label_tag}}
+    {{Form.comment}}
+    <br>
 
     <button type="input" class="btn btn-primary">Submit</button>
 </form>

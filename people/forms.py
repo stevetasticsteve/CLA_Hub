@@ -55,6 +55,38 @@ class SoapForm(forms.ModelForm):
     class Meta:
         model = people.models.MedicalAssessment
         exclude = ['person']
+        widgets = {
+            'short': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Required.',
+                'label': 'Short as possible description',
+            }),
+            'subjective': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write what the patient says here.',
+                'rows': 5
+            }),
+            'objective': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write vitals and stats here.',
+                'rows': 5
+            }),
+            'assessment': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your conclusions here.',
+                'rows': 5
+            }),
+            'plan': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write the plan of action here.',
+                'rows': 5
+            }),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Any additional comments can go here.',
+                'rows': 5
+            }),
+        }
 
     def save(self, **kwargs):
         self.instance.person = kwargs['person']

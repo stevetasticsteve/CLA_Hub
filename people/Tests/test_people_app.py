@@ -1,13 +1,13 @@
-from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth.models import User
-from django.core.files.uploadedfile import SimpleUploadedFile
-
 import datetime
 import os
 
-from people import models
+from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase
+from django.urls import reverse
+
 from CLAHub import base_settings
+from people import models
 
 
 class PeopleTest(TestCase):
@@ -166,7 +166,6 @@ class NewPersonViewTest(PeopleTest):
         self.assertEqual(len(models.Person.objects.all()), self.num_profiles + 1)
         new_entry = models.Person.objects.get(pk=self.new_pk)
         self.assertEqual(self.new_post_data['name'], new_entry.name)
-        self.assertEqual(self.new_post_data['medical'], new_entry.medical)
         self.assertEqual(self.new_post_data['education'], new_entry.education)
         self.assertEqual(datetime.date, type(new_entry.born))
 
@@ -394,5 +393,3 @@ class EditPersonTest(PeopleTest):
         self.assertContains(response, 'Test person 1')
         response = self.client.get(reverse('people:search') + '?search=Bad')
         self.assertContains(response, 'No search results')
-
-

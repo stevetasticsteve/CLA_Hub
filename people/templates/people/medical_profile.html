@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-sm>">
                         <h5>Medical notes</h5>
-                        <p>{{Person.medical}}</p>
+                        <p>{{Person.medical|safe}}</p>
                         <div class="btn=group" role="group" aria-label="Filter options">
                         <a href="{% url 'people:edit_medical_notes' Person.pk %}" role="button" class="btn btn-primary">Edit Medical notes</a>
                         <a href="{% url 'people:new_assessment' Person.pk %}" role="button" class="btn btn-success">Add Assessment</a>

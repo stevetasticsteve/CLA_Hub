@@ -160,7 +160,14 @@ def search_people(request):
 def medical_profile(request, pk):
     template = 'people/medical_profile.html'
     person = get_object_or_404(models.Person, pk=pk)
+    person.medical = markdown.markdown(bleach.clean(person.medical))
     assessments = models.MedicalAssessment.objects.filter(person=person).order_by('-date')
+    for a in assessments:
+        a.subjective = markdown.markdown(bleach.clean(a.subjective))
+        a.objective = markdown.markdown(bleach.clean(a.objective))
+        a.assessment = markdown.markdown(bleach.clean(a.assessment))
+        a.plan = markdown.markdown(bleach.clean(a.plan))
+        a.comment = markdown.markdown(bleach.clean(a.comment))
     context = {
         'title': '{name} medical'.format(name=person.name),
         'Person': person,

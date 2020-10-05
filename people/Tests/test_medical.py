@@ -62,6 +62,24 @@ class MedicalTest(TestCase):
         self.assertContains(response, '<a href="/people/medical/1/notes"')
         self.assertContains(response, '<a href="/people/medical/1/add"')
 
+    def test_markdown_profile_contents(self):
+        person = models.Person.objects.get(pk=1)
+        person.medical = ('# Heading in Markdown')
+        person.save()
+        event = models.MedicalAssessment.objects.get(pk=1)
+        event.subjective = '## Sub'
+        event.objective = '### Ob'
+        event.assessment = '#### Ass'
+        event.plan = '**Plan**'
+        event.save()
+        response = self.client.get(reverse('people:medical', args='1'))
+
+        self.assertContains(response, '<h1>Heading in Markdown</h1>')
+        self.assertContains(response, '<h2>Sub</h2>')
+        self.assertContains(response, '<h3>Ob</h3>')
+        self.assertContains(response, '<h4>Ass</h4>')
+        self.assertContains(response, '<strong>Plan</strong>')
+
     def test_medical_notes_response(self):
         response = self.client.get(reverse('people:edit_medical_notes', args='1'))
 

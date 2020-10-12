@@ -3,6 +3,7 @@ import re
 import bleach
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.utils.timezone import now
 
 from CLAHub import tools
 
@@ -96,7 +97,7 @@ class MedicalAssessment(models.Model):
     objective = models.TextField(blank=False)
     assessment = models.TextField(blank=False)
     plan = models.TextField(blank=False)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=now)
     short = models.CharField(max_length=25, blank=False)
     image = models.ImageField(upload_to='people/medical', blank=True)
     comment = models.TextField(blank=True)

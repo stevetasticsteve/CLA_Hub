@@ -59,7 +59,6 @@ class SoapForm(forms.ModelForm):
             'short': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Required.',
-                'label': 'Short as possible description',
             }),
             'subjective': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -86,6 +85,9 @@ class SoapForm(forms.ModelForm):
                 'placeholder': 'Any additional comments can go here.',
                 'rows': 5
             }),
+        }
+        labels = {
+            'short': 'Short description to function as a title.'
         }
 
     def save(self, **kwargs):

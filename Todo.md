@@ -37,6 +37,7 @@ visible on the tags page but unaccessible as it has no slug.
 even if you didn't edit them.
 - You can't reuse a picture say for a profile pic and a CE pic.
 - Pagination doesn't handle lots and lots of pages elegantly
+- Management commands overwrite all date information
 
 ## Testing
 - Functional tests need to be completed.

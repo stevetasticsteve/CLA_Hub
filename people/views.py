@@ -71,14 +71,15 @@ def people_detail(request, pk):
     if dob:
         today = datetime.date.today()
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-
+    medical = len(models.MedicalAssessment.objects.filter(person=person))
     person.team_contact = markdown.markdown(bleach.clean(person.team_contact))
     person.family = markdown.markdown(person.family)  # already clean
 
     context = {
         'person': person,
         'age': age,
-        'title': person.name
+        'title': person.name,
+        'medical': medical
     }
     return render(request, template, context)
 

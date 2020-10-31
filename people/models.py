@@ -104,3 +104,9 @@ class MedicalAssessment(models.Model):
 
     def __str__(self):
         return str(self.date) + ': ' + self.person.name
+
+    def save(self):
+        # Compress picture
+        if self.image:
+            self.image = tools.compress_picture(self.image, (1000, 1000))
+        super(MedicalAssessment, self).save()

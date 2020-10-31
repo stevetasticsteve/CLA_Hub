@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="container-fluid">
+<h1>Most recent medical assessments</h1>
+
+{% for event, Person in assessments %}
+    <hr>
+    <h3> <a href="{% url 'people:medical' Person.pk %}">{{Person.name}}</a> </h3>
+{% include 'people/partial/soap_report.html' %}
+{% endfor %}
+</div>
+{% endblock %}

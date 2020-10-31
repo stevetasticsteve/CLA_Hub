@@ -117,7 +117,8 @@ class MedicalTest(TestCase):
             'subjective': 'Subjective 5',
             'objective': 'Objective 5',
             'assessment': 'Assessment 5',
-            'plan': 'Plan 5'
+            'plan': 'Plan 5',
+            'date': '2020-10-31'
         })
 
         self.assertEqual(len(models.MedicalAssessment.objects.all()), 5, 'Assessment not added')
@@ -150,8 +151,22 @@ class MedicalTest(TestCase):
             'subjective': 'Subjective 1',
             'objective': 'Objective 1',
             'assessment': 'Assessment 1',
-            'plan': 'Plan 1'
+            'plan': 'Plan 1',
+            'date': '2020-10-31'
         })
 
         self.assertEqual(len(models.MedicalAssessment.objects.all()), 4, 'Extra object added')
         self.assertEqual(models.MedicalAssessment.objects.get(pk=1).short, 'Brand new Event 1')
+
+    def test_recent_medical_response(self):
+        response = self.client.get(reverse('people:recent_medical'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('people/medical_recent.html')
+
+    def test_recent_medical_response(self):
+        response = self.client.get(reverse('people:recent_medical'))
+
+        self.assertContains(response, 'Event 1')
+        self.assertContains(response, 'Event 4')
+        self.assertContains(response, 'Test Person 1')

@@ -13,6 +13,7 @@
 - User friendliness testing
 - Make jumbotron minimal_base.html shorter so it fits on screen
 - Bilas 404 and 500 pages
+- New SOAP section mobile friendliness
 
 ## Server improvements
 - Think of 'background' information that can be stored by server that might be helpful for queries
@@ -41,3 +42,4 @@ even if you didn't edit them.
 
 ## Testing
 - Functional tests need to be completed.
+- SOAP picture upload

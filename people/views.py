@@ -261,3 +261,23 @@ def edit_medical_notes(request, pk):
         'title': 'Edit medical Notes'
     }
     return render(request, template, context)
+
+
+@login_required
+def recent_medical(request):
+    template = 'people/medical_recent.html'
+    assessments = models.MedicalAssessment.objects.all().order_by('-date')[:15]
+    for a in assessments:
+        a.subjective = markdown.markdown(bleach.clean(a.subjective))
+        a.objective = markdown.markdown(bleach.clean(a.objective))
+        a.assessment = markdown.markdown(bleach.clean(a.assessment))
+        a.plan = markdown.markdown(bleach.clean(a.plan))
+        a.comment = markdown.markdown(bleach.clean(a.comment))
+    profiles = [p.person for p in assessments]
+    assessments = list(zip(assessments, profiles))
+
+    context = {
+        'assessments': assessments,
+        'title': 'Recent medical assessments'
+    }
+    return render(request, template, context)

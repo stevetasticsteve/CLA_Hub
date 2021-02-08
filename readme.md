@@ -1,3 +1,4 @@
+![Django CI](https://github.com/stevetasticsteve/CLA_Hub/workflows/Django%20CI/badge.svg)
 # CLA Hub
 A [webapp](https://en.wikipedia.org/wiki/Web_application) project to give bush teams a way to collaboratively create 
 and maintain a culture file for learning tribal language and culture.

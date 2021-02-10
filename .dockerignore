@@ -1,7 +1,12 @@
-.git
-.gitignore
+.git*
 geckodriver
 geckodriver.log
 __pycache__
 .idea
-CLAHub_venv
+venv
+import
+Todo.md
+deployment_tools
+Logs/CLA*
+Logs/debug*
+Logs/request*

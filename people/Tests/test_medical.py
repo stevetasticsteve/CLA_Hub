@@ -164,7 +164,7 @@ class MedicalTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('people/medical_recent.html')
 
-    def test_recent_medical_response(self):
+    def test_recent_medical_contents(self):
         response = self.client.get(reverse('people:recent_medical'))
 
         self.assertContains(response, 'Event 1')

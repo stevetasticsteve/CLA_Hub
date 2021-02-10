@@ -7,6 +7,7 @@ venv
 import
 *.md
 *.yml
+*.txt
 deployment_tools/
 Logs/CLA*
 Logs/debug*
@@ -19,3 +20,4 @@ CE/Tests**
 people/Tests**
 .dockerignore
 _CLAHub_database.db
+Dockerfile

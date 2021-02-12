@@ -58,6 +58,7 @@ class PeopleTest(TestCase):
         self.picture_folder = os.path.join(base_settings.MEDIA_ROOT, 'people', 'profile_pictures')
         self.test_data_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data')
         self.test_pic1_path = os.path.join(self.test_data_path, 'test_pic1.jpg')
+        self.test_pic2_path = os.path.join(self.test_data_path, 'test_pic2.jpg')
 
     def get_num_of_uploads(self):
         return len(os.listdir(self.picture_folder))
@@ -186,7 +187,7 @@ class NewPersonViewTest(PeopleTest):
         try:
             uploads_before = self.get_num_of_uploads()
             post_data = self.new_post_data
-            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+            with open(self.test_pic1_path, 'rb') as file:
                 file = file.read()
                 test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image
@@ -202,7 +203,7 @@ class NewPersonViewTest(PeopleTest):
     def test_picture_compression(self):
         try:
             post_data = self.new_post_data
-            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+            with open(self.test_pic1_path, 'rb') as file:
                 file = file.read()
                 test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image
@@ -271,7 +272,7 @@ class EditPersonTest(PeopleTest):
         try:
             uploads_before = self.get_num_of_uploads()
             post_data = self.unchanged_post
-            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+            with open(self.test_pic1_path, 'rb') as file:
                 file = file.read()
                 test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image
@@ -371,7 +372,7 @@ class EditPersonTest(PeopleTest):
             self.add_test_picture_file()
             uploads_before = self.get_num_of_uploads()
             post_data = self.unchanged_post
-            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+            with open(self.test_pic1_path, 'rb') as file:
                 file = file.read()
                 test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image

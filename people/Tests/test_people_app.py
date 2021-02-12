@@ -9,6 +9,7 @@ from django.urls import reverse
 from CLAHub import base_settings
 from people import models
 
+
 class PeopleTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -315,7 +316,7 @@ class EditPersonTest(PeopleTest):
             self.assertTrue(os.path.exists(thumb_path),
                             'Picture not located on file system')
             # test old pic still there
-            pic_path = os.path.join(base_settings.MEDIA_ROOT, 'people' , 'profile_pictures', 'test_pic1.jpg')
+            pic_path = os.path.join(base_settings.MEDIA_ROOT, 'people', 'profile_pictures', 'test_pic1.jpg')
             self.assertTrue(os.path.exists(pic_path),
                             'Picture not located on file system')
         finally:

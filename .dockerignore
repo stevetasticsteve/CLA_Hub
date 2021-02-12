@@ -17,5 +17,6 @@ CLAHub/functional_tests/
 CE/Tests**
 people/Tests**
 .dockerignore
-CLAHub_database.db
 Dockerfile
+data/uploads/CultureEventFiles/
+data/CLAHub_database.db

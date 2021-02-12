@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'CLAHub.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'CLAHub_database.db'),
+        'NAME': os.path.join(BASE_DIR, 'data', 'CLAHub_database.db'),
     }
 }
 
@@ -106,8 +106,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'CLAHub/assets'),)
 STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
 LOGIN_REDIRECT_URL = '/CE'
 LOGOUT_REDIRECT_URL = '/CE'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
-MEDIA_URL = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data', 'uploads')
+MEDIA_URL = 'uploads/'
 LOGIN_EVERYWHERE = False
 TAGGIT_TAGS_FROM_STRING = 'CE.OCM_categories.check_tags_for_OCM'
 

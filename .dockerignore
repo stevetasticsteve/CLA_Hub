@@ -11,11 +11,7 @@ deployment_tools/
 Logs/CLA*
 Logs/debug*
 Logs/request*
-CLAHub/assets/test_data/
-CLAHub/fixtures/
 CLAHub/functional_tests/
-CE/Tests**
-people/Tests**
 .dockerignore
 Dockerfile
 data/uploads/CultureEventFiles/

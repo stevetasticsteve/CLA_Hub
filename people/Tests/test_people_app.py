@@ -9,7 +9,6 @@ from django.urls import reverse
 from CLAHub import base_settings
 from people import models
 
-
 class PeopleTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -54,10 +53,10 @@ class PeopleTest(TestCase):
         self.test_pk1 = '1'
         self.new_pk = str(int(self.test_pk1) + 1)
         self.num_profiles = 1
-        self.thumbnail_folder = os.path.join(os.getcwd(), 'uploads', 'people', 'thumbnails')
-        self.picture_folder = os.path.join(os.getcwd(), 'uploads', 'people', 'profile_pictures')
-        self.test_pic1 = 'test_pic1.jpg'
-        self.test_pic1_path = 'CLAHub/assets/test_data/test_pic1.jpg'
+        self.thumbnail_folder = os.path.join(base_settings.MEDIA_ROOT, 'people', 'thumbnails')
+        self.picture_folder = os.path.join(base_settings.MEDIA_ROOT, 'people', 'profile_pictures')
+        self.test_data_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data')
+        self.test_pic1_path = os.path.join(self.test_data_path, 'test_pic1.jpg')
 
     def get_num_of_uploads(self):
         return len(os.listdir(self.picture_folder))
@@ -82,15 +81,15 @@ class PeopleTest(TestCase):
         person = models.Person.objects.get(pk=self.test_pk1)
         with open(self.test_pic1_path, 'rb') as file:
             file = file.read()
-            person.picture = SimpleUploadedFile(name=self.test_pic1, content=file, content_type='image')
+            person.picture = SimpleUploadedFile(name='test_pic1.jpg', content=file, content_type='image')
             person.save()
         return num_uploads
 
     def run_test_uploaded_file(self, pk):
-        pic_db_path = os.path.join('people', 'profile_pictures', self.test_pic1)
-        pic_path = os.path.join(self.picture_folder, self.test_pic1)
-        thumb_db_path = os.path.join('people', 'thumbnails', self.test_pic1)
-        thumb_path = os.path.join(self.thumbnail_folder, self.test_pic1)
+        pic_db_path = os.path.join('people', 'profile_pictures', 'test_pic1.jpg')
+        pic_path = os.path.join(self.picture_folder, 'test_pic1.jpg')
+        thumb_db_path = os.path.join('people', 'thumbnails', 'test_pic1.jpg')
+        thumb_path = os.path.join(self.thumbnail_folder, 'test_pic1.jpg')
 
         # check pic in .db
         person = models.Person.objects.get(pk=pk)
@@ -209,8 +208,8 @@ class NewPersonViewTest(PeopleTest):
                 self.client.post(reverse('people:new'), post_data)
 
             test_file_size = os.path.getsize(self.test_pic1_path)
-            profile_pic_size = os.path.getsize(os.path.join(self.picture_folder, self.test_pic1))
-            thumbnail_size = os.path.getsize(os.path.join(self.thumbnail_folder, self.test_pic1))
+            profile_pic_size = os.path.getsize(os.path.join(self.picture_folder, 'test_pic1.jpg'))
+            thumbnail_size = os.path.getsize(os.path.join(self.thumbnail_folder, 'test_pic1.jpg'))
             self.assertLess(thumbnail_size, profile_pic_size)
             self.assertLess(profile_pic_size, test_file_size)
 
@@ -309,14 +308,14 @@ class EditPersonTest(PeopleTest):
             self.assertEqual(str(profile.thumbnail), 'people/thumbnails/test_pic2.jpg')
             # test pic in file system
             self.assertEqual(self.get_num_of_uploads(), uploads_before + 1)
-            pic_path = 'uploads/people/profile_pictures/test_pic2.jpg'
-            thumb_path = 'uploads/people/thumbnails/test_pic2.jpg'
+            pic_path = os.path.join(base_settings.MEDIA_ROOT, 'people', 'profile_pictures', 'test_pic2.jpg')
+            thumb_path = os.path.join(base_settings.MEDIA_ROOT, 'people', 'thumbnails', 'test_pic2.jpg')
             self.assertTrue(os.path.exists(pic_path),
                             'Picture not located on file system')
             self.assertTrue(os.path.exists(thumb_path),
                             'Picture not located on file system')
             # test old pic still there
-            pic_path = 'uploads/people/profile_pictures/test_pic1.jpg'
+            pic_path = os.path.join(base_settings.MEDIA_ROOT, 'people' , 'profile_pictures', 'test_pic1.jpg')
             self.assertTrue(os.path.exists(pic_path),
                             'Picture not located on file system')
         finally:
@@ -358,7 +357,7 @@ class EditPersonTest(PeopleTest):
             self.assertEqual(str(profile.thumbnail), '', 'Thumbnail not deleted when image cleared')
             # test pic still in file system
             self.assertEqual(self.get_num_of_uploads(), uploads_before)
-            pic_path = 'uploads/people/profile_pictures/test_pic1.jpg'
+            pic_path = os.path.join(base_settings.MEDIA_ROOT, 'people', 'profile_pictures', 'test_pic1.jpg')
             self.assertTrue(os.path.exists(pic_path),
                             'Picture not located on file system')
 

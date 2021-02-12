@@ -156,7 +156,7 @@ class TestEditPage(CETestBaseClass):
     def test_user_can_add_audio(self):
         num_texts = len(models.Text.objects.all())
         try:
-            with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
+            with open(self.test_audio1_path, 'rb') as file:
                 file = file.read()
                 test_audio = SimpleUploadedFile('test_data/test_audio1.mp3',
                                                 file, content_type='audio')
@@ -173,12 +173,12 @@ class TestEditPage(CETestBaseClass):
             self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
             self.assertEqual(len(models.Text.objects.all()), num_texts)
             self.assertEqual(models.Text.objects.get(pk=self.test_text1_pk).audio,
-                             'CultureEventFiles/%s/audio/test_audio1.mp3' % self.test_ce1_pk)
+                             'CultureEventFiles/{id}/audio/test_audio1.mp3'.format(id=self.test_ce1_pk))
 
             # test mp3 in uploads
-            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk),
-                            'upload folder doesn\'t exist')
-            folder_contents = os.listdir('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
+            new_audio_folder = os.path.join(self.upload_folder, self.test_ce1_pk, 'audio')
+            self.assertTrue(os.path.exists(new_audio_folder), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir(new_audio_folder)
             self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
 
             # test displayed on view page
@@ -194,18 +194,17 @@ class TestEditPage(CETestBaseClass):
         num_texts = len(models.Text.objects.all())
         try:
             # add audio file to uploads
-            test_folder = os.path.join(os.getcwd(),
-                                       'uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
+            test_folder = os.path.join(self.upload_folder, self.test_ce1_pk, 'audio')
             try:
                 os.makedirs(test_folder)
             except FileExistsError:  # don't need to create it
                 pass
-            shutil.copy('CLAHub/assets/test_data/test_audio1.mp3', test_folder)
+            shutil.copy(self.test_audio1_path, test_folder)
             # add audio to test text
             text = models.Text.objects.get(pk=self.test_text1_pk)
-            text.audio = 'CultureEventFiles/%s/audio/test_audio1.mp3' % self.test_ce1_pk
+            text.audio = 'CultureEventFiles/{id}/audio/test_audio1.mp3'.format(id=self.test_ce1_pk)
             text.save()
-            with open('CLAHub/assets/test_data/test_audio2.mp3', 'rb') as file:
+            with open(self.test_audio2_path, 'rb') as file:
                 file = file.read()
                 test_audio = SimpleUploadedFile('test_data/test_audio2.mp3',
                                                 file, content_type='audio')
@@ -222,12 +221,12 @@ class TestEditPage(CETestBaseClass):
             self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
             self.assertEqual(len(models.Text.objects.all()), num_texts)
             self.assertEqual(models.Text.objects.get(pk=self.test_text1_pk).audio,
-                             'CultureEventFiles/%s/audio/test_audio2.mp3' % self.test_ce1_pk)
+                             'CultureEventFiles/{id}/audio/test_audio2.mp3'.format(id=self.test_ce1_pk))
 
             # test mp3 in uploads
-            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk),
-                            'upload folder doesn\'t exist')
-            folder_contents = os.listdir('uploads/CultureEventFiles/%s/audio' % self.test_ce1_pk)
+            new_audio_folder = os.path.join(self.upload_folder, self.test_ce1_pk, 'audio')
+            self.assertTrue(os.path.exists(new_audio_folder), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir(new_audio_folder)
             self.assertIn('test_audio2.mp3', folder_contents, 'Uploaded audio not in upload folder')
 
             # test displayed on view page
@@ -303,7 +302,7 @@ class TestEditPage(CETestBaseClass):
             self.assertRedirects(response, reverse('CE:view', args=self.test_ce1_pk))
             # test pic in .db
             picture = models.Picture.objects.filter(ce=self.test_ce1_pk)
-            # test no extra files created
+            # test no extra files created in .db
             self.assertEqual(len(picture), 1, 'Duplicated uploaded files are being created')
 
         finally:

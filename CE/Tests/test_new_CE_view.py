@@ -1,9 +1,10 @@
-from django.urls import reverse
+import os
+
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.urls import reverse
+
 from CE import models
 from CE.Tests.test_base_class import CETestBaseClass
-
-import os
 
 
 class NewCEPageTest(CETestBaseClass):
@@ -79,7 +80,7 @@ class NewCEPageTest(CETestBaseClass):
     def test_new_CE_page_saves_single_picture(self):
         try:
             post_data = self.new_post
-            with open('CLAHub/assets/test_data/test_pic1.jpg', 'rb') as file:
+            with open(self.test_pic1_path, 'rb') as file:
                 file = file.read()
                 test_image = SimpleUploadedFile('test_data/test_pic1.jpg', file, content_type='image')
                 post_data['picture'] = test_image
@@ -90,17 +91,16 @@ class NewCEPageTest(CETestBaseClass):
             new_ce = models.CultureEvent.objects.get(pk=self.new_ce_pk)
             self.assertEqual(self.new_post['title'], new_ce.title, 'New CE title not correct')
             new_pic = models.Picture.objects.get(ce=new_ce)
-            self.assertEqual('CultureEventFiles/%s/images/test_pic1.jpg' % self.new_ce_pk,
+            self.assertEqual('CultureEventFiles/{id}/images/test_pic1.jpg'.format(id=self.new_ce_pk),
                              str(new_pic.picture), 'New CE not saved to db')
 
             # test file uploaded to folder
-            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/images' % self.new_ce_pk),
-                            'upload folder doesn\'t exist')
-            folder_contents = os.listdir('uploads/CultureEventFiles/%s/images' % self.new_ce_pk)
+            new_pic_folder = os.path.join(self.upload_folder, self.new_ce_pk, 'images')
+            self.assertTrue(os.path.exists(new_pic_folder), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir(new_pic_folder)
             self.assertIn('test_pic1.jpg', folder_contents, 'Uploaded picture not in upload folder')
             # check smaller than 1Mb
-            self.assertTrue(os.path.getsize(
-                'uploads/CultureEventFiles/%s/images/test_pic1.jpg' % self.new_ce_pk) < 1000000, 'picture too big')
+            self.assertTrue(os.path.getsize(os.path.join(new_pic_folder, 'test_pic1.jpg')) < 1000000, 'picture too big')
             # check Foreign key is correct
             self.assertEqual(new_ce, new_pic.ce, 'Foreign key not correct')
 
@@ -108,7 +108,8 @@ class NewCEPageTest(CETestBaseClass):
             response = self.client.get(reverse('CE:view', args=self.new_ce_pk))
             self.assertContains(response, 'Test CE')
             self.assertContains(response, '<div id="CE_pictures"')
-            self.assertContains(response, '<img src="/uploads/CultureEventFiles/%s/images/test_pic1.jpg' % self.new_ce_pk)
+            self.assertContains(response,
+                                '<img src="/uploads/CultureEventFiles/%s/images/test_pic1.jpg' % self.new_ce_pk)
         finally:
             self.cleanup_test_files(int(self.new_ce_pk))
 
@@ -119,7 +120,7 @@ class NewCEPageTest(CETestBaseClass):
             post_data['text-0-phonetic_text'] = 'fʌni foᵘnɛtɪk sɪmbɔlz ŋ tʃ ʒ'
             post_data['text-0-orthographic_text'] = 'Orthograpic'
             post_data['text-TOTAL_FORMS'] = 1
-            with open('CLAHub/assets/test_data/test_audio1.mp3', 'rb') as file:
+            with open(self.test_audio1_path, 'rb') as file:
                 file = file.read()
                 test_audio = SimpleUploadedFile('test_data/test_audio1.mp3', file, content_type='audio')
                 post_data['text-0-audio'] = test_audio
@@ -132,12 +133,12 @@ class NewCEPageTest(CETestBaseClass):
             self.assertEqual(self.new_post['title'], new_ce.title, 'New CE data incorrect')
             # Test text model updated
             new_text = models.Text.objects.get(ce=new_ce)
-            self.assertEqual('CultureEventFiles/%s/audio/test_audio1.mp3' % self.new_ce_pk,
+            self.assertEqual('CultureEventFiles/{id}/audio/test_audio1.mp3'.format(id=self.new_ce_pk),
                              str(new_text.audio), 'New text not saved to db')
             # Test uploaded files in directory
-            self.assertTrue(os.path.exists('uploads/CultureEventFiles/%s/audio' % self.new_ce_pk) ,
-                            'upload folder doesn\'t exist')
-            folder_contents = os.listdir('uploads/CultureEventFiles/5/audio')
+            new_audio_folder = os.path.join(self.upload_folder, self.new_ce_pk, 'audio')
+            self.assertTrue(os.path.exists(new_audio_folder), 'upload folder doesn\'t exist')
+            folder_contents = os.listdir(new_audio_folder)
             self.assertIn('test_audio1.mp3', folder_contents, 'Uploaded audio not in upload folder')
             # check Foreign key is correct
             self.assertEqual(new_ce, new_text.ce, 'Foreign key not correct')
@@ -308,7 +309,7 @@ class NewCEPageTest(CETestBaseClass):
         self.assertIn('1-1-geography-weather', str(ce.tags.all().values()))
 
         # test tag displayed on tag page
-        response = self.client.get(reverse('CE:view_tag', kwargs={'slug':'taggie'}))
+        response = self.client.get(reverse('CE:view_tag', kwargs={'slug': 'taggie'}))
         self.assertEqual(response.status_code, 200, 'Tag view page not showing')
 
     # Visits

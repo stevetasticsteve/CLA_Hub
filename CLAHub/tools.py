@@ -1,13 +1,15 @@
-from people import models
-from CLAHub.base_settings import BASE_DIR
-from PIL import Image, ImageOps
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-
 import csv
+import logging
 import os
 import sys
-import logging
+from io import BytesIO
+
+from PIL import Image, ImageOps
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from CLAHub import base_settings
+from CLAHub.base_settings import BASE_DIR
+from people import models
 
 logger = logging.getLogger('root')
 
@@ -106,16 +108,15 @@ def compress_picture(picture, compressed_size):
         logger.error('PIL IndexError - {image} not rotated. May need to check it manually'.format(image=str(picture)))
         im = im.rotate(180, expand=True)
 
-
     output = BytesIO()
     im.thumbnail(compressed_size)
     im.save(output, format='JPEG', quality=90)
     output.seek(0)
     picture = InMemoryUploadedFile(output, 'PictureField',
-                                        "%s.jpg" % picture.name.split('.')[0],
-                                        'image/jpeg',
-                                        sys.getsizeof(output), None)
-    size = sys.getsizeof(output)/1000000
+                                   "%s.jpg" % picture.name.split('.')[0],
+                                   'image/jpeg',
+                                   sys.getsizeof(output), None)
+    size = sys.getsizeof(output) / 1000000
     logger.info('Picture compressed to %s Mb\n' % size)
     return picture
 
@@ -127,8 +128,8 @@ def check_already_imported(picture):
     # to upload it. An uncompressed image would go through. If it went into a different upload folder
     # it wouldn't clash with the name previously.
 
-    imported_files = list_all_files(os.path.join('uploads', 'CultureEventFiles')) \
-                     + list_all_files(os.path.join('uploads', 'people', 'profile_pictures'))
+    imported_files = list_all_files(os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles')) \
+                     + list_all_files(os.path.join(base_settings.MEDIA_ROOT, 'people', 'profile_pictures'))
 
     if os.path.basename(str(picture)) in imported_files:
         logger.info('This file already exists: ' + os.path.basename(str(picture)))

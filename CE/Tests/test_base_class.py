@@ -1,8 +1,9 @@
 import os
-from django.test import TestCase
-from django.contrib.auth.models import User
-from CE import models
 
+from django.contrib.auth.models import User
+from django.test import TestCase
+
+from CE import models
 from CLAHub import base_settings
 
 
@@ -19,11 +20,11 @@ class CETestBaseClass(TestCase):
 
     def setUp(self):
         # the prexisiting model objects variable is used to exclude example data
-        self. prexisiting_model_objects = {
-                'CE': len(models.CultureEvent.objects.all()),
-                'Text': len(models.Text.objects.all()),
-                'Visit': len(models.Visit.objects.all()),
-                'Question': len(models.Question.objects.all()),
+        self.prexisiting_model_objects = {
+            'CE': len(models.CultureEvent.objects.all()),
+            'Text': len(models.Text.objects.all()),
+            'Visit': len(models.Visit.objects.all()),
+            'Question': len(models.Question.objects.all()),
         }
         self.test_data = {
             'username': 'Tester',
@@ -39,8 +40,6 @@ class CETestBaseClass(TestCase):
             'tags': 'taggie',
             'question': 'Does this test work?',
             'answer': 'Yes, it does!'}
-
-
 
         self.client.login(username='Tester', password='secure_password')
         ce = models.CultureEvent(title=self.test_data['title'],
@@ -61,8 +60,8 @@ class CETestBaseClass(TestCase):
                            orthographic_text=self.test_data['orthographic_text'])
         text.save()
         text2 = models.Text(ce=ce,
-                           phonetic_text='phonetic_text2',
-                           orthographic_text=self.test_data['orthographic_text'])
+                            phonetic_text='phonetic_text2',
+                            orthographic_text=self.test_data['orthographic_text'])
         text2.save()
         q = models.Question(ce=ce,
                             question=self.test_data['question'],
@@ -76,10 +75,14 @@ class CETestBaseClass(TestCase):
         self.test_visit_pk = str(self.prexisiting_model_objects['Visit'] + 1)
         self.test_question_pk = str(self.prexisiting_model_objects['Question'] + 1)
         self.new_ce_pk = str(self.prexisiting_model_objects['CE'] + 3)
-        self.test_ce1_upload_path = os.path.join(base_settings.BASE_DIR, 'uploads', 'CultureEventFiles', str(self.test_ce1_pk))
-        self.test_pic1_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data', 'test_pic1.jpg')
+        self.test_ce1_upload_path = os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles', str(self.test_ce1_pk))
+        self.test_files_path = os.path.join(base_settings.BASE_DIR, 'CLAHub', 'assets', 'test_data')
+        self.test_pic1_path = os.path.join(self.test_files_path, 'test_pic1.jpg')
+        self.test_audio1_path = os.path.join(self.test_files_path, 'test_audio1.mp3')
+        self.test_audio2_path = os.path.join(self.test_files_path, 'test_audio2.mp3')
+        self.upload_folder = os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles')
 
-        # formeset IDs are and CEs are picked up through the view normally, but need to be supplied for tests
+        # formset IDs are and CEs are picked up through the view normally, but need to be supplied for tests
         # text-0-ce refers is the CE.pk used as foreign key
         # text-0-id refers to the text.pk
         self.standard_post = {'text-TOTAL_FORMS': 2,
@@ -125,32 +128,28 @@ class CETestBaseClass(TestCase):
                          'visit-INITIAL_FORMS': 0
                          }
 
-
-
-    @ staticmethod
+    @staticmethod
     def get_number_of_uploaded_images(ce):
-        ce_upload_path = os.path.join(base_settings.BASE_DIR, 'uploads', 'CultureEventFiles', str(ce), 'images')
+        ce_upload_path = os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles', str(ce), 'images')
         try:
             return len(os.listdir(ce_upload_path))
         except FileNotFoundError:
             return 0
 
-
-
     @staticmethod
     def cleanup_test_files(ce):
         ce = str(ce)
-        test_folder_audio = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/' + ce + '/audio/')
-        test_folder_images = os.path.join(os.getcwd(), 'uploads/CultureEventFiles/' + ce + '/images/')
+        test_folder_audio = os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles', ce, 'audio')
+        test_folder_images = os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles', ce, 'images')
         folders = [test_folder_audio, test_folder_images]
         test_data = ['test_audio1.mp3', 'test_audio2.mp3', 'test_pic1.jpg', 'test_pic2.jpg']
         for data in test_data:
             try:
-                os.remove(test_folder_audio + data)
+                os.remove(os.path.join(test_folder_audio, data))
             except FileNotFoundError:
                 pass
             try:
-                os.remove(test_folder_images + data)
+                os.remove(os.path.join(test_folder_images, data))
             except FileNotFoundError:
                 pass
         for folder in folders:

@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn server for running CLAHub
+After=network.target
+
+[Service]
+User={{ user }}
+Restart=on-failure
+WorkingDirectory={{ installation_dir }}
+
+ExecStart={{ installation_dir }}/venv/bin/gunicorn CLAHub.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

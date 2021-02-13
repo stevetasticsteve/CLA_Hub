@@ -4,19 +4,18 @@
       installation_dir: "/var/CLAhub"
       user: "steve"
 3   tasks:
-
-  - name: Install packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - git
-        - python3-pip
-        - libopenjp2-7
-        - libtiff5
-        - libxslt-dev
-        - zlib1g-dev
-        - libjpeg-dev
+    - name: Install packages
+        apt:
+          name: "{{ item }}"
+          state: present
+        loop:
+          - git
+          - python3-pip
+          - libopenjp2-7
+          - libtiff5
+          - libxslt-dev
+          - zlib1g-dev
+          - libjpeg-dev
 
     - name: Download CLAHub code
         git:
@@ -64,3 +63,5 @@
           src: "{{installation_dir}}/deployment_tools/CLAHub_update.j2"
           dest: /usr/bin/update_CLAHub
           mode: "0755"
+
+...

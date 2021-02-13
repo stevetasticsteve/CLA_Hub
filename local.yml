@@ -39,6 +39,7 @@
       path: "{{ installation_dir }}"
       mode: "0777"
       state: directory
+      owner: "{{ user }}"
       recurse: yes
 
   - name: Add CLAHub init
@@ -71,7 +72,5 @@
       src: "{{ installation_dir }}/deployment_tools/CLAHub_update.j2"
       dest: /usr/bin/update_CLAHub
       mode: "0755"
-
-
 
 ...

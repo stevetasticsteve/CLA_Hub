@@ -1,67 +1,67 @@
----
-2 - hosts: all
-    vars:
-      installation_dir: "/var/CLAhub"
-      user: "steve"
-3   tasks:
-    - name: Install packages
-        apt:
-          name: "{{ item }}"
-          state: present
-        loop:
-          - git
-          - python3-pip
-          - libopenjp2-7
-          - libtiff5
-          - libxslt-dev
-          - zlib1g-dev
-          - libjpeg-dev
+- hosts: localhost
+  vars:
+    installation_dir: "/var/CLAhub"
+    user: "steve"
 
-    - name: Download CLAHub code
-        git:
-          repo: https://github.com/stevetasticsteve/CLA_Hub
-          dest: /var/CLAHub
-          version: master
+  tasks:
+  - name: Install packages
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - git
+      - python3-pip
+      - libopenjp2-7
+      - libtiff5
+      - libxslt-dev
+      - zlib1g-dev
+      - libjpeg-dev
 
-    - name: Install virtualenv via pip
-        pip:
-          name: virtualenv
-          executable: pip3
+  - name: Download CLAHub code
+    git:
+      repo: https://github.com/stevetasticsteve/CLA_Hub
+      dest: /var/CLAHub
+      version: master
 
-    - name: Create CLAHub virtual environment
-        pip:
-          requirements: "{{installation_dir}}requirements.txt"
-          virtualenv: "{{installation_dir}}/venv"
+  - name: Install virtualenv via pip
+    pip:
+      name: virtualenv
+      executable: pip3
 
-    - name: Add CLAHub init
-        template:
-          src: "{{installation_dir}}/deployment_tools/CLAHub_init.j2"
-          dest: "{{installation_dir}}/CLAHub_init.py"
-          mode: "0755"
+  - name: Create CLAHub virtual environment
+    pip:
+      requirements: "{{ installation_dir }}requirements.txt"
+      virtualenv: "{{ installation_dir }}/venv"
 
-    - name: CLAHub init
-        command:
-          cmd: python3 "{{installation_dir}}/CLAHub_init.py"
-          creates: "{{installation_dir}}/static"
+  - name: Add CLAHub init
+    template:
+      src: "{{ installation_dir }}/deployment_tools/CLAHub_init.j2"
+      dest: "{{ installation_dir }}/CLAHub_init.py"
+      mode: "0755"
 
-    - name: Create CLAHub service
-        template:
-          src: "{{installation_dir}}/deployment_tools/CLAHub_service.j2"
-          dest: /etc/systemd/system/CLAHub.service
-          owner: root
-          mode: "0644"
+  - name: CLAHub init
+    command:
+      cmd: python3 "{{ installation_dir }}/CLAHub_init.py"
+      creates: "{{ installation_dir }}/static"
 
-    - name: Enable CLAHub service
-      systemd:
-        daemon_reload: yes
-        name: CLAHub
-        state: started
-        enabled: yes
+  - name: Create CLAHub service
+    template:
+      src: "{{ installation_dir }}/deployment_tools/CLAHub_service.j2"
+      dest: /etc/systemd/system/CLAHub.service
+      owner: root
+      mode: "0644"
 
-    - name: Add CLAHub updater
-        template:
-          src: "{{installation_dir}}/deployment_tools/CLAHub_update.j2"
-          dest: /usr/bin/update_CLAHub
-          mode: "0755"
+  - name: Enable CLAHub service
+    systemd:
+      daemon_reload: yes
+      name: CLAHub
+      state: started
+      enabled: yes
+
+  - name: Add CLAHub updater
+    template:
+      src: "{{ installation_dir }}/deployment_tools/CLAHub_update.j2"
+      dest: /usr/bin/update_CLAHub
+      mode: "0755"
 
 ...

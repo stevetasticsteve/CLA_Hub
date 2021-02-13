@@ -34,6 +34,13 @@
       requirements: "{{ installation_dir }}/requirements.txt"
       virtualenv: "{{ installation_dir }}/venv"
 
+  - name: Permissions for CLAHub folder
+    file:
+      path: "{{ installation_dir }}"
+      mode: "0777"
+      state: directory
+      recurse: yes
+
   - name: Add CLAHub init
     template:
       src: "{{ installation_dir }}/deployment_tools/CLAHub_init.j2"
@@ -64,5 +71,7 @@
       src: "{{ installation_dir }}/deployment_tools/CLAHub_update.j2"
       dest: /usr/bin/update_CLAHub
       mode: "0755"
+
+
 
 ...

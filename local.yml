@@ -31,7 +31,7 @@
 
   - name: Create CLAHub virtual environment
     pip:
-      requirements: "{{ installation_dir }}requirements.txt"
+      requirements: "{{ installation_dir }}/requirements.txt"
       virtualenv: "{{ installation_dir }}/venv"
 
   - name: Add CLAHub init

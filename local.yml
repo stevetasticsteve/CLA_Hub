@@ -1,7 +1,7 @@
 - hosts: localhost
   become: true
   vars:
-    installation_dir: "/var/CLAhub"
+    installation_dir: "/var/CLAHub"
     user: "steve"
 
   tasks:
@@ -21,7 +21,7 @@
   - name: Download CLAHub code
     git:
       repo: https://github.com/stevetasticsteve/CLA_Hub
-      dest: /var/CLAHub
+      dest: "{{ installation_dir }}"
       version: master
 
   - name: Install virtualenv via pip

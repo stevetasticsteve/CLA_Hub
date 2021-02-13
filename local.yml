@@ -1,4 +1,5 @@
 - hosts: localhost
+  become: true
   vars:
     installation_dir: "/var/CLAhub"
     user: "steve"

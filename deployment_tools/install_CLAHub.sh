@@ -10,7 +10,7 @@ if [[ $(uname -m) == x86_64 ]]; then
 elif [[ $(uname -m) == arm32v7 ]]; then
   sudo docker run -d --restart unless-stopped --name CLAHub -p 8000:8000 -v clahub:/code/data stevetasticsteve/clahub:arm
 else
-  echo "Container not available for this arhcitecture" && exit 1
+  echo "Container not available for this architecture" && exit 1
 fi
 sudo docker container exec clahub python manage.py migrate
 export DJANGO_SUPERUSER_PASSWORD="CLAHub"

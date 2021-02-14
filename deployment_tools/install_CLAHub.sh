@@ -8,9 +8,9 @@ if ! sudo sh get-docker.sh; then
   echo "Docker installation failed, try to do it manually." && exit 1
 fi
 if [[ $(uname -m) == x86_64 ]]; then
-  sudo docker run -d --restart unless-stopped --name CLAHub -p 8000:8000 -v clahub:/code/data stevetasticsteve/clahub:latest
+  sudo docker run -d --restart unless-stopped --name clahub -p 8000:8000 -v clahub:/code/data stevetasticsteve/clahub:latest
 elif [[ $(uname -m) == arm32v7 ]]; then
-  sudo docker run -d --restart unless-stopped --name CLAHub -p 8000:8000 -v clahub:/code/data stevetasticsteve/clahub:arm
+  sudo docker run -d --restart unless-stopped --name clahub -p 8000:8000 -v clahub:/code/data stevetasticsteve/clahub:arm
 else
   echo "Container not available for this architecture" && exit 1
 fi

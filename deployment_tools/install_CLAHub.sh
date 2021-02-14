@@ -4,7 +4,9 @@
 # It sets up a Database with a single user: admin password: CLAHub
 
 curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+if ! sudo sh get-docker.sh; then
+  echo "Docker installation failed, try to do it manually." && exit 1
+fi
 if [[ $(uname -m) == x86_64 ]]; then
   sudo docker run -d --restart unless-stopped --name CLAHub -p 8000:8000 -v clahub:/code/data stevetasticsteve/clahub:latest
 elif [[ $(uname -m) == arm32v7 ]]; then

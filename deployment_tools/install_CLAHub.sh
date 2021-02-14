@@ -16,9 +16,7 @@ else
 fi
 sudo docker container exec clahub python manage.py migrate
 export DJANGO_SUPERUSER_PASSWORD="CLAHub"
-export DJANGO_SUPERUSER_EMAIL="email@email.com"
-export DJANGO_SUPERUSER_USERNAME="admin"
-sudo docker container exec clahub python manage.py createsuperuser --noinput
+sudo docker container exec clahub python manage.py createsuperuser --noinput --username admin --email email@email.com
 echo
 echo "---"
 echo "CLAHub was installed. Access it in your browser: <localhost:8000> (on the server itself)."

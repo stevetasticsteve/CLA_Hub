@@ -9,9 +9,25 @@ Check out http://stevetasticsteve.pythonanywhere.com to see a showcase version.
 
 ![Screenshot](https://raw.githubusercontent.com/stevetasticsteve/CLA_Hub/master/CLAHub/assets/example_data/CLAHub_screenshot.png)
 
-## Getting started
-To set up a local version of CLAHub on your machine to test it out, or to work on the code follow these steps.
-See the deployment section for installing on a server where CLAHub can be accessed by multiple machines on a LAN. 
+## Getting started, Docker install
+CLAHub is available as a docker container. An installation script is provided if you want a one command install.
+### Linux
+```curl https://raw.githubusercontent.com/stevetasticsteve/CLA_Hub/master/deployment_tools/install_CLAHub.sh | bash```
+ 
+**warning** Running the above script is bad practice - it downloads code from the internet and runs it on
+your system. Only use it if you trust me :) Or check [the script](https://raw.githubusercontent.com/stevetasticsteve/CLA_Hub/master/deployment_tools/install_CLAHub.sh)
+to make sure there's no funny business behind the scenes.
+
+- Installs Docker using docker convenience script
+- Downloads CLAHub Docker image (180Mb for x86, 813Mb for arm)
+- Runs CLAHub as a container listening on port 8000 (will survive system restarts)
+- Database persists in a Docker volume named clahub
+
+
+### Windows/MacOS
+Use [Docker desktop](https://www.docker.com/products/docker-desktop)
+
+## Installing as source code
 ### Prerequisites
 - [Python3](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)
@@ -90,20 +106,7 @@ See the deployment section for installing on a server where CLAHub can be access
     
 
 ## Running the tests
-...
-  
- ## Deployment
- Automated deployment tools and proper documentation haven't been developed yet, manual installation is necessary.
-Currently there's only [this list](https://github.com/stevetasticsteve/CLA_Hub/blob/master/deployment_tools/Deployment%20steps_Linux.txt)
-of steps I took in deploying to our Raspberry pi.
-If anyone is interested in installing CLAHub themselves and that list makes no sense to them feel free to contact me and 
-I'll make easier installation options a higher priority.
-
-### Deployment requirements
-* A server running Linux
-  * Apache or Nginx
-  * Python 3
-  * Python modules [(requirements.txt)](https://github.com/stevetasticsteve/CLA_Hub/blob/master/requirements.txt)
+python manage.py test CE people
   
  ## Built with
  [Django](https://www.djangoproject.com/) - the web framework used

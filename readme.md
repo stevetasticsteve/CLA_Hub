@@ -6,6 +6,7 @@ The software is intended to be run on a Raspberry pi 3 on an internal team netwo
 browser.
 
 Check out http://stevetasticsteve.pythonanywhere.com to see a showcase version.
+Login with admin, password: clahub
 
 ![Screenshot](https://raw.githubusercontent.com/stevetasticsteve/CLA_Hub/master/CLAHub/assets/example_data/CLAHub_screenshot.png)
 

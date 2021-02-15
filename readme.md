@@ -23,6 +23,8 @@ to make sure there's no funny business behind the scenes.
 - Runs CLAHub as a container listening on port 8000 (will survive system restarts)
 - Database persists in a Docker volume named clahub
 
+Go to server_ip_address:8000 to access CLAHub. Login as admin with password clahub, then add
+your users in the admin and get to work.
 
 ### Windows/MacOS
 Use [Docker desktop](https://www.docker.com/products/docker-desktop)

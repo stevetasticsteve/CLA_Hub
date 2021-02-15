@@ -10,7 +10,7 @@ fi
 if [[ $(uname -m) == x86_64 ]]; then
   sudo docker run -d --restart unless-stopped --name clahub -p 8000:8000 \
   -v clahub:/code/data -e DJANGO_SUPERUSER_PASSWORD=clahub stevetasticsteve/clahub:latest
-elif [[ $(uname -m) == arm32v7 ]]; then
+elif [[ $(uname -m) == armv7l ]]; then
   sudo docker run -d --restart unless-stopped --name clahub -p 8000:8000 \
   -v clahub:/code/data -e DJANGO_SUPERUSER_PASSWORD=clahub stevetasticsteve/clahub:arm
 else

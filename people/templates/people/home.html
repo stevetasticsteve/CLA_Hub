@@ -5,9 +5,9 @@
     <div class="col-sm-2">
         <h2>Sort by village</h2>
         <div class="list-group">
-            {% for choice_number, village in villages.items %}
-            <a href="{% url 'people:village' choice_number %}"
-            class="list-group-item list-group-item-action">{{village}}</a>
+            {% for village in villages %}
+            <a href="{% url 'people:village' village.village_name %}"
+            class="list-group-item list-group-item-action">{{village.village_name}}</a>
             {% endfor %}
         </div>
     </div>

@@ -15,15 +15,15 @@ class Person(models.Model):
         super(Person, self).__init__(*args, **kwargs)
         self.original_picture = self.picture
 
-    villages = [
-        ('1', 'Elilim'),
-        ('2', 'Evesil'),
-        ('3', 'Kobumbua'),
-        ('4', 'Kokoma'),
-        ('5', 'Magilong'),
-        ('6', 'Pusilai'),
-        ('7', 'Torokum')
-    ]
+    # villages = [
+    #     ('1', 'Elilim'),
+    #     ('2', 'Evesil'),
+    #     ('3', 'Kobumbua'),
+    #     ('4', 'Kokoma'),
+    #     ('5', 'Magilong'),
+    #     ('6', 'Pusilai'),
+    #     ('7', 'Torokum')
+    # ]
     education_level = [
         ('1', 'None'),
         ('2', 'Grade 1'),
@@ -35,7 +35,10 @@ class Person(models.Model):
     thumbnail_folder = 'people/thumbnails'
 
     name = models.CharField(max_length=60, blank=False)
-    village = models.CharField(max_length=60, blank=False, choices=villages)
+    village = models.ManyToManyField(
+        to='people.Village',
+        related_name='person'
+    )
     picture = models.ImageField(upload_to=picture_folder, blank=True)
     clan = models.CharField(max_length=60, blank=True)
     born = models.DateField(auto_now=False, blank=True, null=True)
@@ -89,6 +92,13 @@ class Person(models.Model):
 
     def __str__(self):
         return self.name + '- ' + Person.villages[int(self.village) - 1][1]
+
+
+class Village(models.Model):
+    village_name = models.CharField(max_length=15, blank=False)
+
+    def __str__(self):
+        return self.village_name
 
 
 class MedicalAssessment(models.Model):

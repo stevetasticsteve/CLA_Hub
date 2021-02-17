@@ -17,7 +17,7 @@ def people_home(request):
     template = 'people/home.html'
     recently_edited = models.Person.objects.all().order_by(
         '-last_modified')[:24]
-    villages = dict(models.Person.villages)
+    villages = models.Village.objects.all()
     context = {
         'profiles': recently_edited,
         'villages': villages,
@@ -30,19 +30,17 @@ def people_home(request):
 @login_required
 def village(request, village):
     template = 'people/village.html'
-    residents = models.Person.objects.filter(village=village).order_by('name')
+    village = get_object_or_404(models.Village, village_name=village)
+    residents = models.Person.objects.filter(village=village)  # .order_by('village.village_name')
     paginator = Paginator(residents, 25)
     residents = paginator.get_page(request.GET.get('page'))
     context = {
         'village_residents': residents,
         'paginator': residents,
-        'title': 'Village overview'
+        'title': 'Village overview',
+        'village': village
     }
-    # pull the villages display name from the model and 404 if out of range
-    try:
-        context['village'] = models.Person.villages[village - 1][1]
-    except IndexError:
-        return render(request, '404.html')
+
     return render(request, template, context)
 
 
@@ -67,6 +65,7 @@ def people_detail(request, pk):
     person = get_object_or_404(models.Person, pk=pk)
     age = None
     dob = person.born
+    village = models.Village.objects.get(person=person)
     # since date of birth is an optional field, check it's there
     if dob:
         today = datetime.date.today()
@@ -79,7 +78,8 @@ def people_detail(request, pk):
         'person': person,
         'age': age,
         'title': person.name,
-        'medical': medical
+        'medical': medical,
+        'village': village
     }
     return render(request, template, context)
 

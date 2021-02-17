@@ -27,8 +27,8 @@
             <ul>
                 <br>
                 <strong>from: </strong>
-                <a href="{% url 'people:village' person.village %}" >
-                    {{ person.get_village_display }}</a>
+                <a href="{% url 'people:village' village.village_name %}" >
+                    {{ village.village_name }}</a>
             </ul>
             <ul>
                 {% if person.born %}

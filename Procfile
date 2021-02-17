@@ -1,1 +1,0 @@
-web: gunicorn CLAHub.wsgi —log-file -

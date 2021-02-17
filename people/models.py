@@ -10,6 +10,13 @@ from CLAHub import tools
 integer_regex = re.compile(' \d+')
 
 
+class Village(models.Model):
+    village_name = models.CharField(max_length=15, blank=False)
+
+    def __str__(self):
+        return self.village_name
+
+
 class Person(models.Model):
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
@@ -35,10 +42,8 @@ class Person(models.Model):
     thumbnail_folder = 'people/thumbnails'
 
     name = models.CharField(max_length=60, blank=False)
-    village = models.ManyToManyField(
-        to='people.Village',
-        related_name='person'
-    )
+
+    village = models.ForeignKey(Village, on_delete=models.CASCADE)
     picture = models.ImageField(upload_to=picture_folder, blank=True)
     clan = models.CharField(max_length=60, blank=True)
     born = models.DateField(auto_now=False, blank=True, null=True)
@@ -92,13 +97,6 @@ class Person(models.Model):
 
     def __str__(self):
         return self.name + '- ' + Person.villages[int(self.village) - 1][1]
-
-
-class Village(models.Model):
-    village_name = models.CharField(max_length=15, blank=False)
-
-    def __str__(self):
-        return self.village_name
 
 
 class MedicalAssessment(models.Model):

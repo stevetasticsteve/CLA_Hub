@@ -96,7 +96,7 @@ class Person(models.Model):
         self.save()
 
     def __str__(self):
-        return self.name + '- ' + Person.villages[int(self.village) - 1][1]
+        return self.name + ' from ' + str(self.village)
 
 
 class MedicalAssessment(models.Model):

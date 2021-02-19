@@ -101,6 +101,12 @@ def new(request):
     # GET request
     if not errors:  # don't overwrite the user's failed form
         form = forms.PeopleForm()
+    if not models.Village.objects.all():
+        msg = 'There are no villages in the database, you must add some via the admin before you can add a person.'
+        try:
+            errors.append(msg)
+        except AttributeError:
+            errors = [msg]
 
     context = {
         'Form': form,

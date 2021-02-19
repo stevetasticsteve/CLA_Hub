@@ -22,15 +22,6 @@ class Person(models.Model):
         super(Person, self).__init__(*args, **kwargs)
         self.original_picture = self.picture
 
-    # villages = [
-    #     ('1', 'Elilim'),
-    #     ('2', 'Evesil'),
-    #     ('3', 'Kobumbua'),
-    #     ('4', 'Kokoma'),
-    #     ('5', 'Magilong'),
-    #     ('6', 'Pusilai'),
-    #     ('7', 'Torokum')
-    # ]
     education_level = [
         ('1', 'None'),
         ('2', 'Grade 1'),
@@ -43,7 +34,7 @@ class Person(models.Model):
 
     name = models.CharField(max_length=60, blank=False)
 
-    village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    village = models.ForeignKey(Village, blank=False, on_delete=models.CASCADE)
     picture = models.ImageField(upload_to=picture_folder, blank=True)
     clan = models.CharField(max_length=60, blank=True)
     born = models.DateField(auto_now=False, blank=True, null=True)

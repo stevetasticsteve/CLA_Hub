@@ -1,0 +1,15 @@
+geckodriver
+geckodriver.log
+docker_commands.md
+.pytest_cache
+data/CLAHub_database.db
+data/uploads/CultureEventFiles/
+data/uploads/import
+data/uploads/people/medical/*.jpg
+data/uploads/people/medical/*.JPG
+data/uploads/people/profile_pictures/*.jpg
+data/uploads/people/profile_pictures/*.JPG
+data/uploads/people/thumbnails/*.jpg
+data/uploads/people/thumbnails/*.JPG
+venv/
+Logs/

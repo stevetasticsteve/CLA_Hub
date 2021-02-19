@@ -16,6 +16,7 @@ from django.contrib.messages import constants as messages
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIXTURES_DIR = (os.path.join(BASE_DIR, 'CLAHub', 'fixtures'),)
+CLAHUB_VERSION = '1.0.0'
 
 # Application definition
 INSTALLED_APPS = [

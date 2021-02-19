@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 from . import settings, views
+from CLAHub.base_settings import CLAHUB_VERSION as version
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +33,6 @@ urlpatterns = [
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-admin.site.site_header = 'CLAHub admin'
+admin.site.site_header = 'CLAHub admin v.{version}'.format(version=version)
 admin.site.site_title = 'CLAHub'
 

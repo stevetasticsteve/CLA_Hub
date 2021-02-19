@@ -157,6 +157,11 @@ class CETestBaseClass(TestCase):
                 os.removedirs(folder)
             except OSError:
                 pass
+        example_ce_folder = os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles', '1', 'audio')
+        if os.path.exists(example_ce_folder):
+            for f in os.listdir(example_ce_folder):
+                if f != 'example_audio1.mp3':
+                    os.remove(os.path.join(example_ce_folder, f))
 
 
 class TestBaseClass(CETestBaseClass):

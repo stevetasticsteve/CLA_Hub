@@ -5,11 +5,13 @@ from people import models
 
 class PeopleModelTest(TestCase):
     def setUp(self):
-        person1 = models.Person(name='Steve', village='1')
+        self.village = models.Village(village_name='Kokoma')
+        self.village.save()
+        person1 = models.Person(name='Steve', village=self.village)
         person1.save()
 
     def test_family_description_hyperlinks(self):
-        person2 = models.Person(name='Gerdine', village='1',
+        person2 = models.Person(name='Gerdine', village=self.village,
                                 family_plain_text='Husband : 1')
         person2.save()
 
@@ -19,7 +21,7 @@ class PeopleModelTest(TestCase):
         self.assertEqual('Husband : 1', person2.family_plain_text)
 
     def test_out_of_range_family_hyperlink(self):
-        person2 = models.Person(name='Gerdine', village='1',
+        person2 = models.Person(name='Gerdine', village=self.village,
                                 family_plain_text='Husband : 3')
         person2.save()
 
@@ -29,7 +31,7 @@ class PeopleModelTest(TestCase):
 
     def test_multiple_hyperlinks(self):
         for i in range(20):
-            person = models.Person(name='Person %d' % i, village='1')
+            person = models.Person(name='Person %d' % i, village=self.village)
             person.save()
 
         person = models.Person.objects.get(pk=2)
@@ -46,7 +48,7 @@ class PeopleModelTest(TestCase):
         self.assertIn('<a href="12"', person.family)
 
     def test_repeated_pk(self):
-        person2 = models.Person(name='Gerdine', village='1',
+        person2 = models.Person(name='Gerdine', village=self.village,
                                 family_plain_text='Husband: 1, Bestie: 1')
         person2.save()
 
@@ -54,7 +56,7 @@ class PeopleModelTest(TestCase):
                          'Husband:<a href="1"> Steve</a>, Bestie:<a href="1"> Steve</a>')
 
     def test_no_space_no_match(self):
-        person2 = models.Person(name='Gerdine', village='1',
+        person2 = models.Person(name='Gerdine', village=self.village,
                                 family_plain_text='Husband :1')
         person2.save()
 
@@ -63,7 +65,7 @@ class PeopleModelTest(TestCase):
     def test_repeated_integer_correct_match(self):
         """If family had both 2 and 22 as intended links the 2 in 22 was being replaced"""
         for i in range(30):
-            person = models.Person(name='Person %d' % i, village='1')
+            person = models.Person(name='Person %d' % i, village=self.village)
             person.save()
         person = models.Person.objects.get(pk=2)
 

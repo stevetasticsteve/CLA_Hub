@@ -20,9 +20,11 @@ class PeopleTest(TestCase):
 
     def setUp(self):
         self.client.login(username='Tester', password='secure_password')
+        self.village = models.Village(village_name='Torokum')
+        self.village.save()
         self.new_post_data = {
             'name': 'Test person 2',
-            'village': '1',
+            'village': '2',
             'clan': 'Python clan',
             'born': '1980-01-01',
             'medical': 'Broken face',
@@ -30,9 +32,11 @@ class PeopleTest(TestCase):
             'education': '1'
         }
         # add an example record
+        self.example_village = models.Village(village_name='Kokoma')
+        self.example_village.save()
         example = models.Person(
             name='Test person 1',
-            village='2',
+            village=self.example_village,
             clan='Snake clan',
             born=datetime.date(1970, 2, 2),
             medical='Healthy',
@@ -43,7 +47,7 @@ class PeopleTest(TestCase):
 
         self.unchanged_post = {
             'name': 'Test person 1',
-            'village': '2',
+            'village': '1',
             'clan': 'Snake clan',
             'born': '1970-02-02',
             'medical': 'Healthy',
@@ -74,6 +78,11 @@ class PeopleTest(TestCase):
                 os.remove(os.path.join(self.thumbnail_folder, data))
             except FileNotFoundError:
                 pass
+        example_ce_folder = os.path.join(base_settings.MEDIA_ROOT, 'CultureEventFiles', '1', 'audio')
+        if os.path.exists(example_ce_folder):
+            for f in os.listdir(example_ce_folder):
+                if f != 'example_audio1.mp3':
+                    os.remove(os.path.join(example_ce_folder, f))
 
     def add_test_picture_file(self):
         # add picture file to uploads
@@ -108,7 +117,7 @@ class PeopleTest(TestCase):
 class BaseClassTest(PeopleTest):
     def test_setup(self):
         self.assertEqual(1, len(models.Person.objects.all()))
-        example_person = models.Person.objects.get(pk=self.test_pk1)
+        example_person = models.Person.objects.get(pk=self.test_pk1, village=self.example_village)
         self.assertEqual('Test person 1', example_person.name)
         self.assertEqual(datetime.date(1970, 2, 2), example_person.born)
 

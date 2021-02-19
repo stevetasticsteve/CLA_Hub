@@ -15,9 +15,11 @@ class MedicalTest(TestCase):
 
     def setUp(self):
         self.client.login(username='Tester', password='secure_password')
+        self.village = models.Village(village_name='Kokoma')
+        self.village.save()
         test_person = models.Person(
             name='Test Person 1',
-            village=1,
+            village=self.village,
             medical='notes recorded here'
         )
         test_person.save()

@@ -34,7 +34,7 @@ class Person(models.Model):
 
     name = models.CharField(max_length=60, blank=False)
 
-    village = models.ForeignKey(Village, blank=False, on_delete=models.CASCADE)
+    village = models.ForeignKey(Village, blank=False, null=True, on_delete=models.SET_NULL)
     picture = models.ImageField(upload_to=picture_folder, blank=True)
     clan = models.CharField(max_length=60, blank=True)
     born = models.DateField(auto_now=False, blank=True, null=True)

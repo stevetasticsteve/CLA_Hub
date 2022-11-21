@@ -294,7 +294,7 @@ def tag_detail_page(request, slug):
     template = 'CE/tag_detail_page.html'
     tag = get_object_or_404(Tag, slug=slug)
     # filter CEs by tag name
-    CEs = CultureEvent.objects.filter(tags=tag).order_by('title')
+    CEs = CultureEvent.objects.filter(tags=tag).order_by('-last_modified')
     paginator = Paginator(CEs, 25)
     CEs = paginator.get_page(request.GET.get('page'))
 
@@ -311,7 +311,7 @@ def tag_detail_page(request, slug):
 @CE.utilities.conditional_login
 def tag_list_page(request):
     template = 'CE/all_tags.html'
-    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('name')
+    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-last_modified')
     paginator = Paginator(tags, 25)
     tags = paginator.get_page(request.GET.get('page'))
     context = {
@@ -327,7 +327,7 @@ def tag_list_page(request):
 def tags_search(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = Tag.objects.filter(Q(name__icontains=search)).order_by('name')
+    results = Tag.objects.filter(Q(name__icontains=search)).order_by('-last_modified')
     paginator = Paginator(results, 25)
     results = paginator.get_page(request.GET.get('page'))
     context = {
@@ -344,7 +344,7 @@ def tags_search(request):
 def search_CE(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = CultureEvent.objects.filter(Q(title__icontains=search)).order_by('title')
+    results = CultureEvent.objects.filter(Q(title__icontains=search)).order_by('-last_modified')
     paginator = Paginator(results, 25)
     results = paginator.get_page(request.GET.get('page'))
     context = {
@@ -360,7 +360,7 @@ def search_CE(request):
 @CE.utilities.conditional_login
 def texts_home(request):
     template = 'CE/texts.html'
-    texts = Text.objects.all().order_by('text_title')
+    texts = Text.objects.all().order_by('-last_modified')
     paginator = Paginator(texts, 25)
     texts = paginator.get_page(request.GET.get('page'))
     context = {
@@ -375,7 +375,7 @@ def texts_home(request):
 @CE.utilities.conditional_login
 def text_genre(request, genre):
     template = 'CE/texts_genre.html'
-    texts = Text.objects.filter(discourse_type=genre).order_by('text_title')
+    texts = Text.objects.filter(discourse_type=genre).order_by('-last_modified')
     # Find the genre that goes to the number
     # if out of range return 404
     if int(genre) <= len(Text.genres):
@@ -398,7 +398,7 @@ def text_genre(request, genre):
 def text_search(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = Text.objects.filter(Q(text_title__icontains=search)).order_by('text_title')
+    results = Text.objects.filter(Q(text_title__icontains=search)).order_by('-last_modified')
     paginator = Paginator(results, 25)
     results = paginator.get_page(request.GET.get('page'))
     context = {

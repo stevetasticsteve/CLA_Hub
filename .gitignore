@@ -13,3 +13,9 @@ data/uploads/people/thumbnails/*.jpg
 data/uploads/people/thumbnails/*.JPG
 venv/
 Logs/
+data_snapshots/
+**__pycache__
+**.iml
+**.xml
+local_sync**
+/.idea**

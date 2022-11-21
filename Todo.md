@@ -1,5 +1,9 @@
 # To do
 
+9-11-22
+- Make text fields markdown capable
+- Move from DockerHub image to build
+
 ## New features
 - User section to see what everyone's worked on
 - Export features

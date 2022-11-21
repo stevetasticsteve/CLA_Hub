@@ -1,5 +1,6 @@
-FROM python:3-slim
+FROM arm32v7/python:3
 ENV PYTHONUNBUFFERED 1
+RUN apt install -y libjpeg-dev zlib1g-dev dpkg-dev
 RUN mkdir /code
 WORKDIR /code
 COPY requirements.txt /code/

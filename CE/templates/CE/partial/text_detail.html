@@ -17,7 +17,7 @@
 
         {% if text.audio %}
         <p></p>
-        <audio controls> <source src="{{text.audio.url}}"></audio>
+        <audio controls id="text_{{text.id}}_audio"> <source src="{{text.audio.url}}"></audio>
         <p></p>
         {% endif %}
 
@@ -43,7 +43,7 @@
 
         {% if text.orthographic_text %}
         <strong>Orthographic text</strong>
-        <p> {{ text.orthographic_text }}</p>
+        <p> {{ text.orthographic_text|safe }}</p>
         {% endif %}
     </div>
 </div>

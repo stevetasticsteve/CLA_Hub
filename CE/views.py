@@ -55,7 +55,9 @@ def alphabetical(request):
 @CE.utilities.conditional_login
 def view(request, pk):
     ce = get_object_or_404(CultureEvent, pk=pk)
-    texts = Text.objects.filter(ce=pk)
+    texts = Text.objects.filter(ce=pk) 
+    for t in texts:
+        t.orthographic_text  = CE.utilities.format_text_html(t)
     pictures = Picture.objects.filter(ce=pk)
     visits = Visit.objects.filter(ce=ce)
     questions = Question.objects.filter(ce=ce)
@@ -311,7 +313,7 @@ def tag_detail_page(request, slug):
 @CE.utilities.conditional_login
 def tag_list_page(request):
     template = 'CE/all_tags.html'
-    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-last_modified')
+    tags = Tag.objects.all().annotate(num=Count('taggit_taggeditem_items')).order_by('-id')
     paginator = Paginator(tags, 25)
     tags = paginator.get_page(request.GET.get('page'))
     context = {
@@ -327,7 +329,7 @@ def tag_list_page(request):
 def tags_search(request):
     template = 'search_results.html'
     search = request.GET.get('search')
-    results = Tag.objects.filter(Q(name__icontains=search)).order_by('-last_modified')
+    results = Tag.objects.filter(Q(name__icontains=search)).order_by('-id')
     paginator = Paginator(results, 25)
     results = paginator.get_page(request.GET.get('page'))
     context = {
@@ -361,6 +363,8 @@ def search_CE(request):
 def texts_home(request):
     template = 'CE/texts.html'
     texts = Text.objects.all().order_by('-last_modified')
+    for t in texts:
+        t.orthographic_text  = CE.utilities.format_text_html(t)
     paginator = Paginator(texts, 25)
     texts = paginator.get_page(request.GET.get('page'))
     context = {
@@ -382,6 +386,10 @@ def text_genre(request, genre):
         genre = Text.genres[int(genre) - 1][1]
     else:
         return render(request, '404.html')
+
+    for t in texts:
+        t.orthographic_text  = CE.utilities.format_text_html(t)
+
     paginator = Paginator(texts, 25)
     texts = paginator.get_page(request.GET.get('page'))
 
@@ -399,6 +407,8 @@ def text_search(request):
     template = 'search_results.html'
     search = request.GET.get('search')
     results = Text.objects.filter(Q(text_title__icontains=search)).order_by('-last_modified')
+    for t in results:
+        t.orthographic_text  = CE.utilities.format_text_html(t)
     paginator = Paginator(results, 25)
     results = paginator.get_page(request.GET.get('page'))
     context = {

@@ -102,15 +102,17 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+STATIC_URL = '/clahub/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'CLAHub/assets'),)
 STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
-LOGIN_REDIRECT_URL = '/CE'
-LOGOUT_REDIRECT_URL = '/CE'
+LOGIN_REDIRECT_URL = '/clahub/CE'
+LOGOUT_REDIRECT_URL = '/clahub/CE'
+LOGIN_URL = "/clahub/accounts/login/"    
 MEDIA_ROOT = os.path.join(BASE_DIR, 'data', 'uploads')
-MEDIA_URL = 'uploads/'
+MEDIA_URL = '/clahub/uploads/'
 LOGIN_EVERYWHERE = False
 TAGGIT_TAGS_FROM_STRING = 'CE.OCM_categories.check_tags_for_OCM'
+FORCE_SCRIPT_NAME = "/clahub"
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',

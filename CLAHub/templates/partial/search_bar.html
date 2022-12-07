@@ -1,11 +1,11 @@
 {% if search_context == 'CE' %}
-<form method="get" action="/CE/search/">
+<form method="get" action="{% url 'CE:search_CE' %}">
 {% elif search_context == 'people' %}
-<form method="get" action="/people/search/">
+<form method="get" action="{% url 'people:search' %}">
 {% elif search_context == 'texts' %}
-<form method="get" action="/CE/texts/search/">
+<form method="get" action="{% url 'CE:text_search' %}">
     {% elif search_context == 'tags' %}
-<form method="get" action="/CE/tag/search/">
+<form method="get" action="{% url 'CE:tags_search' %}">
 {% endif %}
     <div class="p-1 bg-light rounded rounded-pill shadow-sm mb-4">
         <div class="input-group">

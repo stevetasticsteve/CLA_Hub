@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 {% block page_content %}
 
+<div class="container">
 <h1>People living in {{village}}</h1>
 <br>
-{% for person in village_residents %}
-{% if forloop.first %}
-<div class="row">
-    {% endif %}
-    {% include 'people/partial/person_card.html' %}
-    {% if forloop.counter|divisibleby:"9" %} </div><div class="row"> {% endif %}
-    {% if forloop.last %} </div> {% endif %}
-{% endfor %}
-
+    {% for person in village_residents %}
+    {% if forloop.first %}
+    <div class="row">
+        {% endif %}
+        {% include 'people/partial/person_card.html' %}
+        {% if forloop.counter|divisibleby:"7" %} </div><div class="row"> {% endif %}
+        {% if forloop.last %} </div> {% endif %}
+    {% endfor %}
+</div>
 {% include 'partial/pagination.html' %}
 
 {% endblock %}

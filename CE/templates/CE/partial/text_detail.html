@@ -45,5 +45,8 @@
         <strong>Orthographic text</strong>
         <p> {{ text.orthographic_text|safe }}</p>
         {% endif %}
+        {% if text.known_words %}
+        <p><small>Words in lexicon: {{text.known_words}}</small></p>
+        {% endif %}
     </div>
 </div>

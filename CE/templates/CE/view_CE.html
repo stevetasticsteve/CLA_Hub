@@ -64,8 +64,9 @@
 
     {% if Texts %}
     <h3>Texts</h3>
+    <small>CLAHub has some automatic <a href="{% url 'text_features' %}">text features</a></small>
     {% for text in Texts %}
-    <div class="card bg-light">
+    <div class="card bg-light my-2">
         <h5>{{text.text_title}} </h5>
         <h6 class="card-subtitle mb-2 text-muted">last edited {{text.last_modified}} by {{text.last_modified_by}}</h6>
         {% include 'CE/partial/text_detail.html' %}

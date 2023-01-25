@@ -15,11 +15,19 @@ def home(request):
     }
     return render(request, 'CLAHub_home.html', context)
 
+
 def markdown(request):
     context = {
         'title': 'Markdown help'
     }
     return render(request, 'markdown.html', context)
+
+
+def text_features(request):
+    context = {
+        'title': 'Text features'
+    }
+    return render(request, 'text_features.html', context)
 
 
 @login_required

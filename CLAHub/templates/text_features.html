@@ -1,0 +1,30 @@
+{% extends 'base.html'%}
+
+{% block page_content %}
+<div class="container-fluid">
+
+<h2>Text features</h2>
+<p>CLAHub does a few things for texts:
+    <ul>Markdown</ul>
+    <ul>Timestamping</ul>
+    <ul>Lexicon checing</ul>
+</p>
+
+<p>for markdown check <a href="{% url 'markdown' %}">Markdown</a></p>
+<h3>Timestamps</h3>
+<p>Writing a timestamp in this format 0:00:00 will result in an automatic link to control the audio player for the text
+    you're working on
+</p>
+<h3>Lexicon checking</h3>
+<p>Every night the server reads our two lexicon files (Kovol_lexicon.xslx and Kovol_verbs.xlsx) and creates a word list.
+    CLAHub checks this word list and highligts in red any words not found. The idea is that then either spelling can be 
+    corrected or the lexicon updated.
+</p>
+<p>There are some exceptions:
+    <ul>Timestamps aren't checked</ul>
+    <ul>Numbers aren't checked</ul>
+    <ul>Anything after a bracket ( will be igored till the bracket is closed ). This allows you to write in English and
+        not have the English highlighted as not being found in the Kovol lexicon.
+    </ul>
+</p>
+{% endblock %}

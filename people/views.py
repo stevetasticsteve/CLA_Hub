@@ -31,8 +31,8 @@ def people_home(request):
 def village(request, village):
     template = 'people/village.html'
     village = get_object_or_404(models.Village, village_name=village)
-    residents = models.Person.objects.filter(village=village)  # .order_by('village.village_name')
-    paginator = Paginator(residents, 25)
+    residents = models.Person.objects.filter(village=village).order_by('name')
+    paginator = Paginator(residents, 75)
     residents = paginator.get_page(request.GET.get('page'))
     context = {
         'village_residents': residents,

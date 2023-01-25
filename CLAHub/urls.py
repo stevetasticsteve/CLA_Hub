@@ -28,6 +28,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', views.home, name='home'),
     path('help/markdown', views.markdown, name='markdown'),
+    path('help/texts', views.text_features, name='text_features'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

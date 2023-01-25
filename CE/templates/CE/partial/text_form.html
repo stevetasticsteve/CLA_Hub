@@ -1,6 +1,6 @@
 {{ TextForm.management_form }}
 <h2>Texts</h2>
-
+<small>CLAHub has some automatic <a href="{% url 'text_features' %}">text features</a></small>
 <script type="text/html" id="text-template">
 <div id="text-__prefix__" class="container-fluid border bg-light"  >
     <br>
@@ -48,7 +48,7 @@
 <div id="text-form-container">
     <div id="text-server-items">
         {% for text_form in TextForm %}
-        <div class="container-fluid border bg-light" id="text-{{ forloop.counter0 }}">
+        <div class="container-fluid border bg-light my-2" id="text-{{ forloop.counter0 }}">
             {{ text_form.id }}
             <h3>Text {{forloop.counter}}</h3>
             <div class="form-row">

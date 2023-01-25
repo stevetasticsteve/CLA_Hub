@@ -134,6 +134,10 @@ class TextForm(forms.ModelForm):
             'speaker_plain_text': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'You can write a person\'s ID number here to create a link'
+            }),
+            'orthographic_text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 25
             })
         }
         labels = {

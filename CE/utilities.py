@@ -19,7 +19,7 @@ def conditional_login(func):
 def load_lexicon():
     """Generates a tuple of all the known Kovol words for quick spell checking"""
     path = "/home/steve/html/lexicon/word_list.csv"
-    path = "word_list.csv"
+    # path = "word_list.csv"
     with open(path) as f:
         data = csv.reader(f)
         return tuple([d[0] for d in data])
@@ -56,7 +56,7 @@ def highlight_non_lexicon_words(text_obj):
     """Compare each word to the csv word list from lexicon, highlighting any in red not found"""
     kovol_words = load_lexicon()
     # words = text_obj.orthographic_text.split(" ")
-    words = re.split(r"[ \n]", text_obj.orthographic_text)
+    words = re.split(r"[ \n\r]", text_obj.orthographic_text)
     text = []
     time_stamp_re = re.compile(r"\d:\d\d:\d\d(?!<)")
     digit_re = re.compile(r"(\d)+[.:]*")
@@ -92,7 +92,7 @@ def highlight_non_lexicon_words(text_obj):
             highlight = False
             print("in bracket")
         # word not in lexicon
-        elif w.strip().lower() not in kovol_words:
+        elif w.strip("? ,.\n\"").lower() not in kovol_words:
             highlight = True
             total_words += 1
             print("incorrect")

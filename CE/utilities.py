@@ -20,9 +20,12 @@ def load_lexicon():
     """Generates a tuple of all the known Kovol words for quick spell checking"""
     path = "/home/steve/html/lexicon/word_list.csv"
     # path = "word_list.csv"
-    with open(path) as f:
-        data = csv.reader(f)
-        return tuple([d[0] for d in data])
+    try:
+        with open(path) as f:
+            data = csv.reader(f)
+            return tuple([d[0] for d in data])
+    except FileNotFoundError:
+        return ("")
 
 
 def set_text_tags_attributes():
@@ -54,64 +57,44 @@ def hyperlink_timestamps(id, text):
 
 def highlight_non_lexicon_words(text_obj):
     """Compare each word to the csv word list from lexicon, highlighting any in red not found"""
+    # remove anything in brackets from the lexicon comparison
+    search_text = text_obj.orthographic_text
+    brackets = re.findall(re.compile(r"\(.+\)"), search_text)
+    for b in brackets:
+        search_text = search_text.replace(b, "")
+
+    # find all the Kovol words written, having excluded brackets
+    words = re.findall(re.compile(r"[a-zA-Z]+"), search_text) # search for a-z only, ignore numbers and puncuation
+    words.sort(key=lambda x: len(x), reverse=True)
+    words = list(set(words))
+
+    # go through whole text and highlight any words notin lexicon
+    text = text_obj.orthographic_text
     kovol_words = load_lexicon()
-    # words = text_obj.orthographic_text.split(" ")
-    words = re.split(r"[ \n\r]", text_obj.orthographic_text)
-    text = []
-    time_stamp_re = re.compile(r"\d:\d\d:\d\d(?!<)")
-    digit_re = re.compile(r"(\d)+[.:]*")
-    bracket = False  # flag to mark where a bracket starts and ends
-    # Create counters for total words and words found in lexicon
     correct_words = 0
     total_words = 0
 
+    # add red highlighting to words not in lexicon
     for w in words:
-        print(f"w='{w}'")
-        # ignore timestamp
-        if re.search(time_stamp_re, w):
-            highlight = False
-            print("timestamp")
-        # ignore numbers
-        elif re.search(digit_re, w):
-            highlight = False
-            print("number")
-        # ignore whitespace
-        elif not w.strip():
-            highlight = False
-            print("whitespace")
-        # ignore brackets
-        elif w.lstrip().startswith("("):
-            highlight = False
-            bracket = True
-            print("open bracket")
-        elif w.rstrip().endswith(")"):
-            highlight = False
-            bracket = False
-            print("close bracket")
-        elif bracket:
-            highlight = False
-            print("in bracket")
-        # word not in lexicon
-        elif w.strip("? ,.\n\"").lower() not in kovol_words:
-            highlight = True
+        if w.lower() not in kovol_words:
+            f = re.compile(f"[\s^'\"]{w}[\s$,.\"']") # attempt to avoid highlighting parts of words
+            search = re.findall(f, text)
+            for s in search:
+                text = text.replace(s, f'<span class="red">{s}</span>')
+
             total_words += 1
             print("incorrect")
         # word is in lexicon
         else:
             print("correct")
-            highlight = False
             correct_words += 1
             total_words += 1
-        
-        if highlight:
-            text.append(f'<span class="red">{w}</span>')
-        else:
-            text.append(w)
-
+    
+    # report accuracy of transcription to text model
     if total_words > 0:
         text_obj.known_words = f"{correct_words/total_words*100:.0f}%"
     print(f"total={total_words}, correct={correct_words}")
-    return " ".join(text)
+    return text
 
 
 def format_text_html(text_obj):

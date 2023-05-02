@@ -4,9 +4,9 @@
         <br>
 
         {% if text.discourse_type %}
-            <ul><strong>
-            Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">{{text.get_discourse_type_display}}</a>
-        </strong></ul>
+        <ul><strong>
+                Genre: <a href="{% url 'CE:text_genre' text.discourse_type %}">{{text.get_discourse_type_display}}</a>
+            </strong></ul>
         {% endif %}
 
         {% if text.speaker %}
@@ -17,7 +17,9 @@
 
         {% if text.audio %}
         <p></p>
-        <audio controls id="text_{{text.id}}_audio"> <source src="{{text.audio.url}}"></audio>
+        <audio controls id="text_{{text.id}}_audio">
+            <source src="{{text.audio.url}}">
+        </audio>
         <p></p>
         {% endif %}
 
@@ -46,7 +48,7 @@
         <p> {{ text.orthographic_text|safe }}</p>
         {% endif %}
         {% if text.known_words %}
-        <p><small>Words in lexicon: {{text.known_words}}</small></p>
+        <p><small>Checked words in lexicon: {{text.known_words}}</small></p>
         {% endif %}
     </div>
 </div>

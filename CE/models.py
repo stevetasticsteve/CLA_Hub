@@ -11,8 +11,8 @@ import CE.settings
 import people.models
 from CLAHub import tools
 
-integer_regex = re.compile('\d+')
-anchor_regex = re.compile('<a.*?</a>')
+integer_regex = re.compile("\d+")
+anchor_regex = re.compile("<a.*?</a>")
 
 
 def check_if_index_within_html_anchor(string, index):
@@ -23,7 +23,7 @@ def check_if_index_within_html_anchor(string, index):
         if index >= match.start():
             if index <= match.end():
                 return True
-        string = string[match.end():]
+        string = string[match.end() :]
         index = index - match.end()
 
 
@@ -39,7 +39,9 @@ class CultureEvent(models.Model):
 
     differences = models.TextField(blank=True)
     interpretation = models.TextField(blank=True)
-    slug = models.SlugField(unique=True)  # set in save function, form doesn't need to validate it
+    slug = models.SlugField(
+        unique=True
+    )  # set in save function, form doesn't need to validate it
     tags = TaggableManager()
 
     def save(self, *args, **kwargs):
@@ -58,24 +60,26 @@ class CultureEvent(models.Model):
     def check_unique_title(self):
         ces = CultureEvent.objects.exclude(pk=self.pk)
         if self.title.lower() in [ce.title.lower() for ce in ces]:
-            raise exceptions.ValidationError('CE already exists', code='invalid')
+            raise exceptions.ValidationError("CE already exists", code="invalid")
 
     def find_tag(self):
         # todo case sensitive, shouldn't be
         # find anything in the plain text description with {} around it and replace it with a hyperlink if valid
         # only triggers if auto_cross_reference is False
-        tags = re.findall(r'{.+?}', self.description)
+        tags = re.findall(r"{.+?}", self.description)
         ce_slugs = self.list_slugs()
         for tag in tags:
             content = tag
-            content = content.strip('{')
-            content = content.strip('}')
+            content = content.strip("{")
+            content = content.strip("}")
             for i, title_slug in enumerate(ce_slugs):
                 # if slug found within {} replace with hyperlink
                 if title_slug in slugify(content):
-                    title_deslug = title_slug.replace('-', ' ')
-                    slug_href = '<a href="' + title_slug + '">' + title_deslug + '</a>'
-                    self.description = self.description.replace('{' + title_deslug + '}', slug_href)
+                    title_deslug = title_slug.replace("-", " ")
+                    slug_href = '<a href="' + title_slug + '">' + title_deslug + "</a>"
+                    self.description = self.description.replace(
+                        "{" + title_deslug + "}", slug_href
+                    )
                 # if none of the title slugs are found remove the {}
                 elif i == len(ce_slugs) - 1:
                     self.description = self.description.replace(tag, content)
@@ -100,10 +104,14 @@ class CultureEvent(models.Model):
                     i += 1
                     # retrieve the title so a string can be returned that matches the case
                     ce_title = CultureEvent.objects.get(slug=title_slug).title
-                    slug_href = '<a href="' + title_slug + '">' + ce_title + '</a>'  # anchor to insert
+                    slug_href = (
+                        '<a href="' + title_slug + '">' + ce_title + "</a>"
+                    )  # anchor to insert
 
                     # find the index of the match. Set start point for next loop
-                    position = self.description.lower().find(ce_title.lower(), start_next_search)
+                    position = self.description.lower().find(
+                        ce_title.lower(), start_next_search
+                    )
                     start_next_search = position + len(slug_href)
 
                     # if the match is in a preexisting anchor move the loop on
@@ -114,7 +122,7 @@ class CultureEvent(models.Model):
                     # Can't just use replace as it will replace things within anchors we already inserted
                     # Can't modify self.description outside of the link position - must maintain user formatting.
                     part1 = self.description[:position]
-                    part2 = self.description[position + len(ce_title):]
+                    part2 = self.description[position + len(ce_title) :]
                     self.description = slug_href.join([part1, part2])
                     # start the next loop searching after the anchor we just inserted
 
@@ -128,7 +136,7 @@ class CultureEvent(models.Model):
 
 
 class Visit(models.Model):
-    ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
+    ce = models.ForeignKey("CultureEvent", on_delete=models.CASCADE)
     team_present = models.CharField(blank=True, max_length=60)
     nationals_present = models.CharField(blank=True, max_length=60)
     date = models.DateField(blank=True, null=True)
@@ -139,22 +147,22 @@ class Visit(models.Model):
 
 # provide file folders to save audio and pictures in using foreign keys
 def picture_folder(instance, filename):
-    return '/'.join(['CultureEventFiles', str(instance.ce.id), 'images', filename])
+    return "/".join(["CultureEventFiles", str(instance.ce.id), "images", filename])
 
 
 def audio_folder(instance, filename):
-    return '/'.join(['CultureEventFiles', str(instance.ce.id), 'audio', filename])
+    return "/".join(["CultureEventFiles", str(instance.ce.id), "audio", filename])
 
 
 class Picture(models.Model):
-    ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
+    ce = models.ForeignKey("CultureEvent", on_delete=models.CASCADE)
     picture = models.ImageField(upload_to=picture_folder, blank=True)
 
     # blank=True is a fudge. Trying to display multiple models in a single form and it wont'
     # submit if there is validation. The view function makes sure blank entries aren't saved though
 
     def __str__(self):
-        return 'Picture for ' + str(self.ce)
+        return "Picture for " + str(self.ce)
 
     def save(self):
         if self.picture:
@@ -165,28 +173,29 @@ class Picture(models.Model):
 
 
 class Text(models.Model):
-    genres = [('1', 'Narrative'),
-              ('2', 'Hortatory'),
-              ('3', 'Procedural'),
-              ('4', 'Expository'),
-              ('5', 'Descriptive')]
-    standard = [('1', 'Unchecked'),
-                ('2', 'Double checked by author'),
-                ('3', 'Checked by team mate'),
-                ('4', 'Approved by whole team'),
-                ('5', 'Valid for linguistic analysis')]
-    ce = models.ForeignKey('CultureEvent', on_delete=models.PROTECT)
+    genres = [
+        ("1", "Narrative"),
+        ("2", "Hortatory"),
+        ("3", "Procedural"),
+        ("4", "Expository"),
+        ("5", "Descriptive"),
+    ]
+    standard = [
+        ("1", "Unchecked"),
+        ("2", "Double checked by author"),
+        ("3", "Checked by team mate"),
+        ("4", "Approved by whole team"),
+        ("5", "Valid for linguistic analysis"),
+    ]
+    ce = models.ForeignKey("CultureEvent", on_delete=models.PROTECT)
     text_title = models.CharField(max_length=50, blank=True)
     audio = models.FileField(upload_to=audio_folder, blank=True)
     phonetic_text = models.TextField(blank=True)
-    phonetic_standard = models.CharField(choices=standard,
-                                         max_length=30,
-                                         default='1',
-                                         blank=True)
+    phonetic_standard = models.CharField(
+        choices=standard, max_length=30, default="1", blank=True
+    )
     orthographic_text = models.TextField(blank=True)
-    discourse_type = models.CharField(choices=genres,
-                                      max_length=15,
-                                      blank=True)
+    discourse_type = models.CharField(choices=genres, max_length=15, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     last_modified_by = models.CharField(max_length=20, blank=True)
@@ -197,7 +206,7 @@ class Text(models.Model):
         if self.audio:
             if tools.check_already_imported(self.audio):
                 # don't duplicate audio in uploads during tests
-                self.audio.upload_to = 'temp'  # todo duplicates still added
+                self.audio.upload_to = "temp"  # todo duplicates still added
         # search for integers in speaker field and provide link to profile if found
         if self.speaker_plain_text:
             integers = re.findall(integer_regex, self.speaker_plain_text)
@@ -205,7 +214,10 @@ class Text(models.Model):
             for match in integers:
                 try:
                     link = people.models.Person.objects.get(pk=match)
-                    self.speaker = self.speaker.replace(match, '<a href="/clahub/people/' + match + '"> ' + link.name + '</a>')
+                    self.speaker = self.speaker.replace(
+                        match,
+                        '<a href="/clahub/people/' + match + '"> ' + link.name + "</a>",
+                    )
                 except ObjectDoesNotExist:
                     pass
 
@@ -221,10 +233,9 @@ class Question(models.Model):
         super(Question, self).__init__(*args, **kwargs)
         self.original_answer = self.answer
 
-    ce = models.ForeignKey('CultureEvent', on_delete=models.CASCADE)
+    ce = models.ForeignKey("CultureEvent", on_delete=models.CASCADE)
     question = models.CharField(max_length=200)
-    answer = models.CharField(max_length=200,
-                              blank=True)
+    answer = models.CharField(max_length=200, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     asked_by = models.CharField(max_length=30)
     last_modified = models.DateTimeField(auto_now=True)
@@ -232,4 +243,4 @@ class Question(models.Model):
     answered_by = models.CharField(max_length=20)
 
     def __str__(self):
-        return 'Question about ' + str(self.ce) + ': ' + str(self.question)
+        return "Question about " + str(self.ce) + ": " + str(self.question)

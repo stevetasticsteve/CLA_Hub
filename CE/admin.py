@@ -4,13 +4,13 @@ from CE.models import CultureEvent, Text, Picture, Visit, Question
 
 
 class CEAdmin(admin.ModelAdmin):
-    list_display = ('title', 'last_modified', 'last_modified_by')
-    exclude = ('description',)
+    list_display = ("title", "last_modified", "last_modified_by")
+    exclude = ("description",)
 
 
 class TextsAdmin(admin.ModelAdmin):
-    list_display = ('text_title', 'ce', 'phonetic_standard', 'discourse_type')
-    list_filter = ('phonetic_standard', 'discourse_type')
+    list_display = ("text_title", "ce", "phonetic_standard", "discourse_type")
+    list_filter = ("phonetic_standard", "discourse_type")
 
 
 class PicturesAdmin(admin.ModelAdmin):
@@ -18,11 +18,11 @@ class PicturesAdmin(admin.ModelAdmin):
 
 
 class VisitsAdmin(admin.ModelAdmin):
-    list_display = ('ce', 'date', 'team_present')
+    list_display = ("ce", "date", "team_present")
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('question', 'answer', 'ce')
+    list_display = ("question", "answer", "ce")
 
 
 admin.site.register(CultureEvent, CEAdmin)

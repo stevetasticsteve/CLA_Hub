@@ -7,6 +7,7 @@ import re
 import time
 import datetime
 import csv
+import string
 
 
 def conditional_login(func):
@@ -39,6 +40,11 @@ def set_text_tags_attributes():
     allowed_tags = bleach.sanitizer.ALLOWED_TAGS
     allowed_tags.append("span")
     allowed_attributes["span"] = ["class"]
+    allowed_tags.append("table")
+    allowed_attributes["table"] = ["thead"]
+    allowed_attributes["table"] = ["tr"]
+    allowed_attributes["table"] = ["th"]
+    allowed_attributes["table"] = ["td"]
     allowed_attributes["a"].append("onclick")
     allowed_attributes["a"].append("target")
     allowed_attributes["a"].append("rel")
@@ -68,25 +74,31 @@ def highlight_non_lexicon_words(text_obj):
     words = find_words_in_text(text_obj.orthographic_text.lower())
 
     # go through whole text and highlight any words notin lexicon
-    text = text_obj.orthographic_text
+    text = text_obj.orthographic_text.lower()
     checked_lexicon_words, unchecked_lexicon_words = load_lexicon()
     correct_words = 0
     total_words = 0
+    print(words)
 
     # add red highlighting to words not in lexicon
     for w in words:
-        if w not in checked_lexicon_words and w not in unchecked_lexicon_words:
-            text = highlight_word(w, text, colour="red")
+        if w in checked_lexicon_words:
+            text = highlight_word(w, text, colour="none")
+            correct_words += 1
             total_words += 1
+            # it is possible for a word to be in both checked and unchecked lists
+            # if it is checked it should take priority
+            continue
+        
         # word is in lexicon
         elif w in unchecked_lexicon_words:
             text = highlight_word(w, text, colour="green")
             total_words += 1
+        
         else:
-            text = highlight_word(w, text, colour="none")
-            correct_words += 1
+            text = highlight_word(w, text, colour="red")
             total_words += 1
-
+        
     # report accuracy of transcription to text model
     if total_words > 0:
         text_obj.known_words = f"{correct_words/total_words*100:.0f}%"
@@ -97,7 +109,7 @@ def highlight_non_lexicon_words(text_obj):
 def highlight_word(word, text, colour="red"):
     """Replace the given word in a text with the same word withn a span tag to colour it"""
     f = re.compile(
-        f"(^|[^a-z>#])({word})($|[^a-z<])"
+        f'(^|[^a-z<>#])({word})($|[^a-z<>-])'
     )  # attempt to avoid highlighting parts of words
     highlight = f'<span class="{colour}">'
 
@@ -111,7 +123,7 @@ def highlight_word(word, text, colour="red"):
         elif colour == "green":
             text = re.sub(
                 f,
-                r'\1<a href="http://192.168.0.100/lexicon/main_dict.html#{word}" target="_blank" rel="noopener noreferrer">{highlight}\2</span></a>\3'.format(
+                r'\1<a class="no-decoration" href="http://192.168.0.100/lexicon/main_dict.html#{word}" target="_blank" rel="noopener noreferrer">{highlight}\2</span></a>\3'.format(
                     highlight=highlight, word=word
                 ),
                 text,
@@ -131,14 +143,16 @@ def find_words_in_text(text):
     """Split the given text into a list of individual words. Ignore words starting with numbers (timestamps),
     or words in brackets"""
     # remove anything in brackets from the lexicon comparison
-    brackets = re.findall(re.compile(r"\(.+\)"), text)
+    brackets = re.findall(re.compile(r"\([^\)]+\)"), text)
     for b in brackets:
         text = text.replace(b, "")
+    
+    # remove punctuation
 
     # find all the Kovol words written, having excluded brackets
     words = re.findall(
-        re.compile(r"[a-zA-Z]+"), text
-    )  # search for a-z only, ignore numbers and puncuation
+        re.compile(r"[a-z]+"), text
+    )  # search for a-z only, ignore numbers
     words = list(set(words))
     words.sort(key=lambda x: len(x), reverse=True)
     return words

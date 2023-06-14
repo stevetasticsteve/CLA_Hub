@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 import CLAHub.base_settings
 
+
 import bleach
 import markdown
 import re
 import time
 import datetime
 import csv
-import string
 
 
 def conditional_login(func):
@@ -21,6 +21,7 @@ def load_lexicon():
     """Generates a tuple of all the known Kovol words for quick spell checking"""
     checked_path = "/home/steve/html/lexicon/checked_list.csv"
     unchecked_path = "/home/steve/html/lexicon/unchecked_list.csv"
+    print(CLAHub.base_settings.lexicon[1])
     try:
         with open(checked_path) as f:
             checked_data = csv.reader(f)
@@ -78,7 +79,7 @@ def highlight_non_lexicon_words(text_obj):
     checked_lexicon_words, unchecked_lexicon_words = load_lexicon()
     correct_words = 0
     total_words = 0
-    print(words)
+    # print(words)
 
     # add red highlighting to words not in lexicon
     for w in words:
@@ -102,7 +103,7 @@ def highlight_non_lexicon_words(text_obj):
     # report accuracy of transcription to text model
     if total_words > 0:
         text_obj.known_words = f"{correct_words/total_words*100:.0f}%"
-    print(f"total={total_words}, correct={correct_words}")
+    # print(f"total={total_words}, correct={correct_words}")
     return text
 
 

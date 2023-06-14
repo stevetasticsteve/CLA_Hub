@@ -11,63 +11,64 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FIXTURES_DIR = (os.path.join(BASE_DIR, 'CLAHub', 'fixtures'),)
-CLAHUB_VERSION = '1.0.0'
+FIXTURES_DIR = (os.path.join(BASE_DIR, "CLAHub", "fixtures"),)
+CLAHUB_VERSION = "1.0.0"
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'CE',
-    'people',
-    'taggit',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "CE",
+    "people",
+    "taggit",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'CLAHub.urls'
+ROOT_URLCONF = "CLAHub.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
         # 'DIRS': ['CLAHub/templates'],
-        'DIRS': [os.path.join(BASE_DIR, 'CLAHub/templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "DIRS": [os.path.join(BASE_DIR, "CLAHub/templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'CLAHub.wsgi.application'
+WSGI_APPLICATION = "CLAHub.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'data', 'CLAHub_database.db'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "data", "CLAHub_database.db"),
     }
 }
 
@@ -75,25 +76,25 @@ DATABASES = {
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Australia/Brisbane'
+TIME_ZONE = "Australia/Brisbane"
 
 USE_I18N = True
 
@@ -102,83 +103,90 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/clahub/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'CLAHub/assets'),)
-STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
-LOGIN_REDIRECT_URL = '/clahub/CE'
-LOGOUT_REDIRECT_URL = '/clahub/CE'
-LOGIN_URL = "/clahub/accounts/login/"    
-MEDIA_ROOT = os.path.join(BASE_DIR, 'data', 'uploads')
-MEDIA_URL = '/clahub/uploads/'
+STATIC_URL = "/clahub/static/"
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "CLAHub/assets"),)
+STATIC_ROOT = "/home/steve/html/static"
+LOGIN_REDIRECT_URL = "/clahub/CE"
+LOGOUT_REDIRECT_URL = "/clahub/CE"
+LOGIN_URL = "/clahub/accounts/login/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "data", "uploads")
+MEDIA_URL = "/clahub/uploads/"
 LOGIN_EVERYWHERE = False
-TAGGIT_TAGS_FROM_STRING = 'CE.OCM_categories.check_tags_for_OCM'
+TAGGIT_TAGS_FROM_STRING = "CE.OCM_categories.check_tags_for_OCM"
 FORCE_SCRIPT_NAME = "/clahub"
 
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
+    messages.DEBUG: "alert-info",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
 }
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
-    'formatters': {
-        'simple': {
-            'format': '%(message)s'
-        },
-        'complex': {
-            'format': '%(levelname)s %(asctime)s %(message)s'
-        }
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {"format": "%(message)s"},
+        "complex": {"format": "%(levelname)s %(asctime)s %(message)s"},
     },
-
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'Logs', 'CLAHub_log.txt'),
-            'formatter': 'complex'
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "Logs", "CLAHub_log.txt"),
+            "formatter": "complex",
         },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'level': 'DEBUG',
-            'formatter': 'simple'
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
         },
-        'debug_log': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'Logs', 'debug_log.txt'),
-            'formatter': 'simple'
+        "debug_log": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "Logs", "debug_log.txt"),
+            "formatter": "simple",
         },
-        'request_log': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'Logs', 'request_log.txt'),
-            'formatter': 'complex'
-        }
+        "request_log": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "Logs", "request_log.txt"),
+            "formatter": "complex",
+        },
     },
-
-    'loggers': {
-        'root': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-            'formatter': 'complex'
+    "loggers": {
+        "root": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True,
+            "formatter": "complex",
         },
-        'debug': {
-            'handlers': ['console', 'debug_log'],
-            'level': 'DEBUG',
-            'propagate': True,
-            'formatter': 'simple'
+        "debug": {
+            "handlers": ["console", "debug_log"],
+            "level": "DEBUG",
+            "propagate": True,
+            "formatter": "simple",
         },
-        'django.request': {
-            'handlers': ['request_log'],
-            'level': 'INFO',
-            'propagate': True,
-            'formatter': 'complex'
-        }
+        "django.request": {
+            "handlers": ["request_log"],
+            "level": "INFO",
+            "propagate": True,
+            "formatter": "complex",
+        },
     },
 }
+
+
+def load_lexicon(lexicon_path):
+    with open(lexicon_path, "r") as f:
+        lexicon = json.load(f)
+    print("lexicon = ", lexicon[0])
+    return lexicon
+
+
+try:
+    lexicon = load_lexicon("/home/steve/html/lexicon/lexicon.json")
+except FileNotFoundError:
+    print("going local for lexicon")
+    lexicon = load_lexicon("/home/steve/Documents/Computing/Python_projects/python_CLA/CLA_Hub/data/lexicon.json")

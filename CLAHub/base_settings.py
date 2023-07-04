@@ -181,12 +181,12 @@ LOGGING = {
 def load_lexicon(lexicon_path):
     with open(lexicon_path, "r") as f:
         lexicon = json.load(f)
-    print("lexicon = ", lexicon[0])
     return lexicon
 
+lexicon_web_address = "http://192.168.0.100/lexicon/main_dict.html"
 
 try:
     lexicon = load_lexicon("/home/steve/html/lexicon/lexicon.json")
 except FileNotFoundError:
-    print("going local for lexicon")
-    lexicon = load_lexicon("/home/steve/Documents/Computing/Python_projects/python_CLA/CLA_Hub/data/lexicon.json")
+    lexicon = load_lexicon("/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output/lexicon.json")
+

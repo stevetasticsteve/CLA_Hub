@@ -18,14 +18,27 @@ def conditional_login(func):
 def set_text_tags_attributes():
     """Set which html tags and attributes are allowable for showing in texts"""
     allowed_attributes = bleach.sanitizer.ALLOWED_ATTRIBUTES
-    allowed_tags = bleach.sanitizer.ALLOWED_TAGS
-    allowed_tags.append("span")
+
+    #: Set of allowed tags
+    allowed_tags = frozenset(
+        (
+            "a",
+            "abbr",
+            "acronym",
+            "b",
+            "blockquote",
+            "code",
+            "em",
+            "i",
+            "li",
+            "ol",
+            "strong",
+            "ul",
+            "span",
+        )
+    )
+
     allowed_attributes["span"] = ["class"]
-    allowed_tags.append("table")
-    allowed_attributes["table"] = ["thead"]
-    allowed_attributes["table"] = ["tr"]
-    allowed_attributes["table"] = ["th"]
-    allowed_attributes["table"] = ["td"]
     allowed_attributes["a"].append("onclick")
     allowed_attributes["a"].append("target")
     allowed_attributes["a"].append("rel")
@@ -83,7 +96,7 @@ def highlight_non_lexicon_words(text_obj):
         else:
             text = highlight_word(w, text, colour="green", lexicon=lex)
             total_words += 1
-    
+
     for w in words:
         text = add_tooltip(w, text)
     # report accuracy of transcription to text model
@@ -95,7 +108,7 @@ def highlight_non_lexicon_words(text_obj):
 def highlight_word(word, text, colour="red", lexicon=None):
     """Replace the given word in a text with the same word withn a span tag to colour it"""
     f = re.compile(
-        f"(^|[^a-z<>#])({word})($|[^a-z<>   -])"
+        f"(^|[^a-z<>#])({word})($|[^a-z<>-])"
     )  # attempt to avoid highlighting parts of words
     highlight = f'<span class="{colour}">'
 
@@ -129,7 +142,6 @@ def highlight_word(word, text, colour="red", lexicon=None):
                 ),
                 text,
             )
-            print(word)
     return text
 
 

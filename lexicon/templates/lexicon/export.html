@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+
+{% block page_content %}
+<div class="container">
+    <h1>Export</h1>
+
+    <div class="row my-4">
+    <div class="col-sm-6">
+        <div class="card mt-2">
+            <h5 class="card-header">Download .dic</h5>
+            <div class="card-body">
+                <p class="card-text">.dic files are used in LibreOffice and MS Word as dictionaries in spell check.
+                </p>
+                <a href="{% url 'lexicon:dic_download' %}" class="btn btn-primary">Download a .dic file </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card mt-2">
+            <h5 class="card-header">Download. json</h5>
+            <div class="card-body">
+                <p class="card-text">JSON files are easily machine readable. JSON will contain all the lexicon's information
+                    and is good to use when importing the lexicon into another program.
+                </p>
+                <a href="{% url 'lexicon:json_download' %}" class="btn btn-primary">Download a .json</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}

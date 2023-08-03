@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+{% load crispy_forms_tags %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form|crispy}}
+
+        {% if sense_form %}
+        <h3>Additional senses</h3>
+            {{sense_form|crispy}}
+        {% endif %}
+
+        {% if variation_form %}
+        <h3>Additional spelling</h3>
+            {{variation_form|crispy}}
+        {% endif %}
+        <button type="input" id="submit-btn" class="btn btn-primary">Submit</button>
+</div>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="container">
+
+    <div class="btn-group my-4" role="group">
+    <a href="{% url 'lexicon:main'%}"><button type="button" class="btn btn-primary">Return to Lexicon</button></a>
+    <a href="{% url 'lexicon:word-update' word.pk %}"><button type="button" class="btn btn-secondary">Update word</button></a>
+    <a href="{% url 'lexicon:word-add-sense' word.pk %}"><button type="button" class="btn btn-secondary">Add a sense</button></a>
+    <a href="{% url 'lexicon:word-add-spelling' word.pk %}"><button type="button" class="btn btn-secondary">Add a spelling</button></a>
+    <a href="{% url 'lexicon:word-delete' word.pk %}"><button type="button" class="btn btn-danger">Delete word</button></a> 
+    </div>
+
+    <h1 class="my-2">{{word}}</h1>
+
+    <div class="container p-2">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Details</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+            <th scope="row">English</th>
+            <td>{{word.eng}}</td>
+            </tr>
+
+            {% if word.tpi %}
+            <tr>
+            <th scope="row">Tok Pisin</th>
+            <td>{{word.tpi}}</td>
+            </tr>
+            {% endif %}
+
+            {% if word.matat %}
+            <tr>
+            <th scope="row">Matat</th>
+            <td>{{word.matat}}</td>
+            </tr>
+            {% endif %}
+
+            {% if word.pos %}
+            <tr>
+            <th scope="row">POS</th>
+            <td>{{word.pos}}</td>
+            </tr>
+            {% endif %}
+
+            {% if word_senses %}
+            <tr>
+            <th scope="row">Additional senses</th>
+            <td>
+                <ul class="list-unstyled">
+                {% for sense in word_senses %}
+                <li>{{sense.sense}}</li>
+                {% endfor %}
+                </ul>
+            </td>
+            </tr>
+            {% endif %}
+
+            {% if word.comments %}
+            <tr>
+            <th scope="row">Comments</th>
+            <td>{{word.comments}}</td>
+            </tr>
+            {% endif %}
+
+            <tr>
+            <th scope="row">Created</th>
+            <td>{{word.created}}</td>
+            </tr>
+
+            <tr>
+            <th scope="row">Last modified by</th>
+            <td>{{word.modified_by}}, {{word.modified}}</td>
+            </tr>
+
+            <tr>
+            <th scope="row">Checked</th>
+            {% if word.checked %}
+            <td>{% include 'lexicon/partial/green_tick.html' %}</td>
+            {% else %}
+            <td>Nope</td>
+            {% endif %}
+            </tr>
+
+            {% if word.review != "0" %}
+            <tr>
+            <th scope="row">Review</th>
+            <td><ul class="list-unstyled">
+                <li>{{word.get_review_display}}</li>
+                <li>{{word.review_comments}}</li>
+            </ul></td>
+            </tr>
+            {% endif %}
+
+
+            {% if spelling_variations %}
+            <tr>
+            <th scope="row">Spelling variations</th>
+            <td>
+                <ul class="list-unstyled">
+                {% for variation in spelling_variations %}
+                <li>{{variation.spelling_variation}}</li>
+                {% endfor %}
+                </ul>
+            </td>
+            </tr>
+            {% endif %}
+
+        </tbody>
+    </table>
+</div>
+
+
+    {% if spelling_variations %}
+        <h3 class="my-4">Spelling variations</h3>
+        <div class="container p-2">
+        {% for variation in spelling_variations %}
+            <li>{{variation.spelling_variation}}</li>
+        {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

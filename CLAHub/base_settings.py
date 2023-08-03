@@ -29,7 +29,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "CE",
     "people",
+    "lexicon",
     "taggit",
+    'crispy_forms',
+    'crispy_bootstrap4'
 ]
 
 MIDDLEWARE = [
@@ -114,6 +117,8 @@ MEDIA_URL = "/clahub/uploads/"
 LOGIN_EVERYWHERE = False
 TAGGIT_TAGS_FROM_STRING = "CE.OCM_categories.check_tags_for_OCM"
 FORCE_SCRIPT_NAME = "/clahub"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 MESSAGE_TAGS = {
     messages.DEBUG: "alert-info",
@@ -183,10 +188,12 @@ def load_lexicon(lexicon_path):
         lexicon = json.load(f)
     return lexicon
 
+
 lexicon_web_address = "http://192.168.0.100/lexicon/main_dict.html"
 
 try:
     lexicon = load_lexicon("/home/steve/html/lexicon/lexicon.json")
 except FileNotFoundError:
-    lexicon = load_lexicon("/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output/lexicon.json")
-
+    lexicon = load_lexicon(
+        "/home/steve/Documents/Computing/Python_projects/python_CLA/Lexicon/local_output/lexicon.json"
+    )

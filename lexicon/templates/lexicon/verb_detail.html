@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="container">
+
+    <div class="btn-group my-4" role="group">
+    <a href="{% url 'lexicon:main'%}"><button type="button" class="btn btn-primary">Return to Lexicon</button></a>
+    <a href="{% url 'lexicon:verb-update' word.pk %}"><button type="button" class="btn btn-secondary">Update verb</button></a>
+    <a href="{% url 'lexicon:verb-add-sense' word.pk %}"><button type="button" class="btn btn-secondary">Add a sense</button></a>
+    <a href="{% url 'lexicon:verb-add-spelling' word.pk %}"><button type="button" class="btn btn-secondary">Add a spelling variation</button></a>
+    {% if matat %}
+    <a href="{% url 'lexicon:verb-update-matat' matat.pk %}"><button type="button" class="btn btn-secondary">Edit Matat paradigm</button></a>
+    {% else %}
+    <a href="{% url 'lexicon:verb-create-matat' word.pk %}"><button type="button" class="btn btn-secondary">Add a Matat paradigm</button></a>
+    {% endif %}
+    <a href="{% url 'lexicon:verb-delete' word.pk %}"><button type="button" class="btn btn-danger">Delete Verb</button></a> 
+    </div>
+
+    <h1 class="my-2">{{word}}</h1>
+
+    {% include 'lexicon/partial/paradigm.html' %}
+
+    <div class="container p-2">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Details</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+            <th scope="row">English</th>
+            <td>{{word.eng}}</td>
+            </tr>
+
+            {% if word.tpi %}
+            <tr>
+            <th scope="row">Tok Pisin</th>
+            <td>{{word.tpi}}</td>
+            </tr>
+            {% endif %}
+
+            {% if verb_senses %}
+            <tr>
+            <th scope="row">Additional senses</th>
+            <td>
+                <ul class="list-unstyled">
+                {% for sense in verb_senses %}
+                <li>{{sense.sense}}</li>
+                {% endfor %}
+                </ul>
+            </td>
+            </tr>
+            {% endif %}
+
+            {% if spelling_variations %}
+            <tr>
+            <th scope="row">Additional Spelling</th>
+            <td>
+                <ul class="list-unstyled">
+                {% for spelling in spelling_variations %}
+                <li>{{spelling.get_conjugation_display}}: {{spelling.spelling_variation}}</li>
+                {% endfor %}
+                </ul>
+            </td>
+            </tr>
+            {% endif %}
+
+            {% if word.pos %}
+            <tr>
+            <th scope="row">POS</th>
+            <td>{{word.pos}}</td>
+            </tr>
+            {% endif %}
+
+
+            {% if word.comments %}
+            <tr>
+            <th scope="row">Comments</th>
+            <td>{{word.comments}}</td>
+            </tr>
+            {% endif %}
+
+
+            <tr>
+            <th scope="row">Checked</th>
+            {% if word.checked %}
+            <td>{% include 'lexicon/partial/green_tick.html' %}</td>
+            {% else %}
+            <td>Nope</td>
+            {% endif %}
+            </tr>
+
+            {% if word.review != "0" %}
+            <tr>
+            <th scope="row">Review</th>
+            <td><ul class="list-unstyled">
+                <li>{{word.get_review_display}}</li>
+                <li>{{word.review_comments}}</li>
+            </ul></td>
+            </tr>
+            {% endif %}
+
+            <tr>
+            <th scope="row">Created</th>
+            <td>{{word.created}}</td>
+            </tr>
+
+            <tr>
+            <th scope="row">Last modified by</th>
+            <td>{{word.modified_by}}, {{word.modified}}</td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+    {% if matat %}
+    <div class="container bg-light p-4 my-4">
+        <h1>Matat paradigm</h1>
+        {% with matat as word %}
+        {% include 'lexicon/partial/paradigm.html' %}
+        {% endwith %}
+    <a href="{% url 'lexicon:verb-delete-matat' matat.pk %}">Delete matat</a>
+    {% endif %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+<div class="container pt-2">
+<h3 class="headword" id="{{word.kgu}}"><a href="{% url 'lexicon:word-detail' word.pk %}">{{word.kgu}}</a>
+    {% if word.checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}</h3>
+
+    <p>
+    {% if word.pos %} <strong>{{word.pos}}</strong> {% endif %}
+    <strong class="english"><em style="color:dodgerblue">{{word.eng}}</em></strong>
+    <strong style="color:gray">{{word.tpi}}</strong>
+    </p>
+    {% if word.comment %}
+        <ul>{{word.comment}}</ul>
+    {% endif %}
+</div>

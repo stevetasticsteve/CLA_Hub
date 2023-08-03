@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<head>
+    <title>Lexicon</title>
+</head>
+
+<body>
+    {% include 'lexicon/partial/header.html' %}
+
+    <div class="btn-group p-4" role="group">
+    <a href="{% url 'lexicon:word-create'%}"><button type="button" class="btn btn-secondary">Add a word</button></a>
+    <a href="{% url 'lexicon:verb-create' %}"><button type="button" class="btn btn-secondary">Add a verb</button></a>
+
+    </div>
+
+    <div class="container-fluid mb-4 pb-4" id="entries">
+
+        {% for letter, words in lexicon.items %}
+        <div class="main_pane_letter">
+            <div class="container-fluid letter text-center bg-light">
+                <hr>
+                    <h1 id="{{letter}}">{{letter}}</h1>
+                <hr>    
+            </div>
+
+            {% for word in words %}
+            <div class="entry col-sm-6 border-right border-bottom my-auto">
+                {% if word.type == "word" %}
+                    {% include 'lexicon/partial/entry.html' %}
+                {% elif word.type == "verb" %}
+                    {% include 'lexicon/partial/verb_entry.html' %}
+                {% endif %}
+            </div>
+             {% endfor %}
+        </div>
+        {% endfor %}
+
+    </div>
+    <footer class="footer text-center bg-dark fixed-bottom py-2">
+        <a class="text-light" href="#top">Jump to top</a>
+    </footer>
+</body>
+
+{% endblock %}  

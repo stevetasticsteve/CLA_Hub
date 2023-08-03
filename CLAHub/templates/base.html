@@ -11,6 +11,7 @@
       <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" type="text/css">
       <link rel="stylesheet" href="{% static 'bootstrap/css/tagsinput.css' %}" type="text/css">
       <link rel="stylesheet" href="{% static 'clahub.css' %}" type="text/css">
+      <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}" type="text/css">
 
 
   </head>
@@ -38,21 +39,17 @@
         </div>
       </li>
 
-      <a class="nav-item nav-link" href="{% url 'CE:questions_chron' %}">Questions <span class="sr-only"></span></a>
       <a class="nav-item nav-link" href="{% url 'CE:OCM_home' %}">Culture <span class="sr-only"></span></a>
 
-       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="{% url 'CE:texts_home' %}" id="textDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Texts
-        </a>
-        <div class="dropdown-menu" aria-labelledby="textDropdown">
-          <a class="dropdown-item" href="{% url 'CE:texts_home' %}">Texts Home</a>
-          <a class="dropdown-item" href="{% url 'CE:text_genre' 1 %}">Narrative</a>
-          <a class="dropdown-item" href="{% url 'CE:text_genre' 2 %}">Hortatory</a>
-            <a class="dropdown-item" href="{% url 'CE:text_genre' 3 %}">Procedural</a>
-            <a class="dropdown-item" href="{% url 'CE:text_genre' 4 %}">Expository</a>
-            <a class="dropdown-item" href="{% url 'CE:text_genre' 5 %}">Descriptive</a>
-        </div>
+      <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="{% url 'lexicon:main' %}" id="lexiconDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lexicon <span class="sr-only"></span></a>
+      <div class="dropdown-menu" aria-labelledby="lexiconDropdown">
+      <a class="dropdown-item" href="{% url 'lexicon:main' %}">Imengis <span class="sr-only"></span></a>
+      <a class="dropdown-item" href="{% url 'lexicon:matat' %}">Matat <span class="sr-only"></span></a>
+      <a class="dropdown-item" href="{% url 'lexicon:review-now' %}">Review list <span class="sr-only"></span></a>
+      <a class="dropdown-item" href="{% url 'lexicon:review-literacy' %}">Literacy review list <span class="sr-only"></span></a>
+      <a class="dropdown-item" href="{% url 'lexicon:export' %}">Export <span class="sr-only"></span></a>
+      </div>
       </li>
 
       <a class="nav-item nav-link" href="{% url 'CE:list_tags' %}">Tags <span class="sr-only"></span></a>
@@ -95,7 +92,7 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="{% static 'jquery/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'jquery/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.tagsinput.js' %}"></script>

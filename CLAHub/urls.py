@@ -25,6 +25,7 @@ urlpatterns = [
     path("tools/import-profiles", views.import_profiles, name="import_profiles"),
     path("CE/", include("CE.urls")),
     path("people/", include("people.urls")),
+    path("lexicon/", include("lexicon.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("", views.home, name="home"),
     path("help/markdown", views.markdown, name="markdown"),

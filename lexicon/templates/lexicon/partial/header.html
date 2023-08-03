@@ -1,0 +1,25 @@
+<form>
+    <div class="row p-4 bg-light">
+        <div class="col-11" id="radio-group">
+             <input type="text" class="form-control" id="filter" placeholder="Search">
+        </div>
+        <div class="col-1">
+             <div class="form-check">
+                <input class="form-check-input" type="radio" name="radio_select" id="kovol_radio" value="Kovol" checked>
+                <label class="form-check-label" for="kovol_radio">
+                    Kovol
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radio_select" id="english_radio" value="English">
+                <label class="form-check-label" for="english_radio">
+                    English
+                </label>
+           </div>
+
+        </div>
+    </div>
+</form>
+
+{% include 'lexicon/partial/filter_js.html' %}
+

@@ -1,0 +1,22 @@
+{# template for a lang-eng entry. Includes sense information #}
+
+<h3 class="headword" id="{{entry.headword}}">{{entry.headword}}
+    {% if entry.checked %} {% include "partial/green_tick.html" %} {% endif %}</h3>
+
+{% for sense in entry.entry %}
+    <p>
+    {{sense.sense}} <strong>{{sense.pos}}</strong>
+    <strong class="english"><em style="color:dodgerblue">{{sense.english}}</em></strong>
+    <strong style="color:gray">{{sense.tok_pisin}}</strong>
+    </p>
+    {%- if sense.definition -%}
+        <ul>{{sense.definition}}</ul>
+    {%- endif -%}
+
+    {%- if sense.example -%}
+        <dl class="row">
+        <dt class="col-sm-3">{{sense.example}}</dt>
+        <dd class="col-sm-3">{{sense.example_translation}}</dd>
+        </dl>
+    {%- endif -%}
+{% endfor %}

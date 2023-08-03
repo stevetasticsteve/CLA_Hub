@@ -1,0 +1,157 @@
+<div class="verb_paradigm">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Past</th>
+                <th scope="col">Present</th>
+                <th scope="col">Future</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1s</th>
+                <td class="headword">{{ verb.past_1s }}
+                    {% if verb.past_1s in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.present_1s }}
+                    {% if verb.present_1s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                </td>
+                <td class="headword">{{ verb.future_1s }}
+                    {% if verb.future_1s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">2s</th>
+                <td class="headword"> {{ verb.past_2s }}
+                    {% if verb.past_2s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                </td>
+                <td class="headword">{{ verb.present_2s }}
+                    {% if verb.present_2s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                </td>
+                <td class="headword">{{ verb.future_2s }}
+                    {% if verb.future_2s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">3s</th>
+                <td class="headword">{{ verb.past_3s }}
+                    {% if verb.past_3s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                </td>
+                <td class="headword">{{ verb.present_3s }}
+                    {% if verb.present_3s in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.future_3s }}
+                    {% if verb.future_3s in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">1p</th>
+                <td class="headword">{{ verb.past_1p }}
+                    {% if verb.past_1p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.present_1p }}
+                    {% if verb.present_1p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.future_1p }}
+                    {% if verb.future_1p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">2p</th>
+                <td class="headword">{{ verb.past_2p }}
+                    {% if verb.past_2p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.present_2p }}
+                    {% if verb.present_2p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.future_2p }}
+                    {% if verb.future_2p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">3p</th>
+                <td class="headword">{{ verb.past_3p }}
+                    {% if verb.past_3p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.present_3p }}
+                    {% if verb.present_3p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+                <td class="headword">{{ verb.future_3p }}
+                    {% if verb.future_3p in verb.checked %} {% include "partial/green_tick.html" %}  {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div class="row">
+        <div class="col-sm-2 mt-2 border p-1">
+            <strong>Imperatives</strong>
+            <div class="mt-2">
+                <ul class="headword">2s: {{
+                    verb.singular_imperative }}</ul>
+                <ul class="headword">2p: {{ verb.plural_imperative}}
+                    {% if verb.plural_imperative in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% if verb.enclitic_1s + verb.enclitic_2s + verb.enclitic_1p + verb.enclitic_2p + verb.enclitic_same_actor %}
+        <div class="col-sm-4 mt-2 border p-1">
+            <strong>Enclitics</strong>
+            <div class="row mt-2">
+                <div class="col-sm-6">
+                    <table class="table">
+                        <tr>
+                            <th scope="row">1s</th>
+                            <td class="headword">{{verb.enclitic_1s}}
+                                {% if verb.enclitic_1s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2s/3s</th>
+                            <td class="headword">{{verb.enclitic_2s}}
+                                {% if verb.enclitic_2s in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-6">
+                    <table class="table">
+                        <tr>
+                            <th scope="row">1p</th>
+                            <td class="headword">{{verb.enclitic_1p}}
+                                {% if verb.enclitic_1p in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2p/3p</th>
+                            <td class="headword">{{verb.enclitic_2p}}
+                                {% if verb.enclitic_2ps in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">same actor</th>
+                            <td class="headword">{{verb.enclitic_same_actor}}
+                                {% if verb.enclitic_same_actor in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    
+        {% if verb.nominalizer %}
+        <div class="col-sm-3 mt-2 border p-1">
+            <strong>Nominalizer</strong>
+            <ul>{{verb.nominalizer}}
+                {% if verb.nominalizer in verb.checked %} {% include "partial/green_tick.html" %} {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    
+    </div>
+    <br>
+</div>
+

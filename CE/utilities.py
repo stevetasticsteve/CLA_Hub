@@ -1,11 +1,12 @@
-from django.contrib.auth.decorators import login_required
-import CLAHub.base_settings
+import datetime
+import re
+import time
 
 import bleach
 import markdown
-import re
-import time
-import datetime
+from django.contrib.auth.decorators import login_required
+
+import CLAHub.base_settings
 
 
 def conditional_login(func):
@@ -16,7 +17,8 @@ def conditional_login(func):
 
 
 def set_text_tags_attributes():
-    """Set which html tags and attributes are allowable for showing in texts"""
+    """Set which html tags and attributes are allowable for showing in
+    texts."""
     allowed_attributes = bleach.sanitizer.ALLOWED_ATTRIBUTES
 
     #: Set of allowed tags
@@ -48,7 +50,8 @@ def set_text_tags_attributes():
 
 
 def hyperlink_timestamps(id, text):
-    """add auto links for text timestamps, needs the text and the text object id"""
+    """Add auto links for text timestamps, needs the text and the text object
+    id."""
     time_stamp_re = re.compile("\d:\d\d:\d\d(?!<)")
     while re.search(time_stamp_re, text):
         match = re.search(time_stamp_re, text)
@@ -65,7 +68,8 @@ def hyperlink_timestamps(id, text):
 
 
 def highlight_non_lexicon_words(text_obj):
-    """Compare each word to the csv word list from lexicon, highlighting any in red not found"""
+    """Compare each word to the csv word list from lexicon, highlighting any in
+    red not found."""
     words = find_words_in_text(text_obj.orthographic_text.lower())
     # go through whole text and highlight any words notin lexicon
     text = text_obj.orthographic_text.lower()
@@ -106,7 +110,8 @@ def highlight_non_lexicon_words(text_obj):
 
 
 def highlight_word(word, text, colour="red", lexicon=None):
-    """Replace the given word in a text with the same word withn a span tag to colour it"""
+    """Replace the given word in a text with the same word withn a span tag to
+    colour it."""
     f = re.compile(
         f"(^|[^a-z<>#])({word})($|[^a-z<>-])"
     )  # attempt to avoid highlighting parts of words
@@ -146,7 +151,7 @@ def highlight_word(word, text, colour="red", lexicon=None):
 
 
 def add_tooltip(word, text):
-    """Add a data-tooltip css attribute to any anchors"""
+    """Add a data-tooltip css attribute to any anchors."""
     # find the lexicon entry to get english for tooltip
     lex = [l for l in CLAHub.base_settings.lexicon if l["kgu"] == word]
     if lex:
@@ -174,8 +179,11 @@ def add_tooltip(word, text):
 
 
 def find_words_in_text(text):
-    """Split the given text into a list of individual words. Ignore words starting with numbers (timestamps),
-    or words in brackets"""
+    """Split the given text into a list of individual words.
+
+    Ignore words starting with numbers (timestamps), or words in
+    brackets
+    """
     # remove anything in brackets from the lexicon comparison
     brackets = re.findall(re.compile(r"\([^\)]+\)"), text)
     for b in brackets:

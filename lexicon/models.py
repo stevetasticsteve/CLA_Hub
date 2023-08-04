@@ -4,10 +4,14 @@ from django.core.validators import RegexValidator
 
 import re
 
-# TODO. -oogot, updated modified_by on POST, version history, synonoms
 
 kovol_text_validator = RegexValidator(
     regex="^[ieauowtyplkhgdsbnm]+$",
+    message="You must only use letters in the Kovol orthography",
+    flags=re.IGNORECASE,
+)
+kovol_phrase_validator = RegexValidator(
+    regex="^[ieauowtyplkhgdsbnm]+ [ieauowtyplkhgdsbnm]+$",
     message="You must only use letters in the Kovol orthography",
     flags=re.IGNORECASE,
 )
@@ -24,8 +28,7 @@ no_symbols_validator = RegexValidator(
 
 
 class LexiconEntry(models.Model):
-    "A base class other models can inherit from"
-    # defintions
+    "A base class other models can inherit from."
     eng = models.CharField(
         verbose_name="English",
         max_length=35,
@@ -71,6 +74,57 @@ class LexiconEntry(models.Model):
         self.eng = self.eng.lower()
         self.tpi = self.tpi.lower()
         return super(LexiconEntry, self).save(*args, **kwargs)
+
+    def __str__(self):
+        try:
+            return f'{self.kovolword.kgu}: "{self.eng}" - word'
+        except AttributeError:
+            pass
+        try:
+            return f'{self.lexiconverbentry.imengisverb}, "{self.eng}" - verb'
+        except AttributeError:
+            return "Phrase, ignore"
+
+
+class PhraseEntry(LexiconEntry):
+    """Enter phrases that link to another entry, not included in spellcheck."""
+
+    linked_word = models.ForeignKey(
+        LexiconEntry,
+        on_delete=models.SET_NULL,
+        related_name="phrase",
+        help_text="Which word in the phrase is most prominant? This phrase will be "
+        "listed under that word's entry",
+        blank=False,
+        null=True,
+    )
+    kgu = models.CharField(
+        max_length=100,
+        validators=[kovol_phrase_validator],
+        null=False,
+        blank=False,
+        verbose_name="phrase text",
+        help_text="Write the phrase here. Phrases involving verbs "
+        "should use the 1s future conjugation",
+    )
+    pos = models.CharField(max_length=6, null=False, editable=False, default="phrase")
+    matat = models.CharField(
+        verbose_name="Matat",
+        max_length=25,
+        blank=True,
+        null=True,
+        validators=[kovol_phrase_validator],
+    )
+
+    def __str__(self):
+        return f"Phrase: {self.phrase}"
+
+    def save(self, *args, **kwargs):
+        self.kgu = self.kgu.lower()
+        return super(PhraseEntry, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("lexicon:phrase-detail", args=[self.pk])
 
 
 class LexiconVerbEntry(LexiconEntry):

@@ -7,17 +7,36 @@ import lexicon.word_views
 app_name = "lexicon"
 
 urlpatterns = [
-    path("main/", lexicon.views.LexiconView.as_view(), name="main"),
-    path("matat/", lexicon.views.MatatView.as_view(), name="matat"),
-    path("review-now/", lexicon.views.ReviewListView.as_view(), name="review-now"),
+    # general
+    path("main", lexicon.views.LexiconView.as_view(), name="main"),
+    path("matat", lexicon.views.MatatView.as_view(), name="matat"),
+    path("review-now", lexicon.views.ReviewListView.as_view(), name="review-now"),
     path(
-        "review-literacy/",
+        "review-literacy",
         lexicon.views.ReviewLiteracyView.as_view(),
         name="review-literacy",
     ),
     path("export/", lexicon.views.ExportView.as_view(), name="export"),
-    path("download-dic/", lexicon.views.download_dic, name="dic_download"),
-    path("download-json/", lexicon.views.download_json, name="json_download"),
+    path("download-dic", lexicon.views.download_dic, name="dic_download"),
+    path("download-json", lexicon.views.download_json, name="json_download"),
+    # phrases
+    path("phrase/create", lexicon.views.CreatePhrase.as_view(), name="phrase-create"),
+    path(
+        "phrase/<int:pk>/detail",
+        lexicon.views.PhraseDetail.as_view(),
+        name="phrase-detail",
+    ),
+    path(
+        "phrase/<int:pk>/update",
+        lexicon.views.UpdatePhrase.as_view(),
+        name="phrase-update",
+    ),
+    path(
+        "phrase/<int:pk>/delete",
+        lexicon.views.DeletePhrase.as_view(),
+        name="phrase-delete",
+    ),
+    # verbs
     path(
         "verb/<int:pk>/detail",
         lexicon.verb_views.VerbDetailView.as_view(),
@@ -61,6 +80,7 @@ urlpatterns = [
         lexicon.verb_views.DeleteMatatVerbView.as_view(),
         name="verb-delete-matat",
     ),
+    # words
     path(
         "word/<int:pk>/detail",
         lexicon.word_views.WordDetailView.as_view(),

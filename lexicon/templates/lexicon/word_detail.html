@@ -112,6 +112,19 @@
             </tr>
             {% endif %}
 
+            {% if phrases %}
+            <tr>
+                <th scope="row">Phrases</th>
+                <td>
+                    <ul class="list-unstyled">
+                    {% for phrase in phrases %}
+                    <li><a href="{% url 'lexicon:phrase-detail' phrase.pk %}">{{phrase.kgu}} </a>, "{{phrase.eng}}"</li>
+                    {% endfor %}
+                </ul>
+                </td>
+            </tr>
+            {% endif %}
+
         </tbody>
     </table>
 </div>

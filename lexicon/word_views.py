@@ -48,6 +48,8 @@ class WordDetailView(DetailView):
         context[
             "spelling_variations"
         ] = models.KovolWordSpellingVariation.objects.filter(word=self.object)
+        context["phrases"] = models.PhraseEntry.objects.filter(linked_word=self.object)
+
         return context
 
 

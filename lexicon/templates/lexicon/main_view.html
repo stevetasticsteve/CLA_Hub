@@ -11,6 +11,7 @@
     <div class="btn-group p-4" role="group">
     <a href="{% url 'lexicon:word-create'%}"><button type="button" class="btn btn-secondary">Add a word</button></a>
     <a href="{% url 'lexicon:verb-create' %}"><button type="button" class="btn btn-secondary">Add a verb</button></a>
+    <a href="{% url 'lexicon:phrase-create' %}"><button type="button" class="btn btn-secondary">Add a phrase</button></a>
 
     </div>
 
@@ -26,7 +27,7 @@
 
             {% for word in words %}
             <div class="entry col-sm-6 border-right border-bottom my-auto">
-                {% if word.type == "word" %}
+                {% if word.type == "word" or word.type == "phrase" %}
                     {% include 'lexicon/partial/entry.html' %}
                 {% elif word.type == "verb" %}
                     {% include 'lexicon/partial/verb_entry.html' %}

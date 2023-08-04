@@ -1,5 +1,10 @@
 <div class="container pt-2">
-<h3 class="headword" id="{{word.kgu}}"><a href="{% url 'lexicon:word-detail' word.pk %}">{{word.kgu}}</a>
+<h3 class="headword" id="{{word.kgu}}">
+    {% if word.type == "word" %}
+    <a href="{% url 'lexicon:word-detail' word.pk %}">{{word.kgu}}</a>
+    {% elif word.type == "phrase" %}
+    <a href="{% url 'lexicon:phrase-detail' word.pk %}">{{word.kgu}}</a>
+    {% endif %}
     {% if word.checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}</h3>
 
     <p>

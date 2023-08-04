@@ -39,6 +39,7 @@ class VerbDetailView(DetailView):
         context["matat"] = models.MatatVerb.objects.filter(
             imengis_verb=self.object
         ).first()
+        context["phrases"] = models.PhraseEntry.objects.filter(linked_word=self.object)
         return context
 
 

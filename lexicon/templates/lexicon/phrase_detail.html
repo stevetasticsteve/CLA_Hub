@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+
+<div class="container">
+    <div class="btn-group my-4" role="group">
+    <a href="{% url 'lexicon:main'%}"><button type="button" class="btn btn-primary">Return to Lexicon</button></a>
+    <a href="{% url 'lexicon:phrase-update' phrase.pk %}"><button type="button" class="btn btn-secondary">Update phrase</button></a>
+    <a href="{% url 'lexicon:phrase-delete' phrase.pk %}"><button type="button" class="btn btn-danger">Delete phrase</button></a> 
+    </div>
+
+    <h1>{{phrase.kgu}}</h1>
+
+
+    <div class="container p-2">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Details</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        <tr>
+            <th scope="row">English</th>
+            <td>{{phrase.eng}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Tok Pisin</th>
+            <td>{{phrase.tpi}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Linked to</th>
+            
+            <td>
+            {% if phrase.linked_word.lexiconverbentry.imengisverb.pos == "v" %}
+            <a href="{% url 'lexicon:verb-detail' phrase.linked_word.pk%}">{{phrase.linked_word.lexiconverbentry.imengisverb.future_1s}}</a>
+            {% else %}
+            <a href="{% url 'lexicon:word-detail' phrase.linked_word.pk%}">{{phrase.linked_word.kovolword.kgu}}</a>
+            {% endif %}
+            </td>
+        </tr>
+        {% if phrase.matat %}
+        <tr>
+            <th scope="row">Matat</th>
+            <td>{{phrase.matat}}</td>
+        </tr>
+        {% endif %}
+
+        <tr>
+            <th scope="row">Created</th>
+            <td>{{phrase.created}}</td>
+            </tr>
+
+            <tr>
+            <th scope="row">Last modified by</th>
+            <td>{{phrase.modified_by}}, {{phrase.modified}}</td>
+            </tr>
+        </tbody>
+        </table>
+
+
+</div>
+
+{% endblock %}

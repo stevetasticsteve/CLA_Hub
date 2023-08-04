@@ -1,15 +1,26 @@
-from typing import Any, Dict
 from django.shortcuts import render
 from django.views import View
 from django.views.generic.list import ListView
 from django.http import FileResponse
 from django.forms.models import model_to_dict
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic import DetailView
+from django.urls import reverse_lazy
 
 
 from lexicon import models
 
 import os
 import json
+
+phrase_fields = [
+    "kgu",
+    "linked_word",
+    "eng",
+    "tpi",
+    "matat",
+    "comments"
+]
 
 
 def get_lexicon_entries(matat_filter=False):
@@ -25,23 +36,28 @@ def get_db_models(matat_filter):
     if matat_filter:
         words = models.KovolWord.objects.exclude(matat__isnull=True)
         verbs = models.MatatVerb.objects.all()
-        # verbs = [v.imengis_verb for v in verbs]
+        phrases = models.PhraseEntry.objects.exclude(matat__isnull=True)
     else:
         words = models.KovolWord.objects.all()
         verbs = models.ImengisVerb.objects.all()
+        phrases = models.PhraseEntry.objects.all()
 
     for w in words:
         w.type = "word"
     for v in verbs:
         v.type = "verb"
+    for p in phrases:
+        p.type = "phrase"
 
     if matat_filter:
         for w in words:
             w.kgu = w.matat
         for v in verbs:
             v.pk = v.imengis_verb.pk
+        for p in phrases:
+            p.kgu = p.matat
 
-    lexicon = [w for w in words] + [v for v in verbs]
+    lexicon = [w for w in words] + [v for v in verbs] + [p for p in phrases]
     return sorted(lexicon, key=lambda x: str(x))
 
 
@@ -110,6 +126,35 @@ class ReviewLiteracyView(ReviewList):
 class ExportView(View):
     def get(self, request):
         return render(request, "./lexicon/export.html")
+
+
+class CreatePhrase(CreateView):
+    model = models.PhraseEntry
+    fields = phrase_fields
+    template_name = "lexicon/simple_form.html"
+
+
+class PhraseDetail(DetailView):
+    model = models.PhraseEntry
+    context_object_name = "phrase"
+    template_name = "lexicon/phrase_detail.html"
+
+
+class UpdatePhrase(UpdateView):
+    model = models.PhraseEntry
+    fields = phrase_fields
+    template_name = "lexicon/simple_form.html"
+
+    def form_valid(self, form, **kwargs):
+        self.object.modified_by = self.request.user.username
+        return super().form_valid(form, **kwargs)
+
+
+class DeletePhrase(DeleteView):
+    model = models.PhraseEntry
+    fields = None
+    template_name = "lexicon/confirm_word_delete.html"
+    success_url = success_url = reverse_lazy("lexicon:main")
 
 
 def serve_file(file):

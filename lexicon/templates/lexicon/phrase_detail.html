@@ -6,8 +6,11 @@
     <div class="btn-group my-4" role="group">
     <a href="{% url 'lexicon:main'%}"><button type="button" class="btn btn-primary">Return to Lexicon</button></a>
     <a href="{% url 'lexicon:phrase-update' phrase.pk %}"><button type="button" class="btn btn-secondary">Update phrase</button></a>
+    <a href="{% url 'lexicon:phrase-add-sense' phrase.pk %}"><button type="button" class="btn btn-secondary">Add a sense</button></a>
+    <a href="{% url 'lexicon:phrase-add-spelling' phrase.pk %}"><button type="button" class="btn btn-secondary">Add a spelling</button></a>
     <a href="{% url 'lexicon:phrase-delete' phrase.pk %}"><button type="button" class="btn btn-danger">Delete phrase</button></a> 
     </div>
+
 
     <h1>{{phrase.kgu}}</h1>
 
@@ -26,6 +29,18 @@
             <th scope="row">English</th>
             <td>{{phrase.eng}}</td>
         </tr>
+        {% if phrase_senses %}
+            <tr>
+            <th scope="row">Additional senses</th>
+            <td>
+                <ul class="list-unstyled">
+                {% for sense in phrase_senses %}
+                <li>{{sense.sense}}</li>
+                {% endfor %}
+                </ul>
+            </td>
+            </tr>
+            {% endif %}
         <tr>
             <th scope="row">Tok Pisin</th>
             <td>{{phrase.tpi}}</td>
@@ -49,6 +64,20 @@
             <td>{{phrase.matat}}</td>
         </tr>
         {% endif %}
+
+        {% if spelling_variations %}
+            <tr>
+            <th scope="row">Spelling variations</th>
+            <td>
+                <ul class="list-unstyled">
+                {% for variation in spelling_variations %}
+                <li>{{variation.spelling_variation}}</li>
+                {% endfor %}
+                </ul>
+            </td>
+            </tr>
+            {% endif %}
+
 
         <tr>
             <th scope="row">Created</th>

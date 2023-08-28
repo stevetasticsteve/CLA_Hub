@@ -134,6 +134,46 @@ class PhraseEntry(LexiconEntry):
         return reverse("lexicon:phrase-detail", args=[self.pk])
 
 
+class PhraseSense(models.Model):
+    """A linked entry to KovolWord to track additional senses."""
+
+    phrase = models.ForeignKey(
+        PhraseEntry, on_delete=models.CASCADE, related_name="senses"
+    )
+    sense = models.CharField(
+        verbose_name="sense",
+        max_length=45,
+        blank=False,
+        null=False,
+        help_text="write the English for the additional sense here",
+        validators=[no_symbols_validator],
+    )
+
+    def get_absolute_url(self):
+        """Return the detail page if asked for a specific url for an entry."""
+        return reverse("lexicon:phrase-detail", args=[self.phrase.pk])
+
+
+class PhraseSpellingVariation(models.Model):
+    """A linked entry to KovolWord to track spelling variations."""
+
+    phrase = models.ForeignKey(
+        PhraseEntry, on_delete=models.CASCADE, related_name="spelling_variation"
+    )
+    spelling_variation = models.CharField(
+        verbose_name="spelling variation",
+        max_length=45,
+        blank=False,
+        null=False,
+        help_text="write the spelling variation here",
+        validators=[kovol_phrase_validator],
+    )
+
+    def get_absolute_url(self):
+        """Return the detail page if asked for a specific url for an entry."""
+        return reverse("lexicon:phrase-detail", args=[self.phrase.pk])
+
+
 class LexiconVerbEntry(LexiconEntry):
     """A Kovol verb and all it's conjugations. Inherited by Imengis and Matat."""
 

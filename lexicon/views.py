@@ -1,26 +1,19 @@
-from django.shortcuts import render
-from django.views import View
-from django.views.generic.list import ListView
-from django.http import FileResponse
-from django.forms.models import model_to_dict
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.views.generic import DetailView
-from django.urls import reverse_lazy
+import json
+import os
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms.models import model_to_dict
+from django.http import FileResponse
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.list import ListView
 
 from lexicon import models
 
-import os
-import json
-
-phrase_fields = [
-    "kgu",
-    "linked_word",
-    "eng",
-    "tpi",
-    "matat",
-    "comments"
-]
+phrase_fields = ["kgu", "linked_word", "eng", "tpi", "matat", "comments"]
 
 
 def get_lexicon_entries(matat_filter=False):
@@ -99,11 +92,18 @@ class ReviewList(ListView):
     def get_review_entries(self, review_id):
         words = models.KovolWord.objects.filter(review=review_id)
         verbs = models.ImengisVerb.objects.filter(review=review_id)
+        phrases = models.PhraseEntry.objects.filter(review=review_id)
+
         for w in words:
             w.type = "word"
         for v in verbs:
             v.type = "verb"
-        list_ = sorted([w for w in words] + [v for v in verbs], key=lambda x: str(x))
+        for p in phrases:
+            p.type = "phrase"
+        list_ = sorted(
+            [w for w in words] + [v for v in verbs] + [p for p in phrases],
+            key=lambda x: str(x),
+        )
         return list_
 
 
@@ -139,6 +139,16 @@ class PhraseDetail(DetailView):
     context_object_name = "phrase"
     template_name = "lexicon/phrase_detail.html"
 
+    def get_context_data(self, **kwargs):
+        """Add senses and variations for the template to use."""
+        context = super().get_context_data(**kwargs)
+        context["phrase_senses"] = models.PhraseSense.objects.filter(phrase=self.object)
+        context["spelling_variations"] = models.PhraseSpellingVariation.objects.filter(
+            phrase=self.object
+        )
+
+        return context
+
 
 class UpdatePhrase(UpdateView):
     model = models.PhraseEntry
@@ -155,6 +165,41 @@ class DeletePhrase(DeleteView):
     fields = None
     template_name = "lexicon/confirm_word_delete.html"
     success_url = success_url = reverse_lazy("lexicon:main")
+
+
+class DeleteWordView(LoginRequiredMixin, DeleteView):
+    """The view at url word/1/delete. Deletes a word."""
+
+    model = models.KovolWord
+    fields = None
+    template_name = "lexicon/confirm_word_delete.html"
+    success_url = success_url = reverse_lazy("lexicon:main")
+
+
+class CreatePhraseSenseView(LoginRequiredMixin, CreateView):
+    """The view at url word/1/add-sense. Adds a sense to a word."""
+
+    model = models.PhraseSense
+    fields = ["sense"]
+    template_name = "lexicon/simple_form.html"
+
+    def form_valid(self, form):
+        """Give the Foreign key of the word to the form."""
+        form.instance.phrase = models.PhraseEntry.objects.get(pk=self.kwargs["pk"])
+        return super().form_valid(form)
+
+
+class CreatePhraseVariationView(LoginRequiredMixin, CreateView):
+    """The view at url word/1/add-spelling. Adds a spelling variation to a word."""
+
+    model = models.PhraseSpellingVariation
+    fields = ["spelling_variation"]
+    template_name = "lexicon/simple_form.html"
+
+    def form_valid(self, form):
+        """Give the Foreign key of the word to the form."""
+        form.instance.phrase = models.PhraseEntry.objects.get(pk=self.kwargs["pk"])
+        return super().form_valid(form)
 
 
 def serve_file(file):

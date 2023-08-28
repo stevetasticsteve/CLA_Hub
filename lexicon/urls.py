@@ -36,6 +36,16 @@ urlpatterns = [
         lexicon.views.DeletePhrase.as_view(),
         name="phrase-delete",
     ),
+    path(
+        "phrase/<int:pk>/add-sense",
+        lexicon.views.CreatePhraseSenseView.as_view(),
+        name="phrase-add-sense",
+    ),
+    path(
+        "phrase/<int:pk>/add-spelling",
+        lexicon.views.CreatePhraseVariationView.as_view(),
+        name="phrase-add-spelling",
+    ),
     # verbs
     path(
         "verb/<int:pk>/detail",

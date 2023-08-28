@@ -11,7 +11,13 @@ kovol_text_validator = RegexValidator(
     flags=re.IGNORECASE,
 )
 kovol_phrase_validator = RegexValidator(
-    regex="^[ieauowtyplkhgdsbnm]+ [ieauowtyplkhgdsbnm]+$",
+    regex="^[ieauowtyplkhgdsbnm ]+$",
+    message="You must only use letters in the Kovol orthography",
+    flags=re.IGNORECASE,
+)
+# allow a little more leeway with matat as sometimes phrases will translate words
+matat_validator = RegexValidator(
+    regex="^[ieauoəwtyplkhgdsbnm ]+$",
     message="You must only use letters in the Kovol orthography",
     flags=re.IGNORECASE,
 )
@@ -21,7 +27,7 @@ tok_pisin_validator = RegexValidator(
     flags=re.IGNORECASE,
 )
 no_symbols_validator = RegexValidator(
-    regex="^[a-z 2]+$",
+    regex="^[a-z \d']+$",
     message="You cannot put symbols here",
     flags=re.IGNORECASE,
 )
@@ -31,15 +37,15 @@ class LexiconEntry(models.Model):
     "A base class other models can inherit from."
     eng = models.CharField(
         verbose_name="English",
-        max_length=35,
+        max_length=45,
         null=False,
         blank=False,
         validators=[no_symbols_validator],
     )
     tpi = models.CharField(
         verbose_name="Tok Pisin",
-        max_length=25,
-        null=False,
+        max_length=45,
+        null=True,
         blank=False,
         validators=[tok_pisin_validator],
     )
@@ -103,11 +109,12 @@ class PhraseEntry(LexiconEntry):
         validators=[kovol_phrase_validator],
         null=False,
         blank=False,
+        unique=True,
         verbose_name="phrase text",
         help_text="Write the phrase here. Phrases involving verbs "
         "should use the 1s future conjugation",
     )
-    pos = models.CharField(max_length=6, null=False, editable=False, default="phrase")
+    pos = models.CharField(max_length=6, null=False, editable=False, default="phr")
     matat = models.CharField(
         verbose_name="Matat",
         max_length=25,
@@ -117,7 +124,7 @@ class PhraseEntry(LexiconEntry):
     )
 
     def __str__(self):
-        return f"Phrase: {self.phrase}"
+        return f"{self.phrase}, Phrase entry"
 
     def save(self, *args, **kwargs):
         self.kgu = self.kgu.lower()
@@ -387,7 +394,10 @@ class LexiconVerbEntry(LexiconEntry):
     def save(self, *args, **kwargs):
         for text in self.verb_text_fields:
             value = getattr(self, text)
-            setattr(self, text, value.lower())
+            try:
+                setattr(self, text, value.lower())
+            except AttributeError:
+                pass
         return super(LexiconVerbEntry, self).save(*args, **kwargs)
 
     def get_conjugations(self):
@@ -510,7 +520,7 @@ class MatatVerb(LexiconVerbEntry):
 class KovolWord(LexiconEntry):
     kgu = models.CharField(
         verbose_name="Imengis",
-        max_length=25,
+        max_length=45,
         blank=False,
         null=False,
         unique=True,
@@ -519,10 +529,10 @@ class KovolWord(LexiconEntry):
     checked = models.BooleanField(default=False, blank=False, null=False)
     matat = models.CharField(
         verbose_name="Matat",
-        max_length=25,
+        max_length=45,
         blank=True,
         null=True,
-        validators=[kovol_text_validator],
+        validators=[matat_validator],
     )
     pos = models.CharField(
         verbose_name="part of speech",
@@ -531,9 +541,13 @@ class KovolWord(LexiconEntry):
         null=True,
         choices=(
             ("n", "noun"),
+            ("pn", "proper noun"),
             ("adj", "adjective"),
             ("adv", "adverb"),
-            ("pn", "pronoun"),
+            ("com", "compound verb"),
+            ("prn", "pronoun"),
+            ("rel", "relator/preposition"),
+            ("uk", "uknown"),
         ),
     )
 
@@ -558,7 +572,7 @@ class KovolWordSpellingVariation(models.Model):
     )
     spelling_variation = models.CharField(
         verbose_name="spelling variation",
-        max_length=25,
+        max_length=45,
         blank=False,
         null=False,
         help_text="write the spelling variation here",
@@ -576,7 +590,7 @@ class KovolWordSense(models.Model):
     word = models.ForeignKey(KovolWord, on_delete=models.CASCADE, related_name="senses")
     sense = models.CharField(
         verbose_name="sense",
-        max_length=25,
+        max_length=45,
         blank=False,
         null=False,
         help_text="write the English for the additional sense here",

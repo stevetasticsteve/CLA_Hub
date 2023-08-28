@@ -3,6 +3,7 @@ from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 import datetime
 
@@ -53,7 +54,7 @@ class WordDetailView(DetailView):
         return context
 
 
-class CreateWordView(CreateView):
+class CreateWordView(LoginRequiredMixin, CreateView):
     """The view at url word/1/create. Creates a new word."""
 
     model = models.KovolWord
@@ -61,7 +62,7 @@ class CreateWordView(CreateView):
     template_name = "lexicon/simple_form.html"
 
 
-class UpdateWordView(UpdateView):
+class UpdateWordView(LoginRequiredMixin, UpdateView):
     """The view at url /word/1/update. Updates words.
 
     get_context_data and form_valid are extended to add in inline formsets representing
@@ -109,7 +110,7 @@ class UpdateWordView(UpdateView):
         return super().form_valid(form, **kwargs)
 
 
-class DeleteWordView(DeleteView):
+class DeleteWordView(LoginRequiredMixin, DeleteView):
     """The view at url word/1/delete. Deletes a word."""
 
     model = models.KovolWord
@@ -118,7 +119,7 @@ class DeleteWordView(DeleteView):
     success_url = success_url = reverse_lazy("lexicon:main")
 
 
-class CreateWordSenseView(CreateView):
+class CreateWordSenseView(LoginRequiredMixin, CreateView):
     """The view at url word/1/add-sense. Adds a sense to a word."""
 
     model = models.KovolWordSense
@@ -131,7 +132,7 @@ class CreateWordSenseView(CreateView):
         return super().form_valid(form)
 
 
-class CreateWordVariationView(CreateView):
+class CreateWordVariationView(LoginRequiredMixin, CreateView):
     """The view at url word/1/add-spelling. Adds a spelling variation to a word."""
 
     model = models.KovolWordSpellingVariation

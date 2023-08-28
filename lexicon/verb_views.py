@@ -1,6 +1,6 @@
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.forms import inlineformset_factory
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 
@@ -43,7 +43,7 @@ class VerbDetailView(DetailView):
         return context
 
 
-class CreateVerbView(CreateView):
+class CreateVerbView(LoginRequiredMixin, CreateView):
     """The view at url verb/1/create. Creates a new verb."""
 
     model = models.ImengisVerb
@@ -51,7 +51,7 @@ class CreateVerbView(CreateView):
     template_name = "lexicon/simple_form.html"
 
 
-class VerbUpdateView(UpdateView):
+class VerbUpdateView(LoginRequiredMixin, UpdateView):
     """The view at url verb/1/edit. Updates verb, senses and spellings.
 
     get_context_data and form_valid are extended to add in inline formsets representing
@@ -101,7 +101,7 @@ class VerbUpdateView(UpdateView):
         return super().form_valid(form, **kwargs)
 
 
-class DeleteVerbView(DeleteView):
+class DeleteVerbView(LoginRequiredMixin, DeleteView):
     """The view at url word/1/delete. Deletes a word."""
 
     model = models.ImengisVerb
@@ -110,7 +110,7 @@ class DeleteVerbView(DeleteView):
     success_url = success_url = reverse_lazy("lexicon:main")
 
 
-class CreateVerbSenseView(CreateView):
+class CreateVerbSenseView(LoginRequiredMixin, CreateView):
     """The view at url verb/1/add-sense. Adds a sense to a verb."""
 
     model = models.VerbSense
@@ -123,7 +123,7 @@ class CreateVerbSenseView(CreateView):
         return super().form_valid(form)
 
 
-class CreateMatatVerbView(CreateView):
+class CreateMatatVerbView(LoginRequiredMixin, CreateView):
     """The view at url verb/1/matat-create. Adds a matat paradigm to a verb."""
 
     model = models.MatatVerb
@@ -149,7 +149,7 @@ class CreateMatatVerbView(CreateView):
         return super().form_valid(form)
 
 
-class UpdateMatatVerbView(UpdateView):
+class UpdateMatatVerbView(LoginRequiredMixin, UpdateView):
     """The view at url verb/1/matat-update. Edits a matat paradigm to a verb."""
 
     model = models.MatatVerb
@@ -157,7 +157,7 @@ class UpdateMatatVerbView(UpdateView):
     template_name = "lexicon/simple_form.html"
 
 
-class DeleteMatatVerbView(DeleteView):
+class DeleteMatatVerbView(LoginRequiredMixin, DeleteView):
     """The view at url word/1/matat-delete. Deletes a matat verb."""
 
     model = models.MatatVerb
@@ -166,7 +166,7 @@ class DeleteMatatVerbView(DeleteView):
     success_url = success_url = reverse_lazy("lexicon:main")
 
 
-class CreateVerbSpellingView(CreateView):
+class CreateVerbSpellingView(LoginRequiredMixin, CreateView):
     """The view at url verb/1/add-spelling. Adds a spelling variation to a verb."""
 
     model = models.VerbSpellingVariation

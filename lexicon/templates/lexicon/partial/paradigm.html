@@ -104,13 +104,13 @@
                     <table class="table">
                         <tr>
                             <th scope="row">1s</th>
-                            <td class="headword">{{word.enclitic_1s}}
+                            <td class="headword">{% if word.enclitic_1s %}{{word.enclitic_1s}} {% endif %}
                                 {% if word.enclitic_1s_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">2s/3s</th>
-                            <td class="headword">{{word.enclitic_2s}}
+                            <td class="headword">{% if word.enclitic_2s %}{{word.enclitic_2s}} {% endif %}
                                 {% if word.enclitic_2s_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
                             </td>
                         </tr>
@@ -120,19 +120,19 @@
                     <table class="table">
                         <tr>
                             <th scope="row">1p</th>
-                            <td class="headword">{{word.enclitic_1p}}
+                            <td class="headword">{% if word.enclitic_1p %}{{word.enclitic_1p}} {% endif %}
                                 {% if word.enclitic_1p_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">2p/3p</th>
-                            <td class="headword">{{word.enclitic_2p}}
+                            <td class="headword">{% if word.enclitic_2p %}{{word.enclitic_2p}} {% endif %}
                                 {% if word.enclitic_2ps_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">same actor</th>
-                            <td class="headword">{{word.enclitic_same_actor}}
+                            <td class="headword">{% if word.enclitic_same_actor %}{{word.enclitic_same_actor}} {% endif %}
                                 {% if word.enclitic_same_actor_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
                             </td>
                         </tr>
@@ -144,7 +144,7 @@
         {% if word.nominalizer %}
         <div class="col-sm-3 mt-2 border p-1">
             <strong>Nominalizer</strong>
-            <ul>{{word.nominalizer}}
+            <ul>{% if word.nominalizer %}{{word.nominalizer}}{% endif %}
                 {% if word.nominalizer_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
             </ul>
         </div>

@@ -8,7 +8,7 @@
     {% if word.checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}</h3>
 
     <p>
-    {% if word.pos %} <strong>{{word.pos}}</strong> {% endif %}
+    {% if word.pos %} <strong>{{word.get_pos_display}}</strong> {% endif %}
     <strong class="english"><em style="color:dodgerblue">{{word.eng}}</em></strong>
     <strong style="color:gray">{{word.tpi}}</strong>
     </p>

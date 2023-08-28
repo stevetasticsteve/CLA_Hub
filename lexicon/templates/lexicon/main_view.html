@@ -25,15 +25,19 @@
                 <hr>    
             </div>
 
+            <div class="row">
             {% for word in words %}
-            <div class="entry col-sm-6 border-right border-bottom my-auto">
-                {% if word.type == "word" or word.type == "phrase" %}
-                    {% include 'lexicon/partial/entry.html' %}
-                {% elif word.type == "verb" %}
-                    {% include 'lexicon/partial/verb_entry.html' %}
-                {% endif %}
-            </div>
+                {% if forloop.counter0|divisibleby:2 %}
+                </div> <div class="row">{% endif %}
+                <div class="entry col-sm-6 border-right border-bottom my-auto">
+                    {% if word.type == "word" or word.type == "phrase" %}
+                        {% include 'lexicon/partial/entry.html' %}
+                    {% elif word.type == "verb" %}
+                        {% include 'lexicon/partial/verb_entry.html' %}
+                    {% endif %}
+                </div>
              {% endfor %}
+             </div>
         </div>
         {% endfor %}
 

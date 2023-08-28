@@ -34,10 +34,12 @@
             <th scope="row">Linked to</th>
             
             <td>
+            {% if phrase.linked_word %}
             {% if phrase.linked_word.lexiconverbentry.imengisverb.pos == "v" %}
             <a href="{% url 'lexicon:verb-detail' phrase.linked_word.pk%}">{{phrase.linked_word.lexiconverbentry.imengisverb.future_1s}}</a>
             {% else %}
             <a href="{% url 'lexicon:word-detail' phrase.linked_word.pk%}">{{phrase.linked_word.kovolword.kgu}}</a>
+            {% endif %}
             {% endif %}
             </td>
         </tr>

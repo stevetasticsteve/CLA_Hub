@@ -1,8 +1,15 @@
 from django.db import models
 from django.urls import reverse
 from django.core.validators import RegexValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.cache import cache
+
 
 import re
+import logging
+
+logger = logging.getLogger("debug")
 
 
 kovol_text_validator = RegexValidator(
@@ -124,7 +131,7 @@ class PhraseEntry(LexiconEntry):
     )
 
     def __str__(self):
-        return f"{self.phrase}, Phrase entry"
+        return f"{self.kgu}, Phrase entry"
 
     def save(self, *args, **kwargs):
         self.kgu = self.kgu.lower()
@@ -441,7 +448,21 @@ class LexiconVerbEntry(LexiconEntry):
         return super(LexiconVerbEntry, self).save(*args, **kwargs)
 
     def get_conjugations(self):
+        """Return a list of all conjugations as strings."""
         return [getattr(self, t) for t in self.verb_text_fields]
+
+    def identify_conjugation(self, text):
+        """Given a string identify which conjugation it is."""
+        for t in self.verb_text_fields:
+            conjugation = getattr(self, t)
+            if conjugation == text:
+                return {
+                    "conjugation": t,
+                    "value": text,
+                    "checked": getattr(self, f"{t}_checked"),
+                    "verb": self
+                }
+        return None
 
 
 #
@@ -640,3 +661,10 @@ class KovolWordSense(models.Model):
     def get_absolute_url(self):
         """Return the detail page if asked for a specific url for an entry."""
         return reverse("lexicon:word-detail", args=[self.word.pk])
+
+
+@receiver(post_save, sender=None)
+def clear_cache(**kwargs):
+    """Clear the cache whenever an entry saves"""
+    logger.info("cache reset")
+    cache.clear()

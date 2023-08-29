@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block page_content %}
+{% load cache %}
 <head>
     <title>Lexicon</title>
 </head>
@@ -17,6 +18,7 @@
 
     <div class="container-fluid mb-4 pb-4" id="entries">
 
+        {% cache 500 main_lexicon %}
         {% for letter, words in lexicon.items %}
         <div class="main_pane_letter">
             <div class="container-fluid letter text-center bg-light">
@@ -40,6 +42,7 @@
              </div>
         </div>
         {% endfor %}
+        {% endcache %}
 
     </div>
     <footer class="footer text-center bg-dark fixed-bottom py-2">

@@ -1,5 +1,6 @@
 import json
 import os
+import logging
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import model_to_dict
@@ -10,22 +11,39 @@ from django.views import View
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
+from django.core.cache import cache
 
 from lexicon import models
 
 phrase_fields = ["kgu", "linked_word", "eng", "tpi", "matat", "comments"]
+logger = logging.getLogger("debug")
 
 
 def get_lexicon_entries(matat_filter=False):
-    """Top method for getting lexicon entrys in {'letter': [objects]}
-    format."""
-    words = get_db_models(matat_filter)
-    return get_initial_letters(words)
+    """Returns all entries in {'letter': [objects]} format.
+
+    Also sets the cache items lexicon (contains words, verbs and phrases) and
+    lexicon words (contains words and verbs)."""
+
+    lexicon_entries = cache.get("lexicon")
+
+    if lexicon_entries:
+        logger.debug("cache used")
+
+    elif not lexicon_entries:
+        logger.debug("no cache available")
+        lexicon_entries = get_db_models(matat_filter)
+        cache.set("lexicon", lexicon_entries)
+        cache.set("lexicon_words", [w for w in lexicon_entries if w.type != "phrase"])
+
+    return get_initial_letters(lexicon_entries)
 
 
 def get_db_models(matat_filter):
-    """Query the database and return Kovol words and verbs in alphabetical
-    order."""
+    """Query database and return Kovol words and verbs in alphabetical order.
+
+    Also adds attributes that are helpful to the spell checker.
+    """
     if matat_filter:
         words = models.KovolWord.objects.exclude(matat__isnull=True)
         verbs = models.MatatVerb.objects.all()
@@ -37,8 +55,19 @@ def get_db_models(matat_filter):
 
     for w in words:
         w.type = "word"
+        # add spelling variations to list for spell checking
+        w.variations = [
+            word.spelling_variation
+            for word in models.KovolWordSpellingVariation.objects.filter(word=w)
+        ]
+
     for v in verbs:
         v.type = "verb"
+        # add conjugations and spelling variations for spell checking
+        v.conjugations = v.get_conjugations()
+        variations = models.VerbSpellingVariation.objects.filter(verb=v)
+        if variations:
+            v.conjugations += [v.spelling_variation for v in variations]
     for p in phrases:
         p.type = "phrase"
 
@@ -51,6 +80,7 @@ def get_db_models(matat_filter):
             p.kgu = p.matat
 
     lexicon = [w for w in words] + [v for v in verbs] + [p for p in phrases]
+
     return sorted(lexicon, key=lambda x: str(x))
 
 

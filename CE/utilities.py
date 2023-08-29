@@ -5,8 +5,11 @@ import time
 import bleach
 import markdown
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
+
 
 import CLAHub.base_settings
+from lexicon.views import get_lexicon_entries
 
 
 def conditional_login(func):
@@ -14,6 +17,17 @@ def conditional_login(func):
         return login_required(func)
     else:
         return func
+
+
+def get_lexicon():
+    """Retrieve lexicon from cache, or generate and cache it. Returns list."""
+    lexicon_entries = cache.get("lexicon_words")
+
+    if lexicon_entries:
+        return lexicon_entries
+    else:
+        get_lexicon_entries()
+        return cache.get("lexicon_words")
 
 
 def set_text_tags_attributes():
@@ -76,34 +90,48 @@ def highlight_non_lexicon_words(text_obj):
     correct_words = 0
     total_words = 0
 
+    lexicon = get_lexicon()
+    lexicon_words = [w for w in lexicon if w.type == "word"]
+    lexicon_verbs = [v for v in lexicon if v.type == "verb"]
+
     # loop through words found in text and highlight
     for w in words:
         # find lexicon entry
-        lex = [l for l in CLAHub.base_settings.lexicon if l["kgu"] == w]
+        matched_words = [
+            word for word in lexicon_words if w == word.kgu or w in word.variations
+        ]
+        matched_verbs = [verb for verb in lexicon_verbs if w in verb.conjugations]
 
         # no entry, highlight red
-        if not lex:
+        if not matched_words and not matched_verbs:
             text = highlight_word(w, text, colour="red")
             total_words += 1
             continue
-
-        lex = lex[0]  # take the 1st index of list
+        else:
+            # pick whether it's a verb or a word, preferring words if both
+            if matched_words:
+                lex = matched_words[0]
+            elif matched_verbs:
+                lex = matched_verbs[0]
+                lex.kgu = lex.future_1s
+                try:
+                    lex.checked = lex.identify_conjugation(w)["checked"]
+                except TypeError:
+                    # This would mean a spelling variation was identified
+                    lex.checked = True
 
         # checked entry, black with link
-        if lex["checked"]:
+        if lex.checked:
             text = highlight_word(w, text, colour="none", lexicon=lex)
             correct_words += 1
             total_words += 1
-            # it is possible for a word to be in both checked and unchecked lists
-            # if it is checked it should take priority
+
         # unchecked entry, green with link
         else:
             text = highlight_word(w, text, colour="green", lexicon=lex)
             total_words += 1
 
-    for w in words:
-        text = add_tooltip(w, text)
-    # report accuracy of transcription to text model
+    # report accuracy of transcription
     if total_words > 0:
         text_obj.known_words = f"{correct_words/total_words*100:.0f}%"
     return text
@@ -117,13 +145,6 @@ def highlight_word(word, text, colour="red", lexicon=None):
     )  # attempt to avoid highlighting parts of words
     highlight = f'<span class="{colour}">'
 
-    # set the right link
-    if lexicon:
-        link = 'href="{lexicon_web_address}#{headword}"'.format(
-            lexicon_web_address=CLAHub.base_settings.lexicon_web_address,
-            headword=lexicon["headword"],
-        )
-
     # regex is non overlapping, so we run it twice. Excluding < and > mean we don't hit
     # the same match
     for i in range(2):
@@ -134,48 +155,20 @@ def highlight_word(word, text, colour="red", lexicon=None):
         elif colour == "green":
             text = re.sub(
                 f,
-                r'\1<a class="no-decoration" {link} target="_blank" rel="noopener noreferrer">{highlight}\2</span></a>\3'.format(
-                    highlight=highlight, word=word, link=link
+                r'\1<a class="no-decoration" href="{link}" target="_blank" rel="noopener noreferrer">{highlight}\2</span></a>\3'.format(
+                    highlight=highlight, word=word, link=lexicon.get_absolute_url()
                 ),
                 text,
             )
         elif colour == "none":
             text = re.sub(
                 f,
-                r'\1<a class="no-decoration" {link} target="_blank" rel="noopener noreferrer">\2</a>\3'.format(
-                    word=word, link=link
+                r'\1<a class="no-decoration" href="{link}" target="_blank" rel="noopener noreferrer">\2</a>\3'.format(
+                    word=word, link=lexicon.get_absolute_url()
                 ),
                 text,
             )
     return text
-
-
-def add_tooltip(word, text):
-    """Add a data-tooltip css attribute to any anchors."""
-    # find the lexicon entry to get english for tooltip
-    lex = [l for l in CLAHub.base_settings.lexicon if l["kgu"] == word]
-    if lex:
-        lex = lex[0]
-        if lex["pos"].startswith("v"):
-            tooltip_text = f'{lex["eng"]}:  {lex["pos"]}'
-        else:
-            tooltip_text = lex["eng"]
-    # return original text if no tooltip to add
-    else:
-        return text
-
-    replace = re.compile(
-        '(noreferrer")>(<span class="green">)?{word}'.format(word=word)
-    )
-
-    # do a text replace to insert a data-tooltip attribute
-    return re.sub(
-        replace,
-        r'\1 data-tooltip="{tooltip_text}">\2{word}'.format(
-            tooltip_text=tooltip_text, word=word
-        ),
-        text,
-    )
 
 
 def find_words_in_text(text):

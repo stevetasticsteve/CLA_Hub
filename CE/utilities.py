@@ -5,11 +5,9 @@ import time
 import bleach
 import markdown
 from django.contrib.auth.decorators import login_required
-from django.core.cache import cache
-
 
 import CLAHub.base_settings
-from lexicon.views import get_lexicon_entries
+from lexicon.utilities import get_lexicon_words_from_cache
 
 
 def conditional_login(func):
@@ -17,17 +15,6 @@ def conditional_login(func):
         return login_required(func)
     else:
         return func
-
-
-def get_lexicon():
-    """Retrieve lexicon from cache, or generate and cache it. Returns list."""
-    lexicon_entries = cache.get("lexicon_words")
-
-    if lexicon_entries:
-        return lexicon_entries
-    else:
-        get_lexicon_entries()
-        return cache.get("lexicon_words")
 
 
 def set_text_tags_attributes():
@@ -90,7 +77,7 @@ def highlight_non_lexicon_words(text_obj):
     correct_words = 0
     total_words = 0
 
-    lexicon = get_lexicon()
+    lexicon = get_lexicon_words_from_cache()
     lexicon_words = [w for w in lexicon if w.type == "word"]
     lexicon_verbs = [v for v in lexicon if v.type == "verb"]
 

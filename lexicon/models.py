@@ -460,7 +460,7 @@ class LexiconVerbEntry(LexiconEntry):
                     "conjugation": t,
                     "value": text,
                     "checked": getattr(self, f"{t}_checked"),
-                    "verb": self
+                    "verb": self,
                 }
         return None
 

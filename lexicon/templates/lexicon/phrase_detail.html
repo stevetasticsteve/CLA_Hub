@@ -77,6 +77,16 @@
             </td>
             </tr>
             {% endif %}
+        
+            {% if phrase.review != "0" %}
+            <tr>
+            <th scope="row">Review</th>
+            <td><ul class="list-unstyled">
+                <li>{{phrase.get_review_display}}</li>
+                <li>{{phrase.review_comments}}</li>
+            </ul></td>
+            </tr>
+            {% endif %}
 
 
         <tr>

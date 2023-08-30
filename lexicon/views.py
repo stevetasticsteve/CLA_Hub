@@ -14,8 +14,10 @@ from django.views.generic.list import ListView
 from django.core.cache import cache
 
 from lexicon import models
+from lexicon import forms
+from lexicon import utilities
 
-phrase_fields = ["kgu", "linked_word", "eng", "tpi", "matat", "comments"]
+
 logger = logging.getLogger("debug")
 
 
@@ -25,63 +27,8 @@ def get_lexicon_entries(matat_filter=False):
     Also sets the cache items lexicon (contains words, verbs and phrases) and
     lexicon words (contains words and verbs)."""
 
-    lexicon_entries = cache.get("lexicon")
-
-    if lexicon_entries:
-        logger.debug("cache used")
-
-    elif not lexicon_entries:
-        logger.debug("no cache available")
-        lexicon_entries = get_db_models(matat_filter)
-        cache.set("lexicon", lexicon_entries)
-        cache.set("lexicon_words", [w for w in lexicon_entries if w.type != "phrase"])
-
-    return get_initial_letters(lexicon_entries)
-
-
-def get_db_models(matat_filter):
-    """Query database and return Kovol words and verbs in alphabetical order.
-
-    Also adds attributes that are helpful to the spell checker.
-    """
-    if matat_filter:
-        words = models.KovolWord.objects.exclude(matat__isnull=True)
-        verbs = models.MatatVerb.objects.all()
-        phrases = models.PhraseEntry.objects.exclude(matat__isnull=True)
-    else:
-        words = models.KovolWord.objects.all()
-        verbs = models.ImengisVerb.objects.all()
-        phrases = models.PhraseEntry.objects.all()
-
-    for w in words:
-        w.type = "word"
-        # add spelling variations to list for spell checking
-        w.variations = [
-            word.spelling_variation
-            for word in models.KovolWordSpellingVariation.objects.filter(word=w)
-        ]
-
-    for v in verbs:
-        v.type = "verb"
-        # add conjugations and spelling variations for spell checking
-        v.conjugations = v.get_conjugations()
-        variations = models.VerbSpellingVariation.objects.filter(verb=v)
-        if variations:
-            v.conjugations += [v.spelling_variation for v in variations]
-    for p in phrases:
-        p.type = "phrase"
-
-    if matat_filter:
-        for w in words:
-            w.kgu = w.matat
-        for v in verbs:
-            v.pk = v.imengis_verb.pk
-        for p in phrases:
-            p.kgu = p.matat
-
-    lexicon = [w for w in words] + [v for v in verbs] + [p for p in phrases]
-
-    return sorted(lexicon, key=lambda x: str(x))
+    utilities.get_lexicon_words_from_cache()
+    return get_initial_letters(cache.get("lexicon"))
 
 
 def get_initial_letters(words):
@@ -160,7 +107,7 @@ class ExportView(View):
 
 class CreatePhrase(CreateView):
     model = models.PhraseEntry
-    fields = phrase_fields
+    form_class = forms.PhraseForm
     template_name = "lexicon/simple_form.html"
 
 
@@ -182,8 +129,8 @@ class PhraseDetail(DetailView):
 
 class UpdatePhrase(UpdateView):
     model = models.PhraseEntry
-    fields = phrase_fields
     template_name = "lexicon/simple_form.html"
+    form_class = forms.PhraseForm
 
     def form_valid(self, form, **kwargs):
         self.object.modified_by = self.request.user.username
@@ -239,7 +186,7 @@ def serve_file(file):
 
 
 def download_dic(*args):
-    word_objs = get_db_models(matat_filter=False)
+    word_objs = utilities.get_db_models(matat_filter=False)
     words = []
     for w in word_objs:
         if w.type == "word":
@@ -255,7 +202,7 @@ def download_dic(*args):
 
 
 def download_json(*args):
-    word_objs = get_db_models(matat_filter=False)
+    word_objs = utilities.get_db_models(matat_filter=False)
     json_data = [model_to_dict(w) for w in word_objs]
 
     json_file = os.path.join("data", "lexicon.json")

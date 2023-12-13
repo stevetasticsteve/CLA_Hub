@@ -12,7 +12,8 @@ class MatatVerbAdmin(admin.ModelAdmin):
 
 
 class WordAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("kgu", "eng")
+    search_fields = ("kgu",)
 
 
 admin.site.register(lexicon.models.ImengisVerb, VerbAdmin)

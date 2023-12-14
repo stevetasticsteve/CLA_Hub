@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import json
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -26,17 +25,19 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "CE",
     "people",
     "lexicon",
     "taggit",
-    'crispy_forms',
-    'crispy_bootstrap4'
+    "crispy_forms",
+    "crispy_bootstrap4",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -113,13 +114,25 @@ USE_L10N = True
 
 USE_TZ = True
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "/clahub/static/"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "CLAHub/assets"),)
 STATIC_ROOT = "/home/steve/html/static"
+
 LOGIN_REDIRECT_URL = "/clahub/CE"
 LOGOUT_REDIRECT_URL = "/clahub/CE"
 LOGIN_URL = "/clahub/accounts/login/"
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "data", "uploads")
 MEDIA_URL = "/clahub/uploads/"
 LOGIN_EVERYWHERE = False

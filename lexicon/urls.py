@@ -19,6 +19,7 @@ urlpatterns = [
     path("export/", lexicon.views.ExportView.as_view(), name="export"),
     path("download-dic", lexicon.views.download_dic, name="dic_download"),
     path("download-json", lexicon.views.download_json, name="json_download"),
+    path("download-oxt", lexicon.views.download_oxt, name="oxt_download"),
     # phrases
     path("phrase/create", lexicon.views.CreatePhrase.as_view(), name="phrase-create"),
     path(

@@ -447,9 +447,16 @@ class LexiconVerbEntry(LexiconEntry):
                 pass
         return super(LexiconVerbEntry, self).save(*args, **kwargs)
 
-    def get_conjugations(self):
+    def get_conjugations(self, checked=False):
         """Return a list of all conjugations as strings."""
-        return [getattr(self, t) for t in self.verb_text_fields]
+        if checked:
+            return [
+                getattr(self, t)
+                for t in self.verb_text_fields
+                if getattr(self, t + "_checked") and getattr(self, t)
+            ]
+        else:
+            return [getattr(self, t) for t in self.verb_text_fields if getattr(self, t)]
 
     def identify_conjugation(self, text):
         """Given a string identify which conjugation it is."""
@@ -575,6 +582,7 @@ class MatatVerb(LexiconVerbEntry):
 #
 # Word models
 #
+
 
 # TODO  Verb allowable prefixes
 # models for storing word info

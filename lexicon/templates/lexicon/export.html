@@ -18,12 +18,23 @@
     </div>
     <div class="col-sm-6">
         <div class="card mt-2">
-            <h5 class="card-header">Download. json</h5>
+            <h5 class="card-header">Download .json</h5>
             <div class="card-body">
                 <p class="card-text">JSON files are easily machine readable. JSON will contain all the lexicon's information
                     and is good to use when importing the lexicon into another program.
                 </p>
                 <a href="{% url 'lexicon:json_download' %}" class="btn btn-primary">Download a .json</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card mt-2">
+            <h5 class="card-header">Download .oxt</h5>
+            <div class="card-body">
+                <p class="card-text">oxt files are libre office extensions. This extension sets up a Kovol
+                    spell check in Libre Office containing the words currently marked as checked.
+                </p>
+                <a href="{% url 'lexicon:oxt_download' %}" class="btn btn-primary">Download a .oxt</a>
             </div>
         </div>
     </div>

@@ -26,3 +26,5 @@ test_highlight.py
 data/uploads/people/profile_pictures/.gitkeep
 data/uploads/people/thumbnails/.gitkeep
 .vscode/
+CLAHub/assets/bootstrap/
+CLAHub/assets/fontawesome/

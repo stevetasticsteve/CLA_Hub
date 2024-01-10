@@ -63,3 +63,31 @@ def get_db_models(matat_filter):
     lexicon = [w for w in words] + [v for v in verbs] + [p for p in phrases]
 
     return sorted(lexicon, key=lambda x: str(x))
+
+
+def get_word_list(checked=True):
+    """Get all words from the lexicon.
+    Returns a list in alphabetical order."""
+    word_objs = get_db_models(matat_filter=False)
+    words = []
+    for w in word_objs:
+        if w.type == "word":
+            # skip unchecked words when required
+            if checked:
+                if not w.checked:
+                    continue
+            words.append(w.kgu)
+            # automatically append spelling variations
+            spelling_variations = models.KovolWordSpellingVariation.objects.filter(
+                word=w
+            )
+            if spelling_variations:
+                for s in spelling_variations:
+                    words.append(s.spelling_variation)
+        elif w.type == "verb":
+            words += w.get_conjugations(checked)
+            spelling_variations = models.VerbSpellingVariation.objects.filter(verb=w)
+            if spelling_variations:
+                for s in spelling_variations:
+                    words.append(s.spelling_variation)
+    return words

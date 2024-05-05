@@ -123,6 +123,7 @@ STORAGES = {
     },
 }
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "/clahub/static/"

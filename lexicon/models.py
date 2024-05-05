@@ -34,7 +34,7 @@ tok_pisin_validator = RegexValidator(
     flags=re.IGNORECASE,
 )
 no_symbols_validator = RegexValidator(
-    regex="^[a-z \d']+$",
+    regex="^[a-z /d']+$",
     message="You cannot put symbols here",
     flags=re.IGNORECASE,
 )
@@ -428,6 +428,16 @@ class LexiconVerbEntry(LexiconEntry):
         validators=[kovol_text_validator],
     )
     nominalizer_checked = models.BooleanField(default=False)
+
+    # iguwot suffix
+    iguwot = models.CharField(
+        verbose_name="-ogot suffix",
+        null=True,
+        blank=True,
+        max_length=25,
+        validators=[kovol_text_validator],
+    )
+    iguwot_checked = models.BooleanField(default=False, verbose_name="-ogot checked")
 
     pos = models.CharField(
         verbose_name="part of speach",

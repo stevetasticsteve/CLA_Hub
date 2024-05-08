@@ -211,6 +211,7 @@ class LexiconVerbEntry(LexiconEntry):
         "enclitic_2s",
         "enclitic_2p",
         "nominalizer",
+        "iguwot",
     ]
 
     # past tense conjugations

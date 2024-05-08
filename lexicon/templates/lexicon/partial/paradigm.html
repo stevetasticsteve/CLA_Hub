@@ -143,11 +143,11 @@
         {% if word.nominalizer or word.iguwot %}
         <div class="col-sm-3 mt-2 border p-1">
             {% if word.nominalizer %}<strong>Nominalizer</strong>
-            <ul>{{word.nominalizer}}
+            <ul class="headword">{{word.nominalizer}}
                 {% if word.nominalizer_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
             </ul>{% endif %}
             {% if word.iguwot %}<strong>Iguwot</strong>
-            <ul>{{word.iguwot}}
+            <ul class="headword">{{word.iguwot}}
                 {% if word.igwuot_checked %} {% include "lexicon/partial/green_tick.html" %} {% endif %}
             </ul>{% endif %}
         </div>

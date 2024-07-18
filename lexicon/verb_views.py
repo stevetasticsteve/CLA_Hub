@@ -50,6 +50,13 @@ class CreateVerbView(LoginRequiredMixin, CreateView):
     fields = "__all__"
     template_name = "lexicon/simple_form.html"
 
+    def form_valid(self, form, **kwargs):
+        """Save changes to the sense and variation formsets."""
+        obj = form.save(commit=False)
+        obj.modified_by = self.request.user.username
+        obj.save()
+        return super().form_valid(form, **kwargs)
+
 
 class VerbUpdateView(LoginRequiredMixin, UpdateView):
     """The view at url verb/1/edit. Updates verb, senses and spellings.

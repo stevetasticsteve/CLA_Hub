@@ -111,6 +111,13 @@ class CreatePhrase(CreateView):
     form_class = forms.PhraseForm
     template_name = "lexicon/simple_form.html"
 
+    def form_valid(self, form, **kwargs):
+        """Save changes to the sense and variation formsets."""
+        obj = form.save(commit=False)
+        obj.modified_by = self.request.user.username
+        obj.save()
+        return super().form_valid(form, **kwargs)
+
 
 class PhraseDetail(DetailView):
     model = models.PhraseEntry

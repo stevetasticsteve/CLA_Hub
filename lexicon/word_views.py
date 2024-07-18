@@ -1,4 +1,5 @@
 """Views that deal with creating, updating and deleting words."""
+
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 from django.views.generic import DetailView
@@ -46,9 +47,9 @@ class WordDetailView(DetailView):
         """Add senses and variations for the template to use."""
         context = super().get_context_data(**kwargs)
         context["word_senses"] = models.KovolWordSense.objects.filter(word=self.object)
-        context[
-            "spelling_variations"
-        ] = models.KovolWordSpellingVariation.objects.filter(word=self.object)
+        context["spelling_variations"] = (
+            models.KovolWordSpellingVariation.objects.filter(word=self.object)
+        )
         context["phrases"] = models.PhraseEntry.objects.filter(linked_word=self.object)
 
         return context
@@ -60,6 +61,13 @@ class CreateWordView(LoginRequiredMixin, CreateView):
     model = models.KovolWord
     fields = word_form_fields
     template_name = "lexicon/simple_form.html"
+
+    def form_valid(self, form, **kwargs):
+        """Save changes to the sense and variation formsets."""
+        obj = form.save(commit=False)
+        obj.modified_by = self.request.user.username
+        obj.save()
+        return super().form_valid(form, **kwargs)
 
 
 class UpdateWordView(LoginRequiredMixin, UpdateView):

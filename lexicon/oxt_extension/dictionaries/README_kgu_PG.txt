@@ -1,12 +1,8 @@
 
-1. Version
-
-This is version 0.01 of hunspell-kgu.
-
-2. Copyright
+Copyright
 
 Kovol spellchecking package for hunspell
-Copyright 2023 Steve Stanley
+Copyright 2024 Steve Stanley
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

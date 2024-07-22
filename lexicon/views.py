@@ -1,7 +1,6 @@
 import json
 import os
 import logging
-from zipfile import ZipFile
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import model_to_dict
@@ -103,7 +102,8 @@ class ReviewLiteracyView(ReviewList):
 
 class ExportView(View):
     def get(self, request):
-        return render(request, "./lexicon/export.html")
+        context = {"version": models.LexiconMetaData.objects.get(pk=1).version}
+        return render(request, "./lexicon/export.html", context=context)
 
 
 class CreatePhrase(CreateView):
@@ -214,26 +214,4 @@ def download_json(*args):
 
 
 def download_oxt(*args):
-    words = utilities.get_word_list(checked=True)
-    # write a new .dic file in
-    dic_file = os.path.join("lexicon", "oxt_extension", "dictionaries", "kgu_PG.dic")
-    with open(dic_file, "w") as file:
-        file.write(str(len(words)))
-        file.writelines([f"\n{w}" for w in words])
-
-    # zip the relevent files together
-    zip_path = os.path.join("data", "kovol_spellcheck.oxt")
-    contents_path = os.path.join("lexicon", "oxt_extension")
-    contents = []
-    [contents.append(os.path.join(contents_path, f)) for f in os.listdir(contents_path)]
-    [
-        contents.append(os.path.join(contents_path, "dictionaries", f))
-        for f in os.listdir(os.path.join(contents_path, "dictionaries"))
-    ]
-    contents.append(os.path.join(contents_path, "META-INF", "manifest.xml"))
-
-    with ZipFile(zip_path, "w") as myzip:
-        for c in contents:
-            myzip.write(c, arcname=c.lstrip(contents_path))
-
-    return serve_file(zip_path)
+    return serve_file(utilities.write_oxt_package())

@@ -1,6 +1,9 @@
 from django.core.cache import cache
 from lexicon import models
 
+import os
+from zipfile import ZipFile
+
 
 def get_lexicon_words_from_cache(matat_filter=False):
     lexicon_words = cache.get("lexicon_words")
@@ -90,4 +93,50 @@ def get_word_list(checked=True):
             if spelling_variations:
                 for s in spelling_variations:
                     words.append(s.spelling_variation)
-    return words
+    return [w for w in words if w]
+
+
+def write_dic_file():
+    """Write the .dic file used in Hunspell."""
+    words = get_word_list(checked=True)
+    # write a new .dic file in
+    dic_file = os.path.join("lexicon", "oxt_extension", "dictionaries", "kgu_PG.dic")
+    with open(dic_file, "w") as file:
+        file.write(str(len(words)))
+        file.writelines([f"\n{w}" for w in words])
+
+
+def update_oxt_version():
+    """Update the spell check version number to match CLAHub."""
+    try:
+        version = models.LexiconMetaData.objects.get(pk=1).version
+    except models.LexiconMetaData.DoesNotExist:
+        models.LexiconMetaData.objects.create()
+        version = models.LexiconMetaData.objects.get(pk=1).version
+
+    with open("lexicon/oxt_extension/description_template.xml", "r") as file:
+        contents = file.read()
+    with open("lexicon/oxt_extension/description.xml", "w") as file:
+        file.write(contents.replace("$VERSION", str(version)))
+    return version
+
+
+def write_oxt_package():
+    """Zip together the hunspell spellcheck as a .oxt file."""
+    write_dic_file()
+    version = update_oxt_version()
+    # zip the relevent files together
+    zip_path = os.path.join("data", f"kovol_spellcheck_{version}.oxt")
+    contents_path = os.path.join("lexicon", "oxt_extension")
+    contents = []
+    [contents.append(os.path.join(contents_path, f)) for f in os.listdir(contents_path)]
+    [
+        contents.append(os.path.join(contents_path, "dictionaries", f))
+        for f in os.listdir(os.path.join(contents_path, "dictionaries"))
+    ]
+    contents.append(os.path.join(contents_path, "META-INF", "manifest.xml"))
+
+    with ZipFile(zip_path, "w") as myzip:
+        for c in contents:
+            myzip.write(c, arcname=c.lstrip(contents_path))
+    return zip_path

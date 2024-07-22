@@ -16,7 +16,6 @@ Logs/
 data_snapshots/
 **__pycache__
 **.iml
-**.xml
 local_sync**
 /.idea**
 **.csv
@@ -28,3 +27,4 @@ data/uploads/people/thumbnails/.gitkeep
 .vscode/
 CLAHub/assets/bootstrap/
 CLAHub/assets/fontawesome/
+lexicon/oxt_extension/dictionaries/kgu_PG.dic

@@ -8,6 +8,7 @@ from django.core.cache import cache
 
 import re
 import logging
+from decimal import Decimal
 
 logger = logging.getLogger("debug")
 
@@ -38,6 +39,19 @@ no_symbols_validator = RegexValidator(
     message="You cannot put symbols here",
     flags=re.IGNORECASE,
 )
+
+
+class LexiconMetaData(models.Model):
+    """A place to store Meta info like version number."""
+
+    version = models.DecimalField(
+        verbose_name="version",
+        blank=False,
+        null=False,
+        decimal_places=3,
+        max_digits=5,
+        default=0.0,
+    )
 
 
 class LexiconEntry(models.Model):
@@ -86,6 +100,13 @@ class LexiconEntry(models.Model):
     def save(self, *args, **kwargs):
         self.eng = self.eng.lower()
         self.tpi = self.tpi.lower()
+        try:
+            version_obj = LexiconMetaData.objects.get(pk=1)
+        except LexiconMetaData.DoesNotExist:
+            LexiconMetaData.objects.create()
+            version_obj = LexiconMetaData.objects.get(pk=1)
+        version_obj.version += Decimal("0.001")
+        version_obj.save()
         return super(LexiconEntry, self).save(*args, **kwargs)
 
     def __str__(self):

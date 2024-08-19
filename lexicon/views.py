@@ -1,6 +1,7 @@
 import json
 import os
 import logging
+from collections import Counter
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import model_to_dict
@@ -102,7 +103,14 @@ class ReviewLiteracyView(ReviewList):
 
 class ExportView(View):
     def get(self, request):
-        context = {"version": models.LexiconMetaData.objects.get(pk=1).version}
+        context = {
+            "version": models.LexiconMetaData.objects.get(pk=1).version,
+            "total_words": len(utilities.get_word_list(checked=False)),
+            "checked_words": len(utilities.get_word_list(checked=True)),
+            "checked_counter": Counter(
+                [w.pos for w in utilities.get_db_models(matat_filter=False)]
+            ),
+        }
         return render(request, "./lexicon/export.html", context=context)
 
 

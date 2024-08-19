@@ -1,5 +1,6 @@
 from django.urls import path
 
+import lexicon.ignore_word_views
 import lexicon.views
 import lexicon.verb_views
 import lexicon.word_views
@@ -119,5 +120,26 @@ urlpatterns = [
         "word/<int:pk>/add-spelling",
         lexicon.word_views.CreateWordVariationView.as_view(),
         name="word-add-spelling",
+    ),
+    # ignore words
+    path(
+        "ignore/create",
+        lexicon.ignore_word_views.CreateIgnoreWordView.as_view(),
+        name="ignore-create",
+    ),
+    path(
+        "update/<int:pk>/update",
+        lexicon.ignore_word_views.UpdateIgnoreWordView.as_view(),
+        name="ignore-update",
+    ),
+    path(
+        "ignore/<int:pk>/delete",
+        lexicon.ignore_word_views.DeleteIgnoreWordView.as_view(),
+        name="ignore-delete",
+    ),
+    path(
+        "ignore",
+        lexicon.ignore_word_views.IgnoreListView.as_view(),
+        name="ignore",
     ),
 ]

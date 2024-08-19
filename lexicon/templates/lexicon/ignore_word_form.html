@@ -4,6 +4,10 @@
 {% load crispy_forms_tags %}
 
 <div class="container my-4">
+    {% if object %}
+    <a href="{% url 'lexicon:ignore-delete' object.pk%}"><button type="button" class="btn btn-danger my-4">Delete</button></a>
+    {% endif %}
+
     <form action="" method="post">
         {% csrf_token %}
         {{form|crispy}}

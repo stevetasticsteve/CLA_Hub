@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+{% load cache %}
+<head>
+    <title>Lexicon</title>
+</head>
+
+<body>
+    {% include 'lexicon/partial/header.html' %}
+    <a href="{% url 'lexicon:ignore-create'%}"><button type="button" class="btn btn-secondary mt-4">Add a word</button></a>
+
+
+    <div class="container-fluid my-4 pb-4" id="entries">
+        <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Word</th>
+            <th scope="col">Type</th>
+            <th scope="col">English</th>
+            <th scope="col">Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for word in object_list %}
+                <tr class="entry" id="{{word.word}}">
+                <th scope="row">
+                    <a href="{% url 'lexicon:ignore-update' word.pk %}" class="headword">{{word.word}}</a> 
+                <td>
+                    {{word.get_type_display}}
+                </td>
+                <td>
+                    {{word.eng}}
+                </td>
+                <td>
+                    {{word.comments}}
+                </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+{% endblock %}

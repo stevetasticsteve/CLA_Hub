@@ -21,7 +21,7 @@ def get_lexicon_words_from_cache(matat_filter=False):
 def get_db_models(matat_filter):
     """Query database and return Kovol words and verbs in alphabetical order.
 
-    Also adds attributes that are helpful to the spell checker.
+    Also adds attributes that are helpful to the spell checker. If Matat filter is true Matat data is output
     """
     if matat_filter:
         words = models.KovolWord.objects.exclude(matat__isnull=True)

@@ -1,8 +1,16 @@
 from ..base_settings import *
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
-DEBUG = False
-ALLOWED_HOSTS = [os.environ['ALLOWED_HOSTS']]
-SECRET_KEY = os.environ['SECRET_KEY']
+ALLOWED_HOSTS = ["clahub.reachkovol.com"]
+CSRF_TRUSTED_ORIGINS = ["https://clahub.reachkovol.com"]
+SECRET_KEY = "vn2d2Ay46gqUzHFtfnjSrdPzy9ybNNDSCGC5nJbvXqtAmhr6h9i8ccVq"
+
+# HTTPS
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SECURE_HSTS_SECONDS = 15768000
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+SECURE_BROWSER_XSS_FILTER = True

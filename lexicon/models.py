@@ -25,7 +25,7 @@ kovol_phrase_validator = RegexValidator(
 )
 # allow a little more leeway with matat as sometimes phrases will translate words
 matat_validator = RegexValidator(
-    regex="^[ieauoəwtyplkhgdsbnm ]+$",
+    regex="^[ieauoəwtyplkhgdsbnmz ]+$",
     message="You must only use letters in the Kovol orthography",
     flags=re.IGNORECASE,
 )
@@ -74,7 +74,7 @@ class LexiconEntry(models.Model):
         null=True,
         blank=True,
         help_text="extra comments or an extended definition information",
-        max_length=250,
+        max_length=1000,
     )
     review = models.CharField(
         choices=(
@@ -708,3 +708,53 @@ def clear_cache(**kwargs):
     """Clear the cache whenever an entry saves"""
     logger.info("cache reset")
     cache.clear()
+
+
+class IgnoreWord(models.Model):
+    """A list of irregular words to be included in the spell check.
+
+    Foreign words, names and transliterated words would all be good to include in
+    the spellcheck. To avoid these crowding out Kovol words in the main dict
+    view these are maintained as a seperate list. When building the .oxt spell
+    check extension these can be included with a /NOSUGGEST tag.
+    """
+
+    word = models.CharField(
+        max_length=25,
+        blank=False,
+        null=False,
+        unique=True,
+        help_text="Word to add to spell check.",
+    )
+    type = models.CharField(
+        max_length=3,
+        blank=False,
+        null=False,
+        choices=(
+            ("tpi", "Tok Pisin"),
+            ("pn", "Proper noun"),
+            ("eng", "English"),
+            ("fgn", "Foreign transliterated"),
+        ),
+        help_text="Type of word to add to spell check.",
+    )
+    eng = models.CharField(
+        max_length=25,
+        blank=False,
+        null=False,
+        help_text="English",
+        verbose_name="English",
+    )
+    comments = models.TextField(
+        null=True,
+        blank=True,
+        help_text="extra comments or an extended definition information",
+        max_length=300,
+    )
+
+    def save(self, *args, **kwargs):
+        self.word = self.word.lower()
+        return super(IgnoreWord, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["word"]

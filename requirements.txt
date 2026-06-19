@@ -1,4 +1,4 @@
-bleach==6.1.0
+bleach==6.4.0
 Django>=5.0.4
 django-taggit>=5.0.1
 gunicorn>=22.0.0
